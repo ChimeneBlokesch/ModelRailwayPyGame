@@ -33,8 +33,10 @@ class Commands:
         self.screen.blit(surface, (0, 0))
 
     def typing(self, event):
+        continue_game = True
+
         if event.key == pygame.K_RETURN:
-            self.run_command()
+            continue_game = self.run_command()
             self.command = ""
         elif event.key == pygame.K_BACKSPACE:
             self.command = self.command[:-1]
@@ -42,6 +44,7 @@ class Commands:
             self.command += event.unicode
 
         self.set_text()
+        return continue_game
 
     def set_text(self, text=None):
         x, y = (0, 20)
@@ -68,6 +71,9 @@ class Commands:
 
         if command[0] == "add" and command[1] == "train":
             output, succes = self.add_train(command[2:])
+        elif command == ["quit"]:
+            pygame.quit()
+            return False
 
         if succes:
             self.old_commands.append(self.command)
@@ -77,6 +83,7 @@ class Commands:
         self.command = ""
         self.set_text()
         self.set_text(output)
+        return True
 
     def add_train(self, args):
         if len(args) != ...:

@@ -9,7 +9,9 @@ from database_treinen import Treinen
 if __name__ == "__main__":
     pygame.init()
     clock = pygame.time.Clock()
-    screen = pygame.display.set_mode([1000, 480])
+    # flags = pygame.FULLSCREEN | pygame.RESIZABLE
+    flags = 0
+    screen = pygame.display.set_mode([1000, 600], flags)
     pygame.display.set_caption("Treinen")
     screen.fill((255, 255, 255))
     # background = pygame.Surface(screen.get_size())
@@ -18,7 +20,7 @@ if __name__ == "__main__":
     command_field.draw()
     treinen_db = Treinen()
     grid = Grid(screen, (0, command_field.field.size[1]), treinen_db)
-    grid.add_train(50, 50, 0, "Treinen/VIRM_kop.png")
+    grid.add_train(50, 50, 0, "Treinen/VIRM_kop_links.png")
     command_field.grid = grid
 
     while loop:
@@ -34,7 +36,7 @@ if __name__ == "__main__":
 
             if event.type == pygame.KEYDOWN:
                 if command_field.active:
-                    command_field.typing(event)
+                    loop = command_field.typing(event)
 
         command_field.set_text()
 
