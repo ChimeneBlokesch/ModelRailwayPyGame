@@ -1,0 +1,92 @@
+import pygame
+from database_treinen import PATH
+
+pygame.init()
+FONT = pygame.font.Font(None, 30)
+COLOR_ACTIVE = (50, 120, 210)
+COLOR_INACTIVE = (255, 255, 255)
+COLOR_TEXT = (43, 56, 43)
+
+
+class Commands:
+    def __init__(self, screen: pygame.Surface):
+        self.screen = screen
+        self.height = self.screen.get_size()[0]
+        self.width = 23
+        self.field = pygame.Rect(0, 0, self.height, self.width)
+        self.command = ""
+        self.active = False
+        self.grid = None
+        self.draw()
+
+    def toggle(self):
+        self.active = not self.active
+        self.draw()
+
+    def draw(self):
+        self.field = pygame.Rect(0, 0, self.height, self.width)
+        pygame.draw.rect(self.screen, (0, 0, 0), self.field, width=1)
+        color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
+        surface = pygame.Surface(self.field.size)
+        surface.fill(color)
+        self.screen.blit(surface, (0, 0))
+
+    def typing(self, event):
+        if event.key == pygame.K_RETURN:
+            self.run_command()
+            self.command = ""
+        elif event.key == pygame.K_BACKSPACE:
+            self.command = self.command[:-1]
+        else:
+            self.command += event.unicode
+
+        self.set_text()
+
+    def set_text(self, text=None):
+        x, y = (0, 20)
+
+        if not text:
+            x, y = (1, 1)
+            text = self.command
+
+        pos = (self.field.x + x, self.field.y + y)
+        # Remove current text
+        # background = pygame.Surface((self.field.x + x, self.field.y + y))
+        # self.screen.blit(background, pos)
+        # pygame.draw.rect(self.screen, (0, 0, 0), self.field)
+        self.draw()
+
+        # Set new text
+        text_surface = FONT.render(text, True, COLOR_TEXT)
+        self.screen.blit(text_surface, pos)
+
+    def run_command(self):
+        command = self.command.split()
+        output = "Unknown command"
+
+        if command[0] == "add" and command[1] == "train":
+            output = self.add_train(command[2:])
+
+        print(output)
+        # output write
+        self.command = ""
+        self.set_text()
+        self.set_text(output)
+
+    def add_train(self, args):
+        if len(args) != ...:
+            ...
+
+        try:
+            x = int(args[0])
+            y = int(args[1])
+            angle = int(args[2])
+            name = PATH + args[3] + ".png"
+            self.grid.add_train(x, y, angle, name)
+            return "Added train"
+        except ValueError:
+            return "The arguments of this command are invalid."
+        except TypeError:
+            return "Not the right amount of arguments."
+        except FileNotFoundError:
+            return "Train doesn't exists."

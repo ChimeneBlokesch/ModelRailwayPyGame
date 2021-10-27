@@ -1,0 +1,26 @@
+Naam Max_snelheid Versnelling tweede_klas eerste_klas sp/ic
+Koploper_kop 120 6 True False ic
+Koploper_tweede_klas 0 0 True False ic
+Koploper_eerste_klas 0 0 False True ic
+
+Koploper2_kop 120 6 True False ic
+
+Locomotief 100 10 False False ic
+oude_dubbeldekker_kop 100 10 True False ic
+oude_dubbeldekker_tweede_klas 0 0 True False ic
+oude_dubbeldekker_eerste_klas 0 0 False True ic
+
+SGM_kop 100 8 True False sp
+SGM_midden 0 0 True True sp
+
+SLT_kop 120 5 True True sp
+SLT_tweede_klas1 0 0 True False sp
+SLT_eerste_klas2 0 0 True False sp
+
+VIRM_kop 130 5 True False ic
+VIRM_midden1 0 0 True True ic
+VIRM_midden2 0 0 True True ic
+
+VIRM2_kop 130 4 True True ic
+VIRM3_kop 130 5 True False ic
+VIRM3_midden 0 0 True True ic
