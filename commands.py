@@ -17,6 +17,7 @@ class Commands:
         self.command = ""
         self.active = False
         self.grid = None
+        self.old_commands = []
         self.draw()
 
     def toggle(self):
@@ -63,9 +64,13 @@ class Commands:
     def run_command(self):
         command = self.command.split()
         output = "Unknown command"
+        succes = False
 
         if command[0] == "add" and command[1] == "train":
-            output = self.add_train(command[2:])
+            output, succes = self.add_train(command[2:])
+
+        if succes:
+            self.old_commands.append(self.command)
 
         print(output)
         # output write
@@ -75,6 +80,7 @@ class Commands:
 
     def add_train(self, args):
         if len(args) != ...:
+            # TODO
             ...
 
         try:
@@ -83,10 +89,10 @@ class Commands:
             angle = int(args[2])
             name = PATH + args[3] + ".png"
             self.grid.add_train(x, y, angle, name)
-            return "Added train"
+            return "Added train", True
         except ValueError:
-            return "The arguments of this command are invalid."
+            return "The arguments of this command are invalid.", False
         except TypeError:
-            return "Not the right amount of arguments."
+            return "Not the right amount of arguments.", False
         except FileNotFoundError:
-            return "Train doesn't exists."
+            return "Train doesn't exists.", False
