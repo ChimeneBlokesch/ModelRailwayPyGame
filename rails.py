@@ -37,6 +37,10 @@ class Rails:
     def draw(self, c):
         n = 10
         colors = [(0, 255, 0), (0, 0, 255)]
+
+        h_degrees = self.point_degree(self.xh, self.yh)
+        v_degrees = self.point_degree(self.xv, self.yv)
+
         for idx, i in enumerate([n, -n]):
             mid_x, mid_y = self.middelpunt
             rect = [mid_x - self.straal_h - i,
@@ -44,43 +48,61 @@ class Rails:
                     2 * self.straal_h + 2 * i,
                     2 * self.straal_v + 2 * i]
             # pygame.draw.rect(self.grid, colors[idx], rect)
-            print(rect)
+            # print(rect)
 
-            start_angle, stop_angle = self.start_stop_degrees()
+            start_angle, stop_angle = self.get_start_stop_angles(h_degrees,
+                                                                 v_degrees)
             pygame.draw.arc(self.grid, c, rect,
                             math.radians(start_angle),
                             math.radians(stop_angle))
 
-        x1, y1 = self.xh, self.yh + n
-        x2, y2 = self.xh, self.yh - n
+        # x1, y1 = self.xh, self.yh + n
+        # x2, y2 = self.xh, self.yh - n
         alpha = 90 / 4
 
-        degree_h = self.point_degree(self.xh, self.yh)
-        degree_v = self.point_degree(self.xv, self.yv)
-        degree = 360 - degree_h
+        print("degree_h", h_degrees)  # 90  90
+        print("degree_v", v_degrees)  #  0  180
+        start_angle, stop_angle = self.get_start_stop_angles(h_degrees,
+                                                             v_degrees)
 
-        print("start1", (mid_x + (self.straal_h - n) * math.cos(math.radians(degree)),
-                         mid_y - (self.straal_v - n) * math.sin(math.radians(degree))))
-        print("start2", (mid_x + (self.straal_h + n) * math.cos(math.radians(degree)),
-                         mid_y - (self.straal_v + n) * math.sin(math.radians(degree))))
+        if start_angle > stop_angle:
+            stop_angle += 360
 
-        # if degree_h == 90 and degree_v == 0:
-        while degree <= 360 - degree_v:
+        degree = start_angle
+        print("start_angle", start_angle)
+        print("stop_angle", stop_angle)
+
+        # if max(h_degrees, v_degrees) == v_degrees:
+        #     x1, y1 = self.xv + n, self.yv
+        #     x2, y2 = self.xv - n, self.yv
+        x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
+        y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
+        x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
+        y2 = mid_y - (self.straal_v - n) * math.sin(math.radians(degree))
+        # exit()
+        print("x1, y1", (x1, y1))
+        print("x2, y2", (x2, y2))
+
+        # if degree_h == 270 and degree_v == 0:
+        #     print("HIER")
+        #     print("h", degree_h)
+        #     print("v", degree_v)
+        #     exit()
+
+        while degree <= stop_angle:
             print((x1, y1), degree)
             print((x2, y2), degree)
             print()
+            # exit()
 
             pygame.draw.line(self.grid, (25, 25, 25), (x1, y1), (x2, y2))
 
             degree += alpha
+            print("DEGREE", degree)
             x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
             y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
             x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
             y2 = mid_y - (self.straal_v - n) * math.sin(math.radians(degree))
-
-        # elif degree_h == 90 and degree_v == 180:
-        # elif degree_h == 270 and degree_v == 0:
-        # elif degree_h == 270 and degree_v == 180
 
     def middelpunten(self):
         middelpunt1 = (self.xh, self.yv)
@@ -89,10 +111,7 @@ class Rails:
 
         return middelpunt1, straal_x, straal_y
 
-    def start_stop_degrees(self):
-        h_degrees = self.point_degree(self.xh, self.yh)
-        v_degrees = self.point_degree(self.xv, self.yv)
-
+    def get_start_stop_angles(self, h_degrees, v_degrees):
         if h_degrees == v_degrees:
             return h_degrees, v_degrees
 
@@ -151,6 +170,8 @@ if __name__ == "__main__":
     # points = [((100, 10), (120, 60))]
     # points = [((100, 10), (80, 60))]
     # points = [((50, 50), (80, 30))]
+    # points = [((50, 50), (20, 30))]
+    # points = [((50, 10), (80, 30))]
     loop = True
     rs = []
     clock = pygame.time.Clock()
