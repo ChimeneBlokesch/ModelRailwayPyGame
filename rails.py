@@ -92,8 +92,39 @@ class Rails:
         if h_degrees == v_degrees:
             return h_degrees, v_degrees
 
-        start_angle = max(h_degrees, v_degrees) - min(h_degrees, v_degrees)
-        stop_angle = min(h_degrees, v_degrees)
+        # if h_degrees > v_degrees:
+        #     start_angle = max(h_degrees, v_degrees) - min(h_degrees, v_degrees)
+        #     stop_angle = min(h_degrees, v_degrees)
+        # else:
+        #     start_angle = max(h_degrees, v_degrees)
+        #     stop_angle = min(h_degrees, v_degrees) + max(h_degrees, v_degrees)
+
+        # voor 0   -> 90  start = 270 end = 0       start = 360 - max   end = min
+        # voor 180 -> 270 start = 90  end = 180     start = 360 - max   end = min
+        # voor 270 -> 0   start = 0   end = 90      start = min         end = 360 - max
+        # voor 90 -> 180  start = 180 end = 270     start = max         end = 360 - min
+        # start_angle = 360 - max(h_degrees, v_degrees)  # 360 - max
+        # stop_angle = min(h_degrees, v_degrees)  # min
+
+        # start_angle = 180
+        # stop_angle = 270
+        degrees = [h_degrees, v_degrees]
+
+        if 0 in degrees and 90 in degrees:
+            start_angle = 270
+            stop_angle = 0
+        elif 90 in degrees and 180 in degrees:
+            start_angle = 180
+            stop_angle = 270
+        elif 180 in degrees and 270 in degrees:
+            start_angle = 90
+            stop_angle = 180
+        elif 270 in degrees and 0 in degrees:
+            start_angle = 0
+            stop_angle = 90
+
+
+
 
         # if a > b:
         #     start_angle = min(a, b) + max(a, b)  # 180 + 270 = 450
@@ -137,6 +168,27 @@ class Rails:
         # right
         return 0
 
+    def richting(self, x, y):
+        """
+        Geeft aan of (x, y) boven, beneden, links of rechts is tov.
+        het middelpunt.
+        """
+        if x == self.middelpunt[0]:
+            if y == self.middelpunt[1] - self.straal_h:
+                # top
+                return "t"
+            if y == self.middelpunt[1] - self.straal_v:
+                # bottom
+                return "b"
+
+        if y == self.middelpunt[1]:
+            if x == self.middelpunt[0] - self.straal_h:
+                # left
+                return "l"
+            if x == self.middelpunt[0] + self.straal_h:
+                # right
+                return "r"
+
     def hoek(self, lr, ud):
         x = self.middelpunt[0]
         y = self.middelpunt[1]
@@ -175,7 +227,8 @@ if __name__ == "__main__":
     points = [((50, 50), (80, 30)), ((80, 30), (50, 50)), ((50, 10), (20, 30)),
               ((100, 10), (80, 60)), ((80, 60), (100, 10)), ((100, 10), (120, 60))]
     # points = [((100, 10), (120, 60))]
-    points = [((100, 10), (80, 60))]
+    # points = [((100, 10), (80, 60))]
+    # points = [((50, 50), (80, 30))]
     loop = True
     rs = []
     clock = pygame.time.Clock()
