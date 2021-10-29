@@ -18,14 +18,11 @@ class Rails:
         return x, y
 
     def draw(self, c):
-        rect = pygame.Rect(*self.middelpunt,
-                           4 * self.straal_v, 4 * self.straal_h)
-        rect = [*self.middelpunt, 4 * self.straal_v, 4 * self.straal_h]
+        rect = [*self.middelpunt, 4 * self.straal_h, 4 * self.straal_v]
         start_angle, stop_angle = self.start_stop_degrees()
-        a = pygame.draw.arc(self.grid, c, rect,
-                            math.radians(start_angle),
-                            math.radians(stop_angle))
-        print(a)
+        pygame.draw.arc(self.grid, c, rect,
+                        math.radians(start_angle),
+                        math.radians(stop_angle))
 
     def middelpunten(self):
         middelpunt1 = (self.xh, self.yv)
@@ -81,15 +78,26 @@ if __name__ == "__main__":
     pygame.display.set_caption("Rails")
     screen.fill((255, 255, 255))
 
-    points = [((50, 50), (80, 30)), ((80, 30), (50, 50)), ((50, 10), (20, 30)),
-              ((100, 10), (80, 60)), ((80, 60), (100, 10)), ((100, 10), (120, 60))]
+    points = [((50, 50), (80, 30)), ((80, 30), (50, 50)),
+              ((50, 10), (20, 30)),
+              ((100, 10), (80, 60)), ((80, 60), (100, 10)),
+              ((100, 10), (120, 60))]
+    points = [((50, 50), (80, 30)),
+              ((50, 10), (80, 30)),
+              ((50, 10), (20, 30)),
+              ((50, 50), (20, 30))]
+    points = [((100, 110), (120, 60)),
+              ((100, 10), (120, 60)),
+              ((100, 10), (80, 60)),
+              ((100, 110), (80, 60))]
     # points = [((100, 10), (120, 60))]
     # points = [((100, 10), (80, 60))]
     # points = [((50, 50), (80, 30))]
     loop = True
     rs = []
     clock = pygame.time.Clock()
-    colors = [(0, 0, 0), (250, 0, 0), (0, 250, 0), (0, 0, 250), (125, 0, 0), (0, 125, 0), (0, 0, 125)]
+    colors = [(0, 0, 0), (250, 0, 0), (0, 250, 0), (0, 0, 250), (125, 0, 0),
+              (0, 125, 0), (0, 0, 125)]
 
     for p1, p2 in points:
         r = Rails(screen, *p1, *p2)
@@ -101,11 +109,9 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 loop = False
 
-
         [r.draw(colors[i]) for i, r in enumerate(rs)]
         pygame.display.flip()
         # pygame.display.update()
         clock.tick(60)
-
 
     pygame.quit()
