@@ -14,9 +14,6 @@ class Rails:
         self.xv = xv
         self.yv = yv
         self.middelpunt, self.straal_h, self.straal_v = self.middelpunten()
-        print("middelpunt", self.middelpunt)
-        print("straal_h", self.straal_h)
-        print("straal_v", self.straal_v)
 
     def coord(self, x, y):
         return x, y
@@ -26,6 +23,7 @@ class Rails:
 
     def show_coordinate_system(self):
         step = 50
+
         for w in range(step, self.grid.get_size()[0], step):
             text_surface = FONT.render(str(w), True, (0, 0, 0))
             self.grid.blit(text_surface, (w, 2))
@@ -36,19 +34,16 @@ class Rails:
 
     def draw(self, c):
         n = 10
-        colors = [(0, 255, 0), (0, 0, 255)]
 
         h_degrees = self.point_degree(self.xh, self.yh)
         v_degrees = self.point_degree(self.xv, self.yv)
 
-        for idx, i in enumerate([n, -n]):
+        for i in [n, -n]:
             mid_x, mid_y = self.middelpunt
             rect = [mid_x - self.straal_h - i,
                     mid_y - self.straal_v - i,
                     2 * self.straal_h + 2 * i,
                     2 * self.straal_v + 2 * i]
-            # pygame.draw.rect(self.grid, colors[idx], rect)
-            # print(rect)
 
             start_angle, stop_angle = self.get_start_stop_angles(h_degrees,
                                                                  v_degrees)
@@ -56,12 +51,8 @@ class Rails:
                             math.radians(start_angle),
                             math.radians(stop_angle))
 
-        # x1, y1 = self.xh, self.yh + n
-        # x2, y2 = self.xh, self.yh - n
         alpha = 90 / 4
 
-        print("degree_h", h_degrees)  # 90  90
-        print("degree_v", v_degrees)  #  0  180
         start_angle, stop_angle = self.get_start_stop_angles(h_degrees,
                                                              v_degrees)
 
@@ -69,36 +60,15 @@ class Rails:
             stop_angle += 360
 
         degree = start_angle
-        print("start_angle", start_angle)
-        print("stop_angle", stop_angle)
-
-        # if max(h_degrees, v_degrees) == v_degrees:
-        #     x1, y1 = self.xv + n, self.yv
-        #     x2, y2 = self.xv - n, self.yv
         x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
         y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
         x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
         y2 = mid_y - (self.straal_v - n) * math.sin(math.radians(degree))
-        # exit()
-        print("x1, y1", (x1, y1))
-        print("x2, y2", (x2, y2))
-
-        # if degree_h == 270 and degree_v == 0:
-        #     print("HIER")
-        #     print("h", degree_h)
-        #     print("v", degree_v)
-        #     exit()
 
         while degree <= stop_angle:
-            print((x1, y1), degree)
-            print((x2, y2), degree)
-            print()
-            # exit()
-
             pygame.draw.line(self.grid, (25, 25, 25), (x1, y1), (x2, y2))
 
             degree += alpha
-            print("DEGREE", degree)
             x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
             y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
             x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
