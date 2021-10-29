@@ -1,3 +1,4 @@
+from rails import Rails
 from train import Train
 import pygame
 
@@ -12,6 +13,7 @@ class Grid:
         self.screen = screen
         self.grid = pygame.Surface(self.screen.get_size())
         self.trains = []
+        self.rails = []
         self.treinen_db = treinen_db
         self.pos = pos
 
@@ -20,6 +22,7 @@ class Grid:
         self.grid.fill(GREEN)
         self.show_coordinate_system()
         [train.draw() for train in self.trains]
+        [rails.draw() for rails in self.rails]
 
     def show_coordinate_system(self):
         step = 50
@@ -34,3 +37,8 @@ class Grid:
     def add_train(self, start_x, start_y, angle, filename):
         train = Train(self, start_x, start_y, angle, filename)
         self.trains.append(train)
+
+    def add_rails(self, x1, y1, x2, y2):
+        rails = Rails(self.grid, x1, y1, x2, y2)
+        # rails.draw()
+        self.rails.append(rails)

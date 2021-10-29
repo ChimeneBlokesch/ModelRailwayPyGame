@@ -26,7 +26,7 @@ class Commands:
 
     def draw(self):
         self.field = pygame.Rect(0, 0, self.height, self.width)
-        pygame.draw.rect(self.screen, (0, 0, 0), self.field, width=1)
+        # pygame.draw.rect(self.screen, (0, 0, 0), self.field, width=1)
         color = COLOR_ACTIVE if self.active else COLOR_INACTIVE
         surface = pygame.Surface(self.field.size)
         surface.fill(color)
@@ -74,6 +74,8 @@ class Commands:
         elif command == ["quit"]:
             pygame.quit()
             return False
+        elif command[0] == "add" and command[1] == "rails":
+            output, succes = self.add_rails(command[2:])
 
         if succes:
             self.old_commands.append(self.command)
@@ -86,10 +88,6 @@ class Commands:
         return True
 
     def add_train(self, args):
-        if len(args) != ...:
-            # TODO
-            ...
-
         try:
             x = int(args[0])
             y = int(args[1])
@@ -100,6 +98,18 @@ class Commands:
         except ValueError:
             return "The arguments of this command are invalid.", False
         except TypeError:
-            return "Not the right amount of arguments.", False
+            return "Not the right type of the arguments.", False
         except FileNotFoundError:
             return "Train doesn't exists.", False
+        except IndexError:
+            return "Not the right amount of arguments.", False
+
+    def add_rails(self, command):
+        try:
+            command = [int(c) for c in command]
+            self.grid.add_rails(*command)
+            return "Added rail", True
+        except ValueError:
+            return "The arguments of this command are invalid.", False
+        except TypeError:
+            return "Not the right amount of arguments.", False

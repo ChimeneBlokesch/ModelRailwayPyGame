@@ -32,7 +32,7 @@ class Rails:
             text_surface = FONT.render(str(h), True, (0, 0, 0))
             self.grid.blit(text_surface, (2, h))
 
-    def draw(self, c):
+    def draw(self, c=(0, 0, 0)):
         n = 10
 
         h_degrees = self.point_degree(self.xh, self.yh)

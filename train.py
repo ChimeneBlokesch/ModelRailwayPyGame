@@ -22,7 +22,11 @@ class Train:
     def draw(self):
         # pygame.draw.rect(self.screen, self.color, (self.x, self.y, -40, -10),
         #                  width=10)
-        train = pygame.image.load(self.filename)
+        try:
+            train = pygame.image.load(self.filename)
+        except FileNotFoundError:
+            return
+
         size = train.get_size()
         width = size[1] * HEIGHT / size[0]
         train = pygame.transform.smoothscale(train, (HEIGHT, width))
