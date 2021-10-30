@@ -32,47 +32,17 @@ class Rails:
             text_surface = FONT.render(str(h), True, (0, 0, 0))
             self.grid.blit(text_surface, (2, h))
 
-    def draw(self, c=(0, 0, 0)):
+    def draw(self):
         n = 10
 
         h_degrees = self.point_degree(self.xh, self.yh)
         v_degrees = self.point_degree(self.xv, self.yv)
+        angle1, angle2 = self.get_start_stop_angles(h_degrees,
+                                                    v_degrees)
 
-        for i in [n, -n]:
-            mid_x, mid_y = self.middelpunt
-            rect = [mid_x - self.straal_h - i,
-                    mid_y - self.straal_v - i,
-                    2 * self.straal_h + 2 * i,
-                    2 * self.straal_v + 2 * i]
-
-            start_angle, stop_angle = self.get_start_stop_angles(h_degrees,
-                                                                 v_degrees)
-            pygame.draw.arc(self.grid, c, rect,
-                            math.radians(start_angle),
-                            math.radians(stop_angle))
-
-        alpha = 90 / 4
-
-        start_angle, stop_angle = self.get_start_stop_angles(h_degrees,
-                                                             v_degrees)
-
-        if start_angle > stop_angle:
-            stop_angle += 360
-
-        degree = start_angle
-        x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
-        y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
-        x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
-        y2 = mid_y - (self.straal_v - n) * math.sin(math.radians(degree))
-
-        while degree <= stop_angle:
-            pygame.draw.line(self.grid, (25, 25, 25), (x1, y1), (x2, y2))
-
-            degree += alpha
-            x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
-            y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
-            x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
-            y2 = mid_y - (self.straal_v - n) * math.sin(math.radians(degree))
+        # self.draw_background(angle1, angle2, n)
+        self.draw_omtrek_rails(angle1, angle2, n)
+        self.draw_lines_between_rails(angle1, angle2, n)
 
     def middelpunten(self):
         middelpunt1 = (self.xh, self.yv)
@@ -118,6 +88,50 @@ class Rails:
         # right
         return 0
 
+    def draw_omtrek_rails(self, start_angle, stop_angle, n):
+        for i in [n, -n]:
+            rect = [self.middelpunt[0] - self.straal_h - i,
+                    self.middelpunt[1] - self.straal_v - i,
+                    2 * self.straal_h + 2 * i,
+                    2 * self.straal_v + 2 * i]
+
+            pygame.draw.arc(self.grid, (0, 0, 0), rect,
+                            math.radians(start_angle),
+                            math.radians(stop_angle))
+
+    def draw_lines_between_rails(self, start_angle, stop_angle, n):
+        mid_x, mid_y = self.middelpunt
+        alpha = 90 / 4
+
+        if start_angle > stop_angle:
+            stop_angle += 360
+
+        degree = start_angle
+        x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
+        y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
+        x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
+        y2 = mid_y - (self.straal_v - n) * math.sin(math.radians(degree))
+
+        while degree <= stop_angle:
+            pygame.draw.line(self.grid, (130, 130, 130), (x1, y1), (x2, y2))
+
+            degree += alpha
+            x1 = mid_x + (self.straal_h + n) * math.cos(math.radians(degree))
+            y1 = mid_y - (self.straal_v + n) * math.sin(math.radians(degree))
+            x2 = mid_x + (self.straal_h - n) * math.cos(math.radians(degree))
+            y2 = mid_y - (self.straal_v - n) * math.sin(math.radians(degree))
+
+    def draw_background(self, start_angle, stop_angle, n):
+          # draw background
+        if start_angle > stop_angle:
+            stop_angle += 360
+
+        rect = [self.middelpunt[0] - self.straal_h - n,
+                self.middelpunt[1] - self.straal_v - n,
+                2 * self.straal_h + 2 * n,
+                2 * self.straal_v + 2 * n]
+        pygame.draw.arc(self.grid, (200, 200, 200), rect, start_angle, stop_angle, width=2 * n)
+
 
 # Only used for testing:
 if __name__ == "__main__":
@@ -145,8 +159,8 @@ if __name__ == "__main__":
     loop = True
     rs = []
     clock = pygame.time.Clock()
-    colors = [(0, 0, 0), (250, 0, 0), (0, 250, 0), (0, 0, 250), (125, 0, 0),
-              (0, 125, 0), (0, 0, 125)]
+    # colors = [(0, 0, 0), (250, 0, 0), (0, 250, 0), (0, 0, 250), (125, 0, 0),
+    #           (0, 125, 0), (0, 0, 125)]
 
     for p1, p2 in points:
         r = Rails(screen, *p1, *p2)
@@ -160,7 +174,7 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 loop = False
 
-        [r.draw(colors[i]) for i, r in enumerate(rs)]
+        [r.draw() for r in rs]
         pygame.display.flip()
         # pygame.display.update()
         clock.tick(60)
