@@ -139,7 +139,8 @@ class Rails:
                 2 * self.straal_h + 2 * self.n,
                 2 * self.straal_v + 2 * self.n]
         pygame.draw.arc(self.surface, (200, 200, 200, 15), rect,
-                        start_angle, stop_angle, width=2 * self.n)
+                        math.radians(start_angle), math.radians(stop_angle),
+                        width=2 * self.n)
 
 
 # Only used for testing:
@@ -164,7 +165,7 @@ if __name__ == "__main__":
     # points = [((100, 10), (80, 60))]
     # points = [((50, 50), (80, 30))]
     # points = [((50, 50), (20, 30))]
-    # points = [((50, 10), (80, 30))]
+    points = [((50, 10), (80, 30))]
     loop = True
     rs = []
     clock = pygame.time.Clock()
