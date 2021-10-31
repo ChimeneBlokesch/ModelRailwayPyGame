@@ -1,23 +1,23 @@
 import pygame
 
 from bocht import Bocht
+from recht import Recht
 
+BOCHT = 0
+RECHT = 1
 
 pygame.init()
 FONT = pygame.font.Font(None, 15)
 
 
 class Rails:
-    def __init__(self, grid, x1, y1, x2, y2):
+    def __init__(self, grid, type_rails, x1, y1, x2, y2):
         self.grid = grid
-        self.rails = self.new_rails(x1, y1, x2, y2)
+        self.rails = self.new_rails(type_rails, x1, y1, x2, y2)
 
-    def new_rails(self, x1, y1, x2, y2):
-        if x1 == x2:
-            return
-
-        if y1 == y2:
-            return
+    def new_rails(self, type_rails, x1, y1, x2, y2):
+        if type_rails == RECHT:
+            return Recht(x1, y1, x2, y2)
 
         return Bocht(x1, y1, x2, y2)
 
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     #           (0, 125, 0), (0, 0, 125)]
 
     for p1, p2 in points:
-        r = Rails(screen, *p1, *p2)
+        r = Rails(screen, RECHT, *p1, *p2)
         rs.append(r)
 
     while loop:
