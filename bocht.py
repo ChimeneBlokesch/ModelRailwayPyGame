@@ -165,7 +165,7 @@ if __name__ == "__main__":
     #           (0, 125, 0), (0, 0, 125)]
 
     for p1, p2 in points:
-        r = Bocht(screen, *p1, *p2)
+        r = Bocht(*p1, *p2)
         r.middelpunten()
         rs.append(r)
 
@@ -174,7 +174,9 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 loop = False
 
-        [r.draw() for r in rs]
+        for r in rs:
+            r.draw()
+            screen.blit(r.surface, (r.x, r.y))
         pygame.display.flip()
         # pygame.display.update()
         clock.tick(60)
