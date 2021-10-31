@@ -1,13 +1,20 @@
 import pygame
 import math
 
+COLOR_RAILS = (130, 130, 130, 255)
+COLOR_BETWEEN_RAILS = (0, 0, 0, 255)
+COLOR_BACKGROUND = (200, 200, 200, 15)
+
 
 pygame.init()
 FONT = pygame.font.Font(None, 15)
 
 
 class Bocht:
-    def __init__(self, xh, yh, xv, yv):
+    def __init__(self, xh, yh, xv, yv,
+                 background_color=COLOR_BACKGROUND,
+                 rails_color=COLOR_RAILS,
+                 between_color=COLOR_BETWEEN_RAILS):
         self.xh = xh
         self.yh = yh
         self.xv = xv
@@ -20,6 +27,10 @@ class Bocht:
         self.height = 2 * self.straal_v + 2 * self.n
         self.surface = pygame.Surface((self.width, self.height),
                                       pygame.SRCALPHA)
+
+        self.background_color = background_color
+        self.rails_color = rails_color
+        self.between_color = between_color
 
     def draw(self):
         h_degrees = self.point_degree(self.xh, self.yh)
@@ -81,7 +92,7 @@ class Bocht:
                     2 * self.straal_h + 2 * i,
                     2 * self.straal_v + 2 * i]
 
-            pygame.draw.arc(self.surface, (0, 0, 0, 255), rect,
+            pygame.draw.arc(self.surface, COLOR_BETWEEN_RAILS, rect,
                             math.radians(start_angle),
                             math.radians(stop_angle))
 
@@ -99,7 +110,7 @@ class Bocht:
         y2 = mid_y - (self.straal_v - self.n) * math.sin(math.radians(degree))
 
         while degree <= stop_angle:
-            pygame.draw.line(self.surface, (130, 130, 130, 255),
+            pygame.draw.line(self.surface, COLOR_RAILS,
                              (x1 - self.x, y1 - self.y),
                              (x2 - self.x, y2 - self.y))
 
@@ -119,7 +130,7 @@ class Bocht:
                 self.middelpunt[1] - self.straal_v - self.n - self.y,
                 2 * self.straal_h + 2 * self.n,
                 2 * self.straal_v + 2 * self.n]
-        pygame.draw.arc(self.surface, (200, 200, 200, 15), rect,
+        pygame.draw.arc(self.surface, COLOR_BACKGROUND, rect,
                         math.radians(start_angle), math.radians(stop_angle),
                         width=2 * self.n)
 

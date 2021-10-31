@@ -7,7 +7,10 @@ COLOR_BACKGROUND = (200, 200, 200, 15)
 
 
 class Recht:
-    def __init__(self, x1, y1, x2, y2):
+    def __init__(self, x1, y1, x2, y2,
+                 background_color=COLOR_BACKGROUND,
+                 rails_color=COLOR_RAILS,
+                 between_color=COLOR_BETWEEN_RAILS):
         self.n = 10
         self.x1, self.y1, self.x2, self.y2 = self.sort_points(x1, y1, x2, y2)
         self.vector_line, self.points = self.get_vector_n()
@@ -25,9 +28,12 @@ class Recht:
         max_y = max(points_y)
         width = max_x - self.x + 1
         height = max_y - self.y + 1
+        self.background_color = background_color
+        self.rails_color = rails_color
+        self.between_color = between_color
         self.surface = pygame.Surface((width, height),
                                       pygame.SRCALPHA)
-        self.surface.fill(COLOR_BACKGROUND)
+        self.surface.fill(self.background_color)
 
     def sort_points(self, x1, y1, x2, y2):
         if x1 < x2 or (x1 == x2 and y1 < y2):
@@ -110,8 +116,8 @@ class Recht:
         x2, y2 = self.point(self.points[1])
         x3, y3 = self.point(self.points[2])
         x4, y4 = self.point(self.points[3])
-        pygame.draw.line(self.surface, COLOR_RAILS, (x1, y1), (x2, y2))
-        pygame.draw.line(self.surface, COLOR_RAILS, (x3, y3), (x4, y4))
+        pygame.draw.line(self.surface, self.rails_color, (x1, y1), (x2, y2))
+        pygame.draw.line(self.surface, self.rails_color, (x3, y3), (x4, y4))
         # print("dist", self.dist(x1, y1, x2, y2))
         vector_line = (self.x2 - self.x1, self.y2 - self.y1)
         length_line = self.dist(x1, y1, x2, y2)
@@ -125,11 +131,11 @@ class Recht:
             # print((x3 + vector[0], y3 - vector[1]))
             # exit()
             pygame.draw.line(self.surface,
-                             COLOR_BETWEEN_RAILS,
+                             self.between_color,
                              (x1 + vector[0], y1 + vector[1]),
                              (x3 + vector[0], y3 + vector[1]))
 
-        pygame.draw.line(self.surface, COLOR_BETWEEN_RAILS,
+        pygame.draw.line(self.surface, self.between_color,
                          (x2, y2), (x4, y4))
 
         # pygame.draw.line(self.surface, (0, 0, 255), (x1, y1), (x3, y3))
