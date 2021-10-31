@@ -1,5 +1,6 @@
 import math
 import pygame
+import numpy as np
 
 COLOR_RAILS = (130, 130, 130, 255)
 COLOR_BETWEEN_RAILS = (0, 0, 0, 255)
@@ -13,7 +14,7 @@ class Recht:
                  between_color=COLOR_BETWEEN_RAILS):
         self.n = 10
         self.x1, self.y1, self.x2, self.y2 = self.sort_points(x1, y1, x2, y2)
-        self.vector_line, self.points = self.get_vector_n()
+        self.vector_line, self.vector_n, self.points = self.get_vector_n()
         print("vector", self.vector_line)
         [print("point", x) for x in self.points]
         # print("1", (self.x1, self.y1))
@@ -33,7 +34,7 @@ class Recht:
         self.between_color = between_color
         self.surface = pygame.Surface((width, height),
                                       pygame.SRCALPHA)
-        self.surface.fill(self.background_color)
+        # self.surface.fill(self.background_color)
 
     def sort_points(self, x1, y1, x2, y2):
         if x1 < x2 or (x1 == x2 and y1 < y2):
@@ -71,7 +72,7 @@ class Recht:
         # points.append((self.x1 + n[0], self.y1 + n[1]))
         # points.append((self.x1 - n[0], self.y1 - n[1]))
         # [print(p) for p in points]
-        return vector_l, points
+        return vector_l, n, points
 
 
 
@@ -108,6 +109,13 @@ class Recht:
     def point(self, p):
         return p[0] - self.x, p[1] - self.y
 
+    def arc_between_vectors(self, v1, v2):
+        teller = np.dot(v1, v2)
+        length1 = math.sqrt(v1[0] ** 2 + v1[1] ** 2)
+        length2 = math.sqrt(v2[0] ** 2 + v2[1] ** 2)
+        noemer = length1 * length2
+        return math.degrees(math.acos(teller / noemer))
+
     def draw(self):
         pygame.draw.line(self.surface, (255, 0, 255),
                          self.point((self.x1, self.y1)),
@@ -116,30 +124,34 @@ class Recht:
         x2, y2 = self.point(self.points[1])
         x3, y3 = self.point(self.points[2])
         x4, y4 = self.point(self.points[3])
-        pygame.draw.line(self.surface, self.rails_color, (x1, y1), (x2, y2))
-        pygame.draw.line(self.surface, self.rails_color, (x3, y3), (x4, y4))
-        # print("dist", self.dist(x1, y1, x2, y2))
-        vector_line = (self.x2 - self.x1, self.y2 - self.y1)
-        length_line = self.dist(x1, y1, x2, y2)
-        vector_line = (vector_line[0] / length_line,
-                       vector_line[1] / length_line)
+        width = 2 * self.n
+        height = self.dist(x1, y1, x2, y2)
+        surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        surface.fill(self.background_color)
+        pygame.draw.line(surface, self.rails_color, (0, 0), (0, height))
+        pygame.draw.line(surface, self.rails_color,
+                         (width - 1, 0),
+                         (width - 1, height - 1))
+        for i in range(0, math.floor(height), 15):
+            pygame.draw.line(surface, self.between_color,
+                             (0, i),
+                             (width - 1, i))
 
-        for i in range(0, math.floor(length_line), 15):
-            vector = tuple(x * i for x in vector_line)
-            # print("vector", vector)
-            # print((x1 + vector[0], y1 - vector[1]))
-            # print((x3 + vector[0], y3 - vector[1]))
-            # exit()
-            pygame.draw.line(self.surface,
-                             self.between_color,
-                             (x1 + vector[0], y1 + vector[1]),
-                             (x3 + vector[0], y3 + vector[1]))
+        pygame.draw.line(surface, self.between_color,
+                         (0, height - 1),
+                         (width - 1, height - 1))
 
-        pygame.draw.line(self.surface, self.between_color,
-                         (x2, y2), (x4, y4))
+        angle = 90 - self.arc_between_vectors(self.vector_line, (1, 0))
+        print('angle', angle)
+        print('self.y1', self.y1)
+        print('self.y2', self.y2)
 
-        # pygame.draw.line(self.surface, (0, 0, 255), (x1, y1), (x3, y3))
-        # pygame.draw.line(self.surface, (0, 0, 255), (x2, y2), (x4, y4))
+        if self.y1 > self.y2:
+            angle = 360 - angle
+
+        print('angle2', angle)
+        surface = pygame.transform.rotate(surface, angle)
+        self.surface.blit(surface, (0, 0))
 
 
 # Only for testing
@@ -151,7 +163,7 @@ if __name__ == "__main__":
     r5 = Recht(30, 20, 70, 80)
     r6 = Recht(30, 30, 80, 30)
     r7 = Recht(30, 80, 30, 30)
-    r = [r6]
+    r = [r7]
     loop = True
 
     screen = pygame.display.set_mode([1000, 600])
