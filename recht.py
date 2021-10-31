@@ -13,9 +13,16 @@ class Recht:
         # print("2", (self.x2, self.y2))
         # self.x, self.y = self.position()
         # print("position", (self.x, self.y))
-        self.surface = pygame.Surface((600, 100))
+        points_x = [x for x, _ in self.points]
+        points_y = [y for _, y in self.points]
+        self.x = min(points_x)
+        self.y = min(points_y)
+        max_x = max(points_x)
+        max_y = max(points_y)
+        width = max_x - self.x
+        height = max_y - self.y
+        self.surface = pygame.Surface((width, height))
         self.surface.fill((255, 0, 255))
-        self.x, self.y = (450, 200)
 
     def sort_points(self, x1, y1, x2, y2):
         if x1 < x2 or (x1 == x2 and y1 < y2):
@@ -87,17 +94,20 @@ class Recht:
         # sin(alpha) = ag / ae
         ag = math.sin(alpha) * ae
 
+    def point(self, p):
+        return p[0] - self.x, p[1] - self.y
+
     def draw(self):
         pygame.draw.line(self.surface, (0, 0, 0),
-                         (self.x1, self.y1),
-                         (self.x2, self.y2))
-        x1, y1 = self.points[0]
-        x2, y2 = self.points[1]
-        x3, y3 = self.points[2]
-        x4, y4 = self.points[3]
+                         self.point((self.x1, self.y1)),
+                         self.point((self.x2, self.y2)))
+        x1, y1 = self.point(self.points[0])
+        x2, y2 = self.point(self.points[1])
+        x3, y3 = self.point(self.points[2])
+        x4, y4 = self.point(self.points[3])
         pygame.draw.line(self.surface, (0, 0, 255), (x1, y1), (x2, y2))
         pygame.draw.line(self.surface, (0, 0, 255), (x3, y3), (x4, y4))
-        print("dist", self.dist(x1, y1, x2, y2))
+        # print("dist", self.dist(x1, y1, x2, y2))
         vector_line = (self.x2 - self.x1, self.y2 - self.y1)
         length_line = self.dist(x1, y1, x2, y2)
         vector_line = (vector_line[0] / length_line,
@@ -105,9 +115,9 @@ class Recht:
 
         for i in range(0, math.floor(length_line), 15):
             vector = tuple(x * i for x in vector_line)
-            print("vector", vector)
-            print((x1 + vector[0], y1 - vector[1]))
-            print((x3 + vector[0], y3 - vector[1]))
+            # print("vector", vector)
+            # print((x1 + vector[0], y1 - vector[1]))
+            # print((x3 + vector[0], y3 - vector[1]))
             # exit()
             pygame.draw.line(self.surface, (0, 0, 255),
                              (x1 + vector[0], y1 + vector[1]),
@@ -122,10 +132,10 @@ class Recht:
 # Only for testing
 if __name__ == "__main__":
     r1 = Recht(10, 90, 40, 10)
-    # r2 = Recht(1, 1, 4, 9)
-    # r3 = Recht(4, 1, 1, 9)
-    # r4 = Recht(4, 9, 1, 1)
-    # r3 = Recht(3, 2, 7, 8)
+    r2 = Recht(10, 10, 40, 90)
+    r3 = Recht(40, 10, 10, 90)
+    r4 = Recht(40, 90, 10, 10)
+    r5 = Recht(30, 20, 70, 80)
     r = [r1]
     loop = True
 
