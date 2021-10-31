@@ -19,10 +19,10 @@ class Recht:
         self.y = min(points_y)
         max_x = max(points_x)
         max_y = max(points_y)
-        width = max_x - self.x
-        height = max_y - self.y
+        width = max_x - self.x + 1
+        height = max_y - self.y + 1
         self.surface = pygame.Surface((width, height))
-        self.surface.fill((255, 0, 255))
+        self.surface.fill((255, 255, 255))
 
     def sort_points(self, x1, y1, x2, y2):
         if x1 < x2 or (x1 == x2 and y1 < y2):
@@ -105,8 +105,8 @@ class Recht:
         x2, y2 = self.point(self.points[1])
         x3, y3 = self.point(self.points[2])
         x4, y4 = self.point(self.points[3])
-        pygame.draw.line(self.surface, (0, 0, 255), (x1, y1), (x2, y2))
-        pygame.draw.line(self.surface, (0, 0, 255), (x3, y3), (x4, y4))
+        pygame.draw.line(self.surface, (0, 0, 0), (x1, y1), (x2, y2))
+        pygame.draw.line(self.surface, (0, 0, 0), (x3, y3), (x4, y4))
         # print("dist", self.dist(x1, y1, x2, y2))
         vector_line = (self.x2 - self.x1, self.y2 - self.y1)
         length_line = self.dist(x1, y1, x2, y2)
@@ -119,11 +119,11 @@ class Recht:
             # print((x1 + vector[0], y1 - vector[1]))
             # print((x3 + vector[0], y3 - vector[1]))
             # exit()
-            pygame.draw.line(self.surface, (0, 0, 255),
+            pygame.draw.line(self.surface, (0, 0, 0),
                              (x1 + vector[0], y1 + vector[1]),
                              (x3 + vector[0], y3 + vector[1]))
 
-        pygame.draw.line(self.surface, (0, 0, 255), (x2, y2), (x4, y4))
+        pygame.draw.line(self.surface, (0, 0, 0), (x2, y2), (x4, y4))
 
         # pygame.draw.line(self.surface, (0, 0, 255), (x1, y1), (x3, y3))
         # pygame.draw.line(self.surface, (0, 0, 255), (x2, y2), (x4, y4))
@@ -136,7 +136,9 @@ if __name__ == "__main__":
     r3 = Recht(40, 10, 10, 90)
     r4 = Recht(40, 90, 10, 10)
     r5 = Recht(30, 20, 70, 80)
-    r = [r1]
+    r6 = Recht(30, 30, 80, 30)
+    r7 = Recht(30, 80, 30, 30)
+    r = [r6]
     loop = True
 
     screen = pygame.display.set_mode([1000, 600])
