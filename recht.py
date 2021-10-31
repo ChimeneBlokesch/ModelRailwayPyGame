@@ -6,11 +6,16 @@ class Recht:
     def __init__(self, x1, y1, x2, y2):
         self.n = 10
         self.x1, self.y1, self.x2, self.y2 = self.sort_points(x1, y1, x2, y2)
-        print("1", (self.x1, self.y1))
-        print("2", (self.x2, self.y2))
+        self.vector_line, self.points = self.get_vector_n()
+        print("vector", self.vector_line)
+        [print("point", x) for x in self.points]
+        # print("1", (self.x1, self.y1))
+        # print("2", (self.x2, self.y2))
         # self.x, self.y = self.position()
         # print("position", (self.x, self.y))
-        # self.surface = pygame.Surface()
+        self.surface = pygame.Surface((600, 100))
+        self.surface.fill((255, 0, 255))
+        self.x, self.y = (450, 200)
 
     def sort_points(self, x1, y1, x2, y2):
         if x1 < x2 or (x1 == x2 and y1 < y2):
@@ -26,6 +31,35 @@ class Recht:
 
     def dist(self, x1, y1, x2, y2):
         return math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2)
+
+    def length_vector(self, x, y):
+        return math.sqrt(x ** 2 + y ** 2)
+
+    def get_vector_n(self):  # line_points
+        points = []
+        line = (self.x2 - self.x1, self.y2 - self.y1)
+        print("l", line)
+        lengte_lijn = self.length_vector(*line)
+        vector_l = tuple(x / lengte_lijn for x in line)
+        n = (self.n * -vector_l[1], self.n * vector_l[0])
+        points.append((self.x1 + n[0], self.y1 + n[1]))
+        points.append((self.x2 + n[0], self.y2 + n[1]))
+        points.append((self.x1 - n[0], self.y1 - n[1]))
+        points.append((self.x2 - n[0], self.y2 - n[1]))
+
+        # Dit misschien voor andere lijnen
+        # n = (l[1], l[0])
+        # n = tuple(a * x for x in n)
+        # points.append((self.x1 + n[0], self.y1 + n[1]))
+        # points.append((self.x1 - n[0], self.y1 - n[1]))
+        # [print(p) for p in points]
+        return vector_l, points
+
+
+
+
+
+
 
     def calculate(self):
         ...
@@ -54,13 +88,60 @@ class Recht:
         ag = math.sin(alpha) * ae
 
     def draw(self):
-        ...
+        pygame.draw.line(self.surface, (0, 0, 0),
+                         (self.x1, self.y1),
+                         (self.x2, self.y2))
+        x1, y1 = self.points[0]
+        x2, y2 = self.points[1]
+        x3, y3 = self.points[2]
+        x4, y4 = self.points[3]
+        pygame.draw.line(self.surface, (0, 0, 255), (x1, y1), (x2, y2))
+        pygame.draw.line(self.surface, (0, 0, 255), (x3, y3), (x4, y4))
+        print("dist", self.dist(x1, y1, x2, y2))
+        vector_line = (self.x2 - self.x1, self.y2 - self.y1)
+        length_line = self.dist(x1, y1, x2, y2)
+        vector_line = (vector_line[0] / length_line,
+                       vector_line[1] / length_line)
+
+        for i in range(0, math.floor(length_line), 15):
+            vector = tuple(x * i for x in vector_line)
+            print("vector", vector)
+            print((x1 + vector[0], y1 - vector[1]))
+            print((x3 + vector[0], y3 - vector[1]))
+            # exit()
+            pygame.draw.line(self.surface, (0, 0, 255),
+                             (x1 + vector[0], y1 + vector[1]),
+                             (x3 + vector[0], y3 + vector[1]))
+
+        pygame.draw.line(self.surface, (0, 0, 255), (x2, y2), (x4, y4))
+
+        # pygame.draw.line(self.surface, (0, 0, 255), (x1, y1), (x3, y3))
+        # pygame.draw.line(self.surface, (0, 0, 255), (x2, y2), (x4, y4))
 
 
 # Only for testing
 if __name__ == "__main__":
-    r1 = Recht(1, 9, 4, 1)
-    r2 = Recht(1, 1, 4, 9)
-    r3 = Recht(4, 1, 1, 9)
-    r4 = Recht(4, 9, 1, 1)
+    r1 = Recht(10, 90, 40, 10)
+    # r2 = Recht(1, 1, 4, 9)
+    # r3 = Recht(4, 1, 1, 9)
+    # r4 = Recht(4, 9, 1, 1)
     # r3 = Recht(3, 2, 7, 8)
+    r = [r1]
+    loop = True
+
+    screen = pygame.display.set_mode([1000, 600])
+    pygame.display.set_caption("Rails")
+    screen.fill((255, 255, 255))
+
+    while loop:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                loop = False
+
+        for x in r:
+            x.draw()
+            screen.blit(x.surface, (x.x, x.y))
+
+        pygame.display.flip()
+
+    pygame.quit()
