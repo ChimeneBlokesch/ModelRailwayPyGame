@@ -1,6 +1,6 @@
 import pygame
 
-HEIGHT = 100
+WIDTH = 100
 
 LENGTH = 20
 
@@ -28,10 +28,10 @@ class Train:
             return
 
         size = train.get_size()
-        width = size[1] * HEIGHT / size[0]
-        train = pygame.transform.smoothscale(train, (HEIGHT, width))
+        height = size[1] * WIDTH / size[0]
+        train = pygame.transform.smoothscale(train, (WIDTH, height))
         train = pygame.transform.rotate(train, self.angle)
-        self.grid.grid.blit(train, (self.x, self.y - 0.5 * width))
+        self.grid.grid.blit(train, (self.x, self.y - 0.5 * height))
 
     def koppel_voor(self, trein_ervoor):
         self.trein_ervoor = trein_ervoor
