@@ -38,7 +38,7 @@ class Grid:
         train = Train(self, start_x, start_y, angle, filename)
         self.trains.append(train)
 
-    def add_rails(self, x1, y1, x2, y2):
-        rails = Rails(self.grid, x1, y1, x2, y2)
+    def add_rails(self, type_rails, x1, y1, x2, y2):
+        rails = Rails(self.grid, type_rails, x1, y1, x2, y2)
         # rails.draw()
         self.rails.append(rails)

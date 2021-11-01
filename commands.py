@@ -1,5 +1,6 @@
 import pygame
 from database_treinen import PATH
+from rails import RECHT, BOCHT
 
 pygame.init()
 FONT = pygame.font.Font(None, 30)
@@ -74,8 +75,8 @@ class Commands:
         elif command == ["quit"]:
             pygame.quit()
             return False
-        elif command[0] == "add" and command[1] == "rails":
-            output, succes = self.add_rails(command[2:])
+        elif command[0] == "add" and command[1] in ["recht", "bocht"]:
+            output, succes = self.add_rails(command[1], command[2:])
 
         if succes:
             self.old_commands.append(self.command)
@@ -104,10 +105,17 @@ class Commands:
         except IndexError:
             return "Not the right amount of arguments.", False
 
-    def add_rails(self, command):
+    def add_rails(self, type_rails, command):
+        if type_rails == "recht":
+            type_rails = RECHT
+        elif type_rails == "bocht":
+            type_rails = BOCHT
+        else:
+            return
+
         try:
             command = [int(c) for c in command]
-            self.grid.add_rails(*command)
+            self.grid.add_rails(type_rails, *command)
             return "Added rail", True
         except ValueError:
             return "The arguments of this command are invalid.", False
