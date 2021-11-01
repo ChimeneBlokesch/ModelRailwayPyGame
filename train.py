@@ -31,8 +31,7 @@ class Train:
         width = size[1] * HEIGHT / size[0]
         train = pygame.transform.smoothscale(train, (HEIGHT, width))
         train = pygame.transform.rotate(train, self.angle)
-        # rect.move((self.x, self.y))
-        self.grid.grid.blit(train, (self.x, self.y))
+        self.grid.grid.blit(train, (self.x, self.y - 0.5 * width))
 
     def koppel_voor(self, trein_ervoor):
         self.trein_ervoor = trein_ervoor
