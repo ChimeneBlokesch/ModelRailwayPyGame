@@ -21,8 +21,8 @@ class Grid:
         self.screen.blit(self.grid, self.pos)
         self.grid.fill(GREEN)
         self.show_coordinate_system()
-        [train.draw() for train in self.trains]
         [rails.draw() for rails in self.rails]
+        [train.draw() for train in self.trains]
 
     def show_coordinate_system(self):
         step = 50
