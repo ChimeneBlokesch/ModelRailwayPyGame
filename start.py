@@ -20,7 +20,14 @@ if __name__ == "__main__":
     command_field.draw()
     treinen_db = Treinen()
     grid = Grid(screen, (0, command_field.field.size[1]), treinen_db)
-    grid.add_train(50, 50, 0, "Treinen/VIRM_kop_links.png")
+    grid.add_train(250, 50, 0, "Treinen/VIRM_kop_links.png")
+    grid.add_rails(0, 150, 50, 100, 100)
+    grid.add_rails(1, 150, 50, 750, 50)
+    grid.add_rails(0, 150, 150, 100, 100)
+    grid.add_rails(1, 150, 150, 750, 150)
+    grid.add_rails(0, 750, 50, 800, 100)
+    grid.add_rails(0, 750, 150, 800, 100)
+
     command_field.grid = grid
 
     while loop:
