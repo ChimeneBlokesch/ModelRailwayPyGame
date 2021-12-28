@@ -45,6 +45,10 @@ class OBJ:
                 mtl[values[0]] = values[1]
                 imagefile = os.path.join(dirname, mtl['map_Kd'])
                 mtl['texture_Kd'] = cls.loadTexture(imagefile)
+            elif values[0] == 'map_d':
+                mtl[values[0]] = values[1]
+                imagefile = os.path.join(dirname, mtl['map_d'])
+                mtl['texture_d'] = cls.loadTexture(imagefile)
             else:
                 mtl[values[0]] = list(map(float, values[1:]))
 
@@ -102,6 +106,7 @@ class OBJ:
                         norms.append(int(w[2]))
                     else:
                         norms.append(0)
+
                 self.faces.append((face, norms, texcoords, material))
 
         if self.generate_on_init:
@@ -120,6 +125,8 @@ class OBJ:
             if 'texture_Kd' in mtl:
                 # use diffuse texmap
                 GL.glBindTexture(GL.GL_TEXTURE_2D, mtl['texture_Kd'])
+            elif 'texture_d' in mtl:
+                GL.glBindTexture(GL.GL_TEXTURE_2D, mtl['texture_d'])
             else:
                 # just use diffuse colour
                 GL.glColor(*mtl['Kd'])
@@ -132,6 +139,7 @@ class OBJ:
 
                 if texture_coords[i] > 0:
                     GL.glTexCoord2fv(self.texcoords[texture_coords[i] - 1])
+
                 GL.glVertex3fv(self.vertices[vertices[i] - 1])
 
             GL.glEnd()
