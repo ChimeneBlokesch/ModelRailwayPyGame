@@ -1,2 +1,7 @@
-Treinen
-__pycache__
+*.pyc
+*.mtl
+*.obj
+*.png
+*.blend
+*.txt
+*.json
