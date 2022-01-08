@@ -82,18 +82,65 @@ class Trein:
                                   self.rails.ref_punt_prev)
             print("rotation voor", self.rotate_pos.x)
             rotation = angle+self.rails.rotation-self.start_angle
-            self.rotate(x=rotation)
-            print("rotation", rotation)
-            print("angle between", self.ref_punt, "and",
+
+            # Om vooruit te komen, wordt de rotation verhoogd.
+            rotation += self.speed
+            self.rotate(y=rotation)  # y is het zeker
+            print("rotation na", rotation)
+            print("angle between ref punt", self.ref_punt, "and prev ref punt",
                   self.rails.ref_punt_prev, "is", angle)
             # Er moet misschien rekening met het min teken gehouden worden.
+            width = abs(
+                self.rails.ref_punt_prev[0] - self.rails.ref_punt_next[0])
+            height = abs(
+                self.rails.ref_punt_prev[1] - self.rails.ref_punt_next[1])
+
+            if self.rails.rotation in [90, 135, 180, 225]:
+                if max(self.rails.ref_punt_prev[1], self.rails.ref_punt_next[1]
+                       ) == self.rails.ref_punt_next:
+                    pos_x = self.rails.ref_punt_next[0]
+                    pos_y = self.rails.ref_punt_prev[1]
+                else:
+                    pos_x = self.rails.ref_punt_next[1]
+                    pos_y = self.rails.ref_punt_prev[0]
+            else:
+                if min(self.rails.ref_punt_prev[1], self.rails.ref_punt_next[1]
+                       ) == self.rails.ref_punt_next:
+                    pos_x = self.rails.ref_punt_next[0]
+                    pos_y = self.rails.ref_punt_prev[1]
+                else:
+                    pos_x = self.rails.ref_punt_next[1]
+                    pos_y = self.rails.ref_punt_prev[0]
+
+            # pos_x = max(
+            #     self.rails.ref_punt_prev[0], self.rails.ref_punt_next[0])
+            # pos_y = max(
+            #     self.rails.ref_punt_prev[1], self.rails.ref_punt_next[1])
 
             # iets met angle doen om nieuwe positie te berekenen
-            self.ref_punt = (round(math.cos(rotation) + self.speed, 2),
-                             round(math.sin(rotation) + self.speed, 2))
+            self.ref_punt = (round(width * math.cos(rotation) + pos_x, 2),
+                             round(height * math.sin(rotation) + pos_y, 2))
+            # self.ref_punt = (round(self.speed * math.cos(rotation), 2),
+            #                  round(self.speed * math.sin(rotation), 2))
+            # self.ref_punt = (round(math.cos(rotation) + self.speed, 2),
+            #                  round(math.sin(rotation) + self.speed, 2))
+            # print("new ref punt", self.ref_punt)
 
-            self.move(x=self.speed + self.pos.x,
-                      y=self.speed + self.pos.y)
+            angle = angle_between((self.pos[0], self.pos[1]),
+                                  self.rails.ref_punt_prev)
+            rotation = angle+self.rails.rotation-self.start_angle
+
+            # Om vooruit te komen, wordt de rotation verhoogd.
+            rotation += self.speed
+
+            self.move(x=round(width * math.cos(rotation) + pos_x, 2),
+                      y=round(height * math.sin(rotation) + pos_y, 2))
+
+            # self.move(x=self.speed + self.pos.x,
+            #           y=self.speed + self.pos.y)
+            print("new2 ref punt", self.ref_punt)
+            print("new pos", self.pos)
+            print()
 
     def change_speed(self, speed):
         self.speed = speed
