@@ -40,9 +40,9 @@ class Trein:
     def get_ref_punt(self):
         return self.pos.x, self.pos.y
 
-    def rijden(self, rails):
-        # Gaat impliciet naar een ander rails
-        self.rails = rails
+    def rijden(self, rails=None):
+        if rails is not None:
+            self.rails = rails
         # iets met rails waardoor de nieuwe positie en rotatie bepaald
         # kan worden.
         # rails.angle en rails.rotation
