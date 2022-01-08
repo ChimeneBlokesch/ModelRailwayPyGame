@@ -64,13 +64,10 @@ class Rails:
                            self.is_flipped)
 
     def move(self, x=None, y=None, z=None):
-        print("voor", self.pos)
         x = x + self.start_x if x is not None else self.pos.x
         y = y + self.start_y if y is not None else self.pos.y
         z = z + self.start_z if z is not None else self.pos.z
 
-        print(self.ref_punt_prev)
-        print(self.ref_punt_next)
         if self.ref_punt_prev:
             self.ref_punt_prev = (x - self.pos.x + self.ref_punt_prev[0],
                                   y - self.pos.y + self.ref_punt_prev[1])
@@ -79,9 +76,6 @@ class Rails:
                                   y - self.pos.y + self.ref_punt_next[1])
 
         self.pos = Punt(x, y, z)
-        print("na", self.pos)
-        print(self.ref_punt_prev)
-        print(self.ref_punt_next)
 
     def rotate(self, z):
         self.rotation = z
@@ -94,16 +88,6 @@ class Rails:
 
     def get_ref_punten(self):
         return self.ref_punt_prev, self.ref_punt_next
-
-    def update_ref_punt(self, new_x, new_y):
-        if self.ref_punt_next:
-            old_x, old_y = self.ref_punt_next
-            self.ref_punt_next = (new_x + old_x - self.start_x,
-                                  new_y + old_y - self.start_y)
-        if self.ref_punt_prev:
-            old_x, old_y = self.ref_punt_prev
-            self.ref_punt_prev = (new_x + old_x - self.start_x,
-                                  new_y + old_y - self.start_y)
 
     def set_next(self, rails):
         self.next = rails

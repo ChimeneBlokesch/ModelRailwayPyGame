@@ -67,22 +67,7 @@ class Grid:
 
     def rijden(self):
         for trein in self.treinen:
-            ref_punt_trein = trein.get_ref_punt()
-            ref_punten = [punt
-                          for r in self.rails for punt in r.get_ref_punten()
-                          if punt]
-            trein.rijden(ref_punt_trein in ref_punten)
-
-            # for rails in self.rails:
-            #     ref_punt_rails = rails.get_ref_punten()
-
-            #     if ref_punt_trein in ref_punt_rails:
-            #         # Switch to another rails
-            #         trein.rijden(rails)
-            #         break
-            # else:
-            #     # Continue on same rails
-            #     trein.rijden()
+            trein.rijden()
 
         self.render()
 

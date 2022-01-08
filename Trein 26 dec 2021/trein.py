@@ -43,15 +43,11 @@ class Trein:
         # return self.pos.x, self.pos.y
         return self.ref_punt
 
-    def rijden(self, rails=None):
-        print("RIJDEN", rails, self.rails)
-        if rails:
-            # Go to next
+    def rijden(self):
+        if self.rails.ref_punt_next == self.ref_punt:
+            print("Next rails")
             self.rails = self.rails.next
-        # if rails is not None:
-        #     self.rails = rails
-        # else:
-        #     rails = self.rails
+
         # iets met rails waardoor de nieuwe positie en rotatie bepaald
         # kan worden.
         # rails.angle en rails.rotation
