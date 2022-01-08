@@ -100,7 +100,8 @@ class Bocht(Rails):
     def __init__(self, angle, is_flipped=False,
                  pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
                  rotation=0, next_rails=None, prev_rails=None,
-                 ref_punt_next=None, ref_punt_prev=None, ref_punt_own=None):
+                 ref_punt_next=None, ref_punt_prev=None, ref_punt_own=None,
+                 own_next_prev=NEXT):
         super().__init__(pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
                          rotation=rotation,
                          next_rails=next_rails, prev_rails=prev_rails,
@@ -109,9 +110,11 @@ class Bocht(Rails):
 
         self.angle = angle
         self.is_flipped = is_flipped
+        self.own_next_prev = own_next_prev
+        self.ref_punt_own = ref_punt_own
         self.image_file = self.image_file(RAILS_BOCHT)
         self.object = self.create_object()
-        self.ref_punt_own = ref_punt_own
+
         self.type = RAILS_BOCHT
 
     def create_object(self):
@@ -125,6 +128,7 @@ class Bocht(Rails):
         elif next_prev == PREV:
             self.ref_punt_prev = self.ref_punt_own
 
+        self.own_next_prev = next_prev
         self.pos = Punt(self.start_x, self.start_y, self.start_z)
 
         return Object3D(RAILS_OBJ_PATH(RAILS_BOCHT, self.angle), swap_yz=True)
@@ -133,10 +137,22 @@ class Bocht(Rails):
         self.is_flipped = True
 
     def add_ref_punt(self, ref_punt):
-        if self.ref_punt_own == self.ref_punt_next:
+        print(self.ref_punt_own, self.get_ref_punten(),
+              ref_punt, self.own_next_prev)
+        if self.own_next_prev == NEXT:
             self.ref_punt_prev = ref_punt
-        elif self.ref_punt_own == self.ref_punt_prev:
+        elif self.own_next_prev == PREV:
             self.ref_punt_next = ref_punt
+        else:
+            print("VERKEERD!!!")
+
+    def move(self, x, y):
+        super().move(x=x, y=y)
+
+        if self.own_next_prev == NEXT:
+            self.ref_punt_own = self.ref_punt_next
+        elif self.own_next_prev == PREV:
+            self.ref_punt_own = self.ref_punt_prev
 
 
 class Recht(Rails):

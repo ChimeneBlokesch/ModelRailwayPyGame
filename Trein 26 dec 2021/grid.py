@@ -75,8 +75,8 @@ class Grid:
         rails_prev.set_next(rails_next)
         rails_next.set_prev(rails_prev)
 
-        rails_prev.add_ref_punt(rails_next.get_ref_punt())
-        rails_next.add_ref_punt(rails_prev.get_ref_punt())
+        rails_prev.add_ref_punt(rails_next.ref_punt_own)
+        rails_next.add_ref_punt(rails_prev.ref_punt_own)
 
     def connect_rails(self, rails_prev, rails_next):
         rails_prev.set_next(rails_next)

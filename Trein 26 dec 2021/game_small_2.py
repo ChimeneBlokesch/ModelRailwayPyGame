@@ -86,12 +86,12 @@ grid.connect_rails(rails3, rails2)
 grid.connect_45_bochten(rails2, rails1)
 grid.connect_rails(rails1, rails12)
 
-
 grid.generate()
 virm1.rails = rails3
 virm1.change_speed(-0.05)
-print("rails3", rails3.get_ref_punten())
+print("rails1", rails1.get_ref_punten())
 print("rails2", rails2.get_ref_punten())
+print("rails3", rails3.get_ref_punten())
 clock = pygame.time.Clock()
 
 GL.glMatrixMode(GL.GL_PROJECTION)
