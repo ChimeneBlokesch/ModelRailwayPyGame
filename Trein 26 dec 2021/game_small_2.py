@@ -3,6 +3,7 @@ import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 from grid import Grid
+from lijnen import create_line
 
 pygame.init()
 viewport = (800, 600)
@@ -23,14 +24,14 @@ GL.glShadeModel(GL.GL_SMOOTH)
 
 grid = Grid()
 
-# Referentie punt voor deze rijdende trein is (0.25,y=-2.5)
-virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.25, -2.5)
+# Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
+virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
 virm1.rotate(x=90)
 # virm1.move(x=0.75, z=0.91)
 # x is horizontaal
 # y is verticaal
 # z is hoogte
-virm1.move(x=0.5, y=2.5, z=1)
+virm1.move(x=0.5, y=3.5, z=1)
 
 rails1 = grid.add_bocht(45, rotation=0)
 rails1.move(x=-4.5, y=-7)
@@ -38,10 +39,12 @@ rails1.move(x=-4.5, y=-7)
 rails2 = grid.add_bocht(45, rotation=45)
 rails2.move(x=0.5, y=-2)
 
-rails3 = grid.add_recht(is_horizontal=False)
+rails3 = grid.add_recht(is_horizontal=False, ref_punt_prev=(0.5, 2),
+                        ref_punt_next=(0.5, -2))
 rails3.move(x=0.5)
 
-rails4 = grid.add_recht(is_horizontal=False)
+rails4 = grid.add_recht(is_horizontal=False, ref_punt_prev=(0.5, 6),
+                        ref_punt_next=(0.5, 2))
 rails4.move(x=0.5, y=4)
 
 rails5 = grid.add_bocht(45, rotation=90)
@@ -56,10 +59,12 @@ rails7.move(x=-4.5, y=11)
 rails8 = grid.add_bocht(45, rotation=225)
 rails8.move(x=-9.5, y=6)
 
-rails9 = grid.add_recht(is_horizontal=False)
+rails9 = grid.add_recht(is_horizontal=False,
+                        ref_punt_prev=(-9.5, 2), ref_punt_next=(-9.5, 6))
 rails9.move(x=-9.5, y=4)
 
-rails10 = grid.add_recht(is_horizontal=False)
+rails10 = grid.add_recht(is_horizontal=False,
+                         ref_punt_prev=(-9.5, -2), ref_punt_next=(-9.5, 2))
 rails10.move(x=-9.5, y=0)
 
 rails11 = grid.add_bocht(45, rotation=270)
@@ -83,8 +88,10 @@ grid.connect_rails(rails1, rails12)
 
 
 grid.generate()
-
-
+virm1.rails = rails3
+virm1.change_speed(-0.05)
+print("rails3", rails3.get_ref_punten())
+print("rails2", rails2.get_ref_punten())
 clock = pygame.time.Clock()
 
 GL.glMatrixMode(GL.GL_PROJECTION)
@@ -146,6 +153,11 @@ while 1:
     GL.glRotate(rx, 0, 1, 0)
     GL.glRotate(ry, 1, 0, 0)
 
-    grid.render()
+    # grid.render()
+    grid.rijden()
+
+    virm1_x, virm1_y = virm1.get_ref_punt()
+    print(virm1.get_ref_punt())
+    create_line(virm1_x, virm1_y, 5, virm1_x, virm1_y, -5, (0.8, 0.3, 0.6))
 
     pygame.display.flip()
