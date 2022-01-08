@@ -137,14 +137,10 @@ class Bocht(Rails):
         self.is_flipped = True
 
     def add_ref_punt(self, ref_punt):
-        print(self.ref_punt_own, self.get_ref_punten(),
-              ref_punt, self.own_next_prev)
         if self.own_next_prev == NEXT:
             self.ref_punt_prev = ref_punt
         elif self.own_next_prev == PREV:
             self.ref_punt_next = ref_punt
-        else:
-            print("VERKEERD!!!")
 
     def move(self, x, y):
         super().move(x=x, y=y)
