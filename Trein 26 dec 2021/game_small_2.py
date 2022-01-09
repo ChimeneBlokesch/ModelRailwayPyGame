@@ -36,7 +36,6 @@ grid = Grid()
 
 loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 2)
 loco1.move(x=0.5, y=2, z=0.755)
-# loco1.rotate(z=90)
 loco1.change_speed(0.05)
 
 rails1 = grid.add_bocht(45, rotation=0)
@@ -94,11 +93,6 @@ grid.connect_rails(rails1, rails12)
 
 grid.generate()
 loco1.rails = rails3
-print("rails1", rails1.get_ref_punten())
-print("rails2", rails2.get_ref_punten())
-print("rails3", rails3.get_ref_punten())
-print("rails11", rails11.get_ref_punten())
-print("rails12", rails12.get_ref_punten())
 clock = pygame.time.Clock()
 
 GL.glMatrixMode(GL.GL_PROJECTION)
@@ -124,7 +118,6 @@ while 1:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
-                # zpos -= 1
                 zpos = max(1, zpos-1)
             elif event.button == 5:
                 zpos += 1
@@ -160,11 +153,10 @@ while 1:
     GL.glRotate(rx, 0, 1, 0)
     GL.glRotate(ry, 1, 0, 0)
 
-    # grid.render()
     grid.rijden()
 
     virm1_x, virm1_y = loco1.get_ref_punt()
-    print(loco1.get_ref_punt())
+    print("trein refpunt", loco1.get_ref_punt())
     create_line(virm1_x, virm1_y, 5, virm1_x, virm1_y, -5, (0.8, 0.3, 0.6))
     create_line(loco1.pos[0], loco1.pos[1], 5,
                 loco1.pos[0], loco1.pos[1], -5, (0.6, 0.6, 0.8))

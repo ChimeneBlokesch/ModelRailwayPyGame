@@ -82,12 +82,10 @@ class Grid:
         rails_prev.set_next(rails_next)
         rails_next.set_prev(rails_prev)
 
-        if rails_prev.type == RAILS_BOCHT:
-            if rails_prev.own_next_prev == NEXT and rails_prev.prev:
-                rails_prev.prev.next = rails_next
-            # elif rails_prev.own_next_prev == PREV and rails_prev.next:
-            #     rails_prev.next.next = rails_next
+        if rails_prev.type == RAILS_BOCHT and rails_prev.own_next_prev == NEXT \
+                and rails_prev.prev:
+            rails_prev.prev.next = rails_next
 
-        if rails_next.type == RAILS_BOCHT:
-            if rails_next.own_next_prev == PREV and rails_next.next:
-                rails_next.next.prev = rails_prev
+        if rails_next.type == RAILS_BOCHT and rails_next.own_next_prev == PREV \
+                and rails_next.next:
+            rails_next.next.prev = rails_prev

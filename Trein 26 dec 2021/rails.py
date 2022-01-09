@@ -170,9 +170,4 @@ class Recht(Rails):
         self.go_left_down = go_left_down
 
     def create_object(self):
-        # info = RAILS_DEFAULTS_BOCHT_45[self.rotation]
-        # self.rotation, self.start_x, self.start_y, self.start_z, \
-        #     self.is_flipped = info
-        # self.pos = Punt(self.start_x, self.start_y, self.start_z)
-
         return Object3D(RAILS_OBJ_PATH(RAILS_RECHT), swap_yz=True)

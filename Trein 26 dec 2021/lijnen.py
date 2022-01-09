@@ -1,12 +1,3 @@
-# class Lijn:
-#     def __init__(self, x,y,width,height):
-#         self.x = x
-#         self.y = y
-#         self.width=width
-#         self.height=height
-
-#     def generate(self):
-
 import OpenGL.GL as GL
 
 PURPLE = (0.752, 0.278, 0.960)
