@@ -55,9 +55,10 @@ def REF_PUNT_RECHT(is_horizontal, go_left_down):
 
 
 class Rails:
-    def __init__(self, pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS, rotation=0,
+    def __init__(self, name, pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS, rotation=0,
                  next_rails=None, prev_rails=None, ref_punt_next=None,
                  ref_punt_prev=None):
+        self.name = name
         self.start_x, self.start_y, self.start_z = (0, 0, 0)
         self.pos = Punt(pos_x, pos_y, pos_z)
         self.rotation = rotation
@@ -110,12 +111,12 @@ class Rails:
 
 
 class Bocht(Rails):
-    def __init__(self, angle, is_flipped=False,
+    def __init__(self, name, angle, is_flipped=False,
                  pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
                  rotation=0, next_rails=None, prev_rails=None,
                  ref_punt_next=None, ref_punt_prev=None, ref_punt_own=None,
                  own_next_prev=NEXT):
-        super().__init__(pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
+        super().__init__(name, pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
                          rotation=rotation,
                          next_rails=next_rails, prev_rails=prev_rails,
                          ref_punt_next=ref_punt_next,
@@ -166,12 +167,12 @@ class Bocht(Rails):
 
 
 class Recht(Rails):
-    def __init__(self, is_horizontal=True, go_left_down=False,
+    def __init__(self, name, is_horizontal=True, go_left_down=False,
                  pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
                  rotation=0, next_rails=None, prev_rails=None):
         ref_punt_prev, ref_punt_next = REF_PUNT_RECHT(
             is_horizontal, go_left_down)
-        super().__init__(pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
+        super().__init__(name, pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
                          rotation=rotation,
                          next_rails=next_rails, prev_rails=prev_rails,
                          ref_punt_next=ref_punt_next,

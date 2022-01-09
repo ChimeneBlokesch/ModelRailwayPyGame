@@ -43,9 +43,40 @@ class Trein:
         return self.ref_punt
 
     def rijden(self):
-        if afstand(*self.rails.ref_punt_next, *self.ref_punt) < 0.05:
+        if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
+                                      ref_punt) < 0.05:
             print("Next rails")
-            self.rails = self.rails.next
+            if not self.rails.next:
+                self.change_speed(-self.speed)
+
+            if self.rails.type == RAILS_BOCHT and \
+                    self.rails.next.type == RAILS_BOCHT and \
+                    self.rails.own_next_prev != self.rails.next.own_next_prev:
+                # These two rails belong to each so the other rails can be
+                # ignored.
+                if not self.rails.next.next:
+                    self.change_speed(-self.speed)
+                else:
+                    self.rails = self.rails.next.next
+            else:
+                self.rails = self.rails.next
+        elif self.speed > 0 and afstand(*self.rails.ref_punt_prev, *self.
+                                        ref_punt) < 0.05:
+            print("Prev rails")
+            if not self.rails.prev:
+                self.change_speed(-self.speed)
+
+            if self.rails.type == RAILS_BOCHT and \
+                    self.rails.prev.type == RAILS_BOCHT and \
+                    self.rails.own_next_prev != self.rails.prev.own_next_prev:
+                # These two rails belong to each so the other rails can be
+                # ignored.
+                if not self.rails.prev.prev:
+                    self.change_speed(-self.speed)
+                else:
+                    self.rails = self.rails.prev.prev
+            else:
+                self.rails = self.rails.prev
 
         # Depending on rails.angle the train rotates
         if self.rails.type == RAILS_RECHT:

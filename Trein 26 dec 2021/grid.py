@@ -40,11 +40,11 @@ class Grid:
         self.rails.append(new_rails)
         return new_rails
 
-    def add_bocht(self, angle, is_flipped=False,
+    def add_bocht(self, name, angle, is_flipped=False,
                   pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
                   rotation=0, next_rails=None, prev_rails=None,
                   ref_punt_next=None, ref_punt_prev=None):
-        new_rails = Bocht(angle, is_flipped=is_flipped, pos_x=pos_x,
+        new_rails = Bocht(name, angle, is_flipped=is_flipped, pos_x=pos_x,
                           pos_y=pos_y, pos_z=pos_z, rotation=rotation,
                           next_rails=next_rails, prev_rails=prev_rails,
                           ref_punt_next=ref_punt_next,
@@ -52,10 +52,10 @@ class Grid:
         self.rails.append(new_rails)
         return new_rails
 
-    def add_recht(self, is_horizontal=True, go_left_down=False,
+    def add_recht(self, name, is_horizontal=True, go_left_down=False,
                   pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
                   rotation=0, next_rails=None, prev_rails=None):
-        new_rails = Recht(is_horizontal, go_left_down=go_left_down,
+        new_rails = Recht(name, is_horizontal, go_left_down=go_left_down,
                           pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
                           rotation=rotation,
                           next_rails=next_rails, prev_rails=prev_rails)
@@ -78,11 +78,3 @@ class Grid:
     def connect_rails(self, rails_prev, rails_next):
         rails_prev.set_next(rails_next)
         rails_next.set_prev(rails_prev)
-
-        if rails_prev.type == RAILS_BOCHT and rails_prev.own_next_prev == NEXT \
-                and rails_prev.prev:
-            rails_prev.prev.next = rails_next
-
-        if rails_next.type == RAILS_BOCHT and rails_next.own_next_prev == PREV \
-                and rails_next.next:
-            rails_next.next.prev = rails_prev

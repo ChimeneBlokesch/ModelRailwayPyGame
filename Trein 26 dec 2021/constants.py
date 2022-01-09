@@ -36,3 +36,10 @@ def angle_vector(x, y):
 
 def afstand(x1, y1, x2, y2):
     return math.sqrt((x1 - x2)**2 + (y1-y2)**2)
+
+
+def print_rails_info(rails):
+    prev_name = rails.prev.name if rails.prev else None
+    next_name = rails.next.name if rails.next else None
+    print(rails.name, rails.get_ref_punten(),
+          prev_name, next_name)

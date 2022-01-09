@@ -2,6 +2,7 @@ import sys
 import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
+from constants import print_rails_info
 from grid import Grid
 from lijnen import create_line
 
@@ -34,57 +35,57 @@ grid = Grid()
 # virm1.move(x=0.5, y=3.5, z=1)
 # virm1.change_speed(0.05)
 
-loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 2)
+loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 1.95)
 loco1.move(x=0.5, y=2, z=0.755)
 loco1.rotate(x=90)
 loco1.change_speed(0.05)
 
-rails1 = grid.add_bocht(45, rotation=0)
+rails1 = grid.add_bocht("rails1", 45, rotation=0)
 rails1.move(x=-4.5, y=-7)
 
-rails2 = grid.add_bocht(45, rotation=45)
+rails2 = grid.add_bocht("rails2", 45, rotation=45)
 rails2.move(x=0.5, y=-2)
 
-rails3 = grid.add_recht(is_horizontal=False, go_left_down=True)
+rails3 = grid.add_recht("rails3", is_horizontal=False, go_left_down=True)
 rails3.move(x=0.5)
 
-rails4 = grid.add_recht(is_horizontal=False, go_left_down=True)
+rails4 = grid.add_recht("rails4", is_horizontal=False, go_left_down=True)
 rails4.move(x=0.5, y=4)
 
-rails5 = grid.add_bocht(45, rotation=90)
+rails5 = grid.add_bocht("rails5", 45, rotation=90)
 rails5.move(x=0.5, y=6)
 
-rails6 = grid.add_bocht(45, rotation=135)
+rails6 = grid.add_bocht("rails6", 45, rotation=135)
 rails6.move(x=-4.5, y=11)
 
-rails13 = grid.add_recht(go_left_down=False)
+rails13 = grid.add_recht("rails13", go_left_down=False)
 rails13.move(x=-6.5, y=11)
 
-rails14 = grid.add_recht(go_left_down=False)
+rails14 = grid.add_recht("rails14", go_left_down=False)
 rails14.move(x=-10.5, y=11)
 
-rails7 = grid.add_bocht(45, rotation=180)
+rails7 = grid.add_bocht("rails7", 45, rotation=180)
 rails7.move(x=-12.5, y=11)
 
-rails8 = grid.add_bocht(45, rotation=225)
+rails8 = grid.add_bocht("rails8", 45, rotation=225)
 rails8.move(x=-17.5, y=6)
 
-rails9 = grid.add_recht(is_horizontal=False)
+rails9 = grid.add_recht("rails9", is_horizontal=False)
 rails9.move(x=-17.5, y=4)
 
-rails10 = grid.add_recht(is_horizontal=False)
+rails10 = grid.add_recht("rails10", is_horizontal=False)
 rails10.move(x=-17.5, y=0)
 
-rails11 = grid.add_bocht(45, rotation=270)
+rails11 = grid.add_bocht("rails11", 45, rotation=270)
 rails11.move(x=-17.5, y=-2)
 
-rails12 = grid.add_bocht(45, rotation=315)
+rails12 = grid.add_bocht("rails12", 45, rotation=315)
 rails12.move(x=-12.5, y=-7)
 
-rails15 = grid.add_recht(go_left_down=True)
+rails15 = grid.add_recht("rails15", go_left_down=True)
 rails15.move(x=-10.5, y=-7)
 
-rails16 = grid.add_recht(go_left_down=True)
+rails16 = grid.add_recht("rails16", go_left_down=True)
 rails16.move(x=-6.5, y=-7)
 
 
@@ -104,6 +105,9 @@ grid.connect_45_bochten(rails2, rails1)
 grid.connect_rails(rails1, rails16)
 grid.connect_rails(rails16, rails15)
 grid.connect_rails(rails15, rails12)
+
+for r in grid.rails:
+    print_rails_info(r)
 
 grid.generate()
 loco1.rails = rails3
