@@ -50,7 +50,6 @@ class Trein:
         # Depending on rails.angle the train rotates
         if self.rails.type == RAILS_RECHT:
             # 0 of 180
-            self.rotate(x=self.rails.rotation-self.start_angle)
             old_x, old_y = self.ref_punt
             TEMP_SCALE = 100
             old_x *= TEMP_SCALE
@@ -66,9 +65,13 @@ class Trein:
             if self.rails.rotation == 0:
                 # Horizontal
                 self.move(x=direction + self.pos.x)
-                self.ref_punt = ((old_x + direction * TEMP_SCALE)
-                                 / TEMP_SCALE,
-                                 old_y / TEMP_SCALE)
+                # self.ref_punt = ((old_x + direction * TEMP_SCALE)
+                #                  / TEMP_SCALE,
+                #                  old_y / TEMP_SCALE)
+
+                self.ref_punt = (round((old_x+direction * TEMP_SCALE) /
+                                       TEMP_SCALE, 2),
+                                 round(old_y / TEMP_SCALE, 2))
             elif self.rails.rotation == 90:
                 # Vertical
                 self.move(y=direction + self.pos.y)

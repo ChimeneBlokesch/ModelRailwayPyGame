@@ -41,6 +41,19 @@ def RAILS_OBJ_PATH(type_rails, angle=None):
     return RAILS_MAP + name + ".obj"
 
 
+def REF_PUNT_RECHT(is_horizontal, go_left_down):
+    if is_horizontal and go_left_down:
+        return (2, 0), (-2, 0)
+
+    if is_horizontal:
+        return (-2, 0), (2, 0)
+
+    if go_left_down:
+        return (0, 2), (0, -2)
+
+    return (0, -2), (0, 2)
+
+
 class Rails:
     def __init__(self, pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS, rotation=0,
                  next_rails=None, prev_rails=None, ref_punt_next=None,
@@ -155,8 +168,9 @@ class Bocht(Rails):
 class Recht(Rails):
     def __init__(self, is_horizontal=True, go_left_down=False,
                  pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
-                 rotation=0, next_rails=None, prev_rails=None,
-                 ref_punt_next=None, ref_punt_prev=None):
+                 rotation=0, next_rails=None, prev_rails=None):
+        ref_punt_prev, ref_punt_next = REF_PUNT_RECHT(
+            is_horizontal, go_left_down)
         super().__init__(pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
                          rotation=rotation,
                          next_rails=next_rails, prev_rails=prev_rails,
