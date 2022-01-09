@@ -110,9 +110,9 @@ GL.glEnable(GL.GL_DEPTH_TEST)
 GL.glMatrixMode(GL.GL_MODELVIEW)
 
 
-rx, ry = (0, 0)
-tx, ty = (-1, -1)
-zpos = 5
+rx, ry = (0, -50)
+tx, ty = (0, 0)
+zpos = 15
 rotate = move = False
 
 
