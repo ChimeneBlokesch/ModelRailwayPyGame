@@ -126,8 +126,8 @@ class Trein:
                     pos_x = self.rails.ref_punt_next[0]
                     pos_y = self.rails.ref_punt_prev[1]
                 else:
-                    pos_x = self.rails.ref_punt_next[1]
-                    pos_y = self.rails.ref_punt_prev[0]
+                    pos_x = self.rails.ref_punt_prev[0]
+                    pos_y = self.rails.ref_punt_next[1]
             else:
                 print("else 1")
                 if min(self.rails.ref_punt_prev[1],
