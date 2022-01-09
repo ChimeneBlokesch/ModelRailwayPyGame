@@ -1,5 +1,5 @@
 from trein import Trein
-from rails import HOOGTE_RAILS, Rails, Bocht, Recht
+from rails import HOOGTE_RAILS, RAILS_BOCHT, Rails, Bocht, Recht, NEXT, PREV
 from ground import create_assenstelsel, create_grid, create_ground
 
 
@@ -81,3 +81,13 @@ class Grid:
     def connect_rails(self, rails_prev, rails_next):
         rails_prev.set_next(rails_next)
         rails_next.set_prev(rails_prev)
+
+        if rails_prev.type == RAILS_BOCHT:
+            if rails_prev.own_next_prev == NEXT and rails_prev.prev:
+                rails_prev.prev.next = rails_next
+            # elif rails_prev.own_next_prev == PREV and rails_prev.next:
+            #     rails_prev.next.next = rails_next
+
+        if rails_next.type == RAILS_BOCHT:
+            if rails_next.own_next_prev == PREV and rails_next.next:
+                rails_next.next.prev = rails_prev

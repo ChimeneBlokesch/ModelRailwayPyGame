@@ -34,6 +34,7 @@ grid = Grid()
 # virm1.move(x=0.5, y=3.5, z=1)
 # virm1.change_speed(0.05)
 
+# TODO:Change ref punt
 loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 0.5)
 loco1.move(x=0.5, y=2, z=0.755)
 # loco1.rotate(z=90)
@@ -97,6 +98,8 @@ loco1.rails = rails3
 print("rails1", rails1.get_ref_punten())
 print("rails2", rails2.get_ref_punten())
 print("rails3", rails3.get_ref_punten())
+print("rails11", rails11.get_ref_punten())
+print("rails12", rails12.get_ref_punten())
 clock = pygame.time.Clock()
 
 GL.glMatrixMode(GL.GL_PROJECTION)

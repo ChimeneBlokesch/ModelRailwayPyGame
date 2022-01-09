@@ -1,7 +1,7 @@
 import math
 from objparser import Object3D
 
-from constants import Punt, TREINEN_MAP, angle_between, angle_between_vectors, angle_vector
+from constants import Punt, TREINEN_MAP, afstand, angle_between, angle_between_vectors, angle_vector
 from rails import RAILS_BOCHT, RAILS_RECHT
 
 
@@ -44,7 +44,8 @@ class Trein:
         return self.ref_punt
 
     def rijden(self):
-        if self.rails.ref_punt_next == self.ref_punt:
+        # if self.rails.ref_punt_next == self.ref_punt:
+        if afstand(*self.rails.ref_punt_next, *self.ref_punt) < 0.05:
             print("Next rails")
             self.rails = self.rails.next
 
@@ -86,11 +87,12 @@ class Trein:
 
             # if angle > 180:
             #     angle = 360 - angle
+            print("ref punt rails", self.rails.ref_punt_next)
 
             print("rotation voor", self.rotate_pos.y)
 
             # Deze rotatie lijkt goed te gaan!
-            rotation = self.rotate_pos.y + self.speed
+            rotation = self.rotate_pos.y + 5 * self.speed
 
             # rotation = angle+self.rails.rotation-self.start_angle
 
@@ -126,8 +128,8 @@ class Trein:
                     pos_y = self.rails.ref_punt_prev[1]
                 else:
                     print("else2")
-                    pos_x = self.rails.ref_punt_next[1]
-                    pos_y = self.rails.ref_punt_prev[0]
+                    pos_x = self.rails.ref_punt_prev[0]
+                    pos_y = self.rails.ref_punt_next[1]
 
             print("pos_x", pos_x, "pos_y", pos_y)
             # pos_x = max(
