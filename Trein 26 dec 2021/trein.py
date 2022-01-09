@@ -44,7 +44,7 @@ class Trein:
 
     def rijden(self):
         if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
-                                      ref_punt) < 0.05:
+                                      ref_punt) < abs(self.speed):
             print("Next rails")
             if not self.rails.next:
                 self.change_speed(-self.speed)
@@ -61,7 +61,7 @@ class Trein:
             else:
                 self.rails = self.rails.next
         elif self.speed > 0 and afstand(*self.rails.ref_punt_prev, *self.
-                                        ref_punt) < 0.05:
+                                        ref_punt) < abs(self.speed):
             print("Prev rails")
             if not self.rails.prev:
                 self.change_speed(-self.speed)
