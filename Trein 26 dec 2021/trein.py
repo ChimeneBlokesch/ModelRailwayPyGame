@@ -47,15 +47,14 @@ class Trein:
                                       ref_punt) < abs(self.speed):
             print("Next rails")
             if not self.rails.next:
-                self.change_speed(-self.speed)
-
-            if self.rails.type == RAILS_BOCHT and \
+                self.change_speed(self.speed)
+            elif self.rails.type == RAILS_BOCHT and \
                     self.rails.next.type == RAILS_BOCHT and \
                     self.rails.own_next_prev != self.rails.next.own_next_prev:
                 # These two rails belong to each so the other rails can be
                 # ignored.
                 if not self.rails.next.next:
-                    self.change_speed(-self.speed)
+                    self.change_speed(self.speed)
                 else:
                     self.rails = self.rails.next.next
             else:
@@ -64,15 +63,14 @@ class Trein:
                                         ref_punt) < abs(self.speed):
             print("Prev rails")
             if not self.rails.prev:
-                self.change_speed(-self.speed)
-
-            if self.rails.type == RAILS_BOCHT and \
+                self.change_speed(self.speed)
+            elif self.rails.type == RAILS_BOCHT and \
                     self.rails.prev.type == RAILS_BOCHT and \
                     self.rails.own_next_prev != self.rails.prev.own_next_prev:
                 # These two rails belong to each so the other rails can be
                 # ignored.
                 if not self.rails.prev.prev:
-                    self.change_speed(-self.speed)
+                    self.change_speed(self.speed)
                 else:
                     self.rails = self.rails.prev.prev
             else:

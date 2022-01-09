@@ -109,6 +109,27 @@ grid.connect_rails(rails15, rails12)
 for r in grid.rails:
     print_rails_info(r)
 
+loco2 = grid.add_trein("Loco2", "lego_loco_kop.obj", 2, 2)
+loco2.move(x=2, y=2, z=0.755)
+loco2.rotate(x=90)
+loco2.change_speed(-0.05)
+
+rails_1 = grid.add_recht("rails_1",
+                         is_horizontal=False, go_left_down=True)
+rails_1.move(2, 6)
+
+rails_2 = grid.add_recht("rails_2",
+                         is_horizontal=False, go_left_down=True)
+rails_2.move(2, 2)
+
+rails_3 = grid.add_recht("rails_3",
+                         is_horizontal=False, go_left_down=True)
+rails_3.move(2, -2)
+
+grid.connect_rails(rails_1, rails_2)
+grid.connect_rails(rails_2, rails_3)
+loco2.rails = rails_2
+
 grid.generate()
 loco1.rails = rails3
 clock = pygame.time.Clock()
@@ -173,10 +194,11 @@ while 1:
 
     grid.rijden()
 
-    virm1_x, virm1_y = loco1.get_ref_punt()
-    print("trein refpunt", loco1.get_ref_punt())
-    create_line(virm1_x, virm1_y, 5, virm1_x, virm1_y, -5, (0.8, 0.3, 0.6))
-    create_line(loco1.pos[0], loco1.pos[1], 5,
-                loco1.pos[0], loco1.pos[1], -5, (0.6, 0.6, 0.8))
+    for t in grid.treinen:
+        trein_x, trein_y = t.get_ref_punt()
+        print(t.name, trein_x, trein_y)
+        create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
+        create_line(t.pos[0], t.pos[1], 5,
+                    t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
 
     pygame.display.flip()
