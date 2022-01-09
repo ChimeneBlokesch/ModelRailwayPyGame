@@ -1,7 +1,7 @@
 import math
 from objparser import Object3D
 
-from constants import Punt, TREINEN_MAP, afstand, angle_between, angle_between_vectors, angle_vector
+from constants import SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand, angle_between, angle_between_vectors, angle_vector
 from rails import RAILS_BOCHT, RAILS_RECHT
 
 
@@ -101,7 +101,7 @@ class Trein:
             print("rotation voor", self.rotate_pos.y)
 
             # Deze rotatie lijkt goed te gaan!
-            rotation = self.rotate_pos.y + 5 * self.speed
+            rotation = self.rotate_pos.y + SPEEDUP_BOCHT * self.speed
 
             # rotation = angle+self.rails.rotation-self.start_angle
 
