@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from collections import namedtuple
 
 TREINEN_MAP = "treinen/"
@@ -17,3 +18,14 @@ def angle_between(p1, p2):
     ang1 = np.arctan2(*p1[::-1])
     ang2 = np.arctan2(*p2[::-1])
     return np.rad2deg((ang1 - ang2) % (2 * np.pi))
+
+
+def angle_between_vectors(x1, y1, x2, y2):
+    teller = x1 * x2 + y1 * y2
+    noemer = math.sqrt((x1 ** 2 + y1 ** 2)) * math.sqrt((x2 ** 2 + y2 ** 2))
+
+    return math.degrees(math.acos(teller/noemer))
+
+
+def angle_vector(x, y):
+    return math.degrees(np.arctan2(x, y))

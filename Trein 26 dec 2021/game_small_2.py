@@ -25,13 +25,19 @@ GL.glShadeModel(GL.GL_SMOOTH)
 grid = Grid()
 
 # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
-virm1.rotate(x=90)
-# virm1.move(x=0.75, z=0.91)
-# x is horizontaal
-# y is verticaal
-# z is hoogte
-virm1.move(x=0.5, y=3.5, z=1)
+# virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
+# virm1.rotate(x=90)  # Nutteloos?
+# # virm1.move(x=0.75, z=0.91)
+# # x is horizontaal
+# # y is verticaal
+# # z is hoogte
+# virm1.move(x=0.5, y=3.5, z=1)
+# virm1.change_speed(0.05)
+
+loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 0.5)
+loco1.move(x=0.5, y=2, z=0.755)
+# loco1.rotate(z=90)
+loco1.change_speed(0.05)
 
 rails1 = grid.add_bocht(45, rotation=0)
 rails1.move(x=-4.5, y=-7)
@@ -87,8 +93,7 @@ grid.connect_45_bochten(rails2, rails1)
 grid.connect_rails(rails1, rails12)
 
 grid.generate()
-virm1.rails = rails3
-virm1.change_speed(-0.05)
+loco1.rails = rails3
 print("rails1", rails1.get_ref_punten())
 print("rails2", rails2.get_ref_punten())
 print("rails3", rails3.get_ref_punten())
@@ -156,8 +161,10 @@ while 1:
     # grid.render()
     grid.rijden()
 
-    virm1_x, virm1_y = virm1.get_ref_punt()
-    print(virm1.get_ref_punt())
+    virm1_x, virm1_y = loco1.get_ref_punt()
+    print(loco1.get_ref_punt())
     create_line(virm1_x, virm1_y, 5, virm1_x, virm1_y, -5, (0.8, 0.3, 0.6))
+    create_line(loco1.pos[0], loco1.pos[1], 5,
+                loco1.pos[0], loco1.pos[1], -5, (0.6, 0.6, 0.8))
 
     pygame.display.flip()

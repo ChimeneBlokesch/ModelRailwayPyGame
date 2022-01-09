@@ -113,12 +113,13 @@ class Bocht(Rails):
         self.own_next_prev = own_next_prev
         self.ref_punt_own = ref_punt_own
         self.image_file = self.image_file(RAILS_BOCHT)
+        self.relative_rotation = rotation
         self.object = self.create_object()
 
         self.type = RAILS_BOCHT
 
     def create_object(self):
-        info = RAILS_DEFAULTS_BOCHT_45[self.rotation]
+        info = RAILS_DEFAULTS_BOCHT_45[self.relative_rotation]
         self.rotation, self.start_x, self.start_y, self.start_z, \
             self.is_flipped, next_prev = info
         self.ref_punt_own = (0, 0)
