@@ -1,18 +1,9 @@
-#!/usr/bin/env python
-# Basic OBJ file viewer. needs objloader from:
-#  http://www.pygame.org/wiki/OBJFileLoader
-# LMB + move: rotate
-# RMB + move: pan
-# Scroll wheel: zoom in/out
 import sys
 import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
-from ground import create_ground
-from rails import RAILS_RECHT, Rails
-
-# IMPORT OBJECT LOADER
-from trein import Trein
+from grid import Grid
+from lijnen import create_line
 
 pygame.init()
 viewport = (800, 600)
@@ -20,25 +11,88 @@ hx = viewport[0]/2
 hy = viewport[1]/2
 srf = pygame.display.set_mode(viewport, pygame.OPENGL | pygame.DOUBLEBUF)
 
-# GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION,  (-40, 200, 100, 0.0))
-# GL.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, (0.2, 0.2, 0.2, 1.0))
-# GL.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, (0.5, 0.5, 0.5, 1.0))
-# GL.glEnable(GL.GL_LIGHT0)
-# GL.glEnable(GL.GL_LIGHTING)
+
 GL.glEnable(GL.GL_COLOR_MATERIAL)
 GL.glEnable(GL.GL_DEPTH_TEST)
 # most obj files expect to be smooth-shaded
 GL.glShadeModel(GL.GL_SMOOTH)
 
-# LOAD OBJECT AFTER PYGAME INIT
-# virm = Trein("VIRM3", "VIRM3.obj")
-# virm.generate()
 
-# rails1 = RailsObject(RAILS_RECHT)
-# rails1.move(y=100)
-# rails1.generate()
-create_ground()
+# virm2 = Trein("VIRM3_2", "VIRM3.obj")
+# virm2.generate()
 
+
+grid = Grid()
+
+# Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
+# virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
+# virm1.rotate(x=90)  # Nutteloos?
+# # virm1.move(x=0.75, z=0.91)
+# # x is horizontaal
+# # y is verticaal
+# # z is hoogte
+# virm1.move(x=0.5, y=3.5, z=1)
+# virm1.change_speed(0.05)
+
+loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 2)
+loco1.move(x=0.5, y=2, z=0.755)
+loco1.change_speed(0.05)
+
+rails1 = grid.add_bocht(45, rotation=0)
+rails1.move(x=-4.5, y=-7)
+
+rails2 = grid.add_bocht(45, rotation=45)
+rails2.move(x=0.5, y=-2)
+
+rails3 = grid.add_recht(is_horizontal=False, go_left_down=True,
+                        ref_punt_prev=(0, 2), ref_punt_next=(0, -2))
+rails3.move(x=0.5)
+
+rails4 = grid.add_recht(is_horizontal=False, go_left_down=True,
+                        ref_punt_prev=(0, 2), ref_punt_next=(0, -2))
+rails4.move(x=0.5, y=4)
+
+rails5 = grid.add_bocht(45, rotation=90)
+rails5.move(x=0.5, y=6)
+
+rails6 = grid.add_bocht(45, rotation=135)
+rails6.move(x=-4.5, y=11)
+
+rails7 = grid.add_bocht(45, rotation=180)
+rails7.move(x=-4.5, y=11)
+
+rails8 = grid.add_bocht(45, rotation=225)
+rails8.move(x=-9.5, y=6)
+
+rails9 = grid.add_recht(is_horizontal=False,
+                        ref_punt_prev=(0, -2), ref_punt_next=(0, 2))
+rails9.move(x=-9.5, y=4)
+
+rails10 = grid.add_recht(is_horizontal=False,
+                         ref_punt_prev=(0, -2), ref_punt_next=(0, 2))
+rails10.move(x=-9.5, y=0)
+
+rails11 = grid.add_bocht(45, rotation=270)
+rails11.move(x=-9.5, y=-2)
+
+rails12 = grid.add_bocht(45, rotation=315)
+rails12.move(x=-4.5, y=-7)
+
+grid.connect_45_bochten(rails12, rails11)
+grid.connect_rails(rails11, rails10)
+grid.connect_rails(rails10, rails9)
+grid.connect_rails(rails9, rails8)
+grid.connect_45_bochten(rails8, rails7)
+grid.connect_rails(rails7, rails6)
+grid.connect_45_bochten(rails6, rails5)
+grid.connect_rails(rails5, rails4)
+grid.connect_rails(rails4, rails3)
+grid.connect_rails(rails3, rails2)
+grid.connect_45_bochten(rails2, rails1)
+grid.connect_rails(rails1, rails12)
+
+grid.generate()
+loco1.rails = rails3
 clock = pygame.time.Clock()
 
 GL.glMatrixMode(GL.GL_PROJECTION)
@@ -48,44 +102,45 @@ GLU.gluPerspective(90.0, width/float(height), 1, 100.0)
 GL.glEnable(GL.GL_DEPTH_TEST)
 GL.glMatrixMode(GL.GL_MODELVIEW)
 
-rx, ry = (0, 0)
+
+rx, ry = (0, -50)
 tx, ty = (0, 0)
-zpos = 5
+zpos = 15
 rotate = move = False
+
 
 while 1:
     clock.tick(30)
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
             sys.exit()
-        elif e.type == pygame.KEYDOWN and e.key == pygame.K_ESCAPE:
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
-        elif e.type == pygame.MOUSEBUTTONDOWN:
-            if e.button == 4:
-                zpos -= 1
-                # zpos = max(1, zpos-1)
-            elif e.button == 5:
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 4:
+                zpos = max(1, zpos-1)
+            elif event.button == 5:
                 zpos += 1
-            elif e.button == 1:
+            elif event.button == 1:
                 rotate = True
-            elif e.button == 3:
+            elif event.button == 3:
                 move = True
-        elif e.type == pygame.MOUSEBUTTONUP:
-            if e.button == 1:
+        elif event.type == pygame.MOUSEBUTTONUP:
+            if event.button == 1:
                 rotate = False
-            elif e.button == 3:
+            elif event.button == 3:
                 move = False
-        elif e.type == pygame.MOUSEMOTION:
-            i, j = e.rel
+        elif event.type == pygame.MOUSEMOTION:
+            i, j = event.rel
             if rotate:
-                rx += i
-                ry += j
+                rx += i / 10
+                ry += j / 10
             if move:
-                tx += i
-                ty -= j
+                tx += i / 100
+                ty -= j / 100
 
     # Choose backgroundcolor
-    GL.glClearColor(0.8, 0.8, 0.8, 1)
+    # GL.glClearColor(0.8, 0.8, 0.8, 1)
 
     # Remove everything from screen (i.e. displays all white)
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
@@ -93,12 +148,17 @@ while 1:
     # Reset all graphic/shape's position
     GL.glLoadIdentity()
 
-    # RENDER OBJECT
-    GL.glTranslate(tx/20., ty/20., - zpos)
-    GL.glRotate(ry, 1, 0, 0)
+    GL.glTranslate(tx * 10, ty * 10, - zpos)
+
     GL.glRotate(rx, 0, 1, 0)
-    # virm.render()
-    create_ground()
-    # rails1.render()
+    GL.glRotate(ry, 1, 0, 0)
+
+    grid.rijden()
+
+    virm1_x, virm1_y = loco1.get_ref_punt()
+    print("trein refpunt", loco1.get_ref_punt())
+    create_line(virm1_x, virm1_y, 5, virm1_x, virm1_y, -5, (0.8, 0.3, 0.6))
+    create_line(loco1.pos[0], loco1.pos[1], 5,
+                loco1.pos[0], loco1.pos[1], -5, (0.6, 0.6, 0.8))
 
     pygame.display.flip()
