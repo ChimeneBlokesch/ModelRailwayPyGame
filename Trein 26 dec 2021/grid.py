@@ -52,11 +52,11 @@ class Grid:
         self.rails.append(new_rails)
         return new_rails
 
-    def add_recht(self, is_horizontal=True,
+    def add_recht(self, is_horizontal=True, go_left_down=False,
                   pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
                   rotation=0, next_rails=None, prev_rails=None,
                   ref_punt_next=None, ref_punt_prev=None):
-        new_rails = Recht(is_horizontal,
+        new_rails = Recht(is_horizontal, go_left_down=go_left_down,
                           pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
                           rotation=rotation,
                           next_rails=next_rails, prev_rails=prev_rails,

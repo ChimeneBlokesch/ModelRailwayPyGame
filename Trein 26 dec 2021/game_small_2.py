@@ -46,12 +46,12 @@ rails1.move(x=-4.5, y=-7)
 rails2 = grid.add_bocht(45, rotation=45)
 rails2.move(x=0.5, y=-2)
 
-rails3 = grid.add_recht(is_horizontal=False, ref_punt_prev=(0, 2),
-                        ref_punt_next=(0, -2))
+rails3 = grid.add_recht(is_horizontal=False, go_left_down=True,
+                        ref_punt_prev=(0, 2), ref_punt_next=(0, -2))
 rails3.move(x=0.5)
 
-rails4 = grid.add_recht(is_horizontal=False, ref_punt_prev=(0, 2),
-                        ref_punt_next=(0, -2))
+rails4 = grid.add_recht(is_horizontal=False, go_left_down=True,
+                        ref_punt_prev=(0, 2), ref_punt_next=(0, -2))
 rails4.move(x=0.5, y=4)
 
 rails5 = grid.add_bocht(45, rotation=90)

@@ -153,7 +153,7 @@ class Bocht(Rails):
 
 
 class Recht(Rails):
-    def __init__(self, is_horizontal=True,
+    def __init__(self, is_horizontal=True, go_left_down=False,
                  pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
                  rotation=0, next_rails=None, prev_rails=None,
                  ref_punt_next=None, ref_punt_prev=None):
@@ -167,6 +167,7 @@ class Recht(Rails):
         self.image_file = self.image_file(RAILS_RECHT)
         self.object = self.create_object()
         self.type = RAILS_RECHT
+        self.go_left_down = go_left_down
 
     def create_object(self):
         # info = RAILS_DEFAULTS_BOCHT_45[self.rotation]

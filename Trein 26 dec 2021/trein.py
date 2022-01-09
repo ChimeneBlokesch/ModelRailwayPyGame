@@ -62,17 +62,26 @@ class Trein:
             old_x *= TEMP_SCALE
             old_y *= TEMP_SCALE
 
+            # TODO: iets met self.rails.go_up_down
+            # move hangt af van deze richting
+            # direction = -1 * (self.rails.go_up_down | 0)
+            direction = ((self.rails.go_left_down-1) **
+                         1 + self.rails.go_left_down | 0)
+
+            print("direction", direction, self.rails.go_left_down)
+            direction *= self.speed
+
             if self.rails.rotation == 0:
                 # Horizontaal
-                self.move(x=self.speed + self.pos.x)
-                self.ref_punt = ((old_x + self.speed * TEMP_SCALE)
+                self.move(x=direction + self.pos.x)
+                self.ref_punt = ((old_x + direction * TEMP_SCALE)
                                  / TEMP_SCALE,
                                  old_y / TEMP_SCALE)
             elif self.rails.rotation == 90:
                 # Verticaal
-                self.move(y=self.speed + self.pos.y)
+                self.move(y=direction + self.pos.y)
                 self.ref_punt = (round(old_x / TEMP_SCALE, 2),
-                                 round((old_y + self.speed * TEMP_SCALE) /
+                                 round((old_y + direction * TEMP_SCALE) /
                                  TEMP_SCALE, 2))
             else:
                 print(self.rails.rotation, "== -90?")
