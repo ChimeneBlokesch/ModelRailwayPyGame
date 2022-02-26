@@ -15,6 +15,7 @@ class Trein:
         self.rotate_pos = Punt(0, 0, 0)
         self.pos = Punt(0, 0, 0)
         self.ref_punt = (x, y)
+        self.rails = None
 
     def create_object(self):
         return Object3D(self.path_to_obj_file)
@@ -23,6 +24,16 @@ class Trein:
         self.object.generate()
 
     def render(self):
+        if self.name.startswith("VIRM"):
+            self.object.render(self.pos, self.rotate_pos,
+                               scale_value=(2, 0.7, 0.7))
+            return
+
+        if self.name.startswith("Loco"):
+            self.object.render(self.pos, self.rotate_pos,
+                               scale_value=(2, 1, 1.5))
+            return
+
         self.object.render(self.pos, self.rotate_pos)
 
     def move(self, x=None, y=None, z=None):
@@ -43,6 +54,9 @@ class Trein:
         return self.ref_punt
 
     def rijden(self):
+        if self.rails is None:
+            return
+
         if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
                                       ref_punt) < abs(self.speed):
             print("Next rails")

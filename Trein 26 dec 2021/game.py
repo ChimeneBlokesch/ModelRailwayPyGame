@@ -26,14 +26,16 @@ GL.glShadeModel(GL.GL_SMOOTH)
 grid = Grid()
 
 # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-# virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
-# virm1.rotate(x=90)  # Nutteloos?
+virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
+virm1.rotate(x=90)  # Nutteloos?
 # # virm1.move(x=0.75, z=0.91)
 # # x is horizontaal
 # # y is verticaal
 # # z is hoogte
 # virm1.move(x=0.5, y=3.5, z=1)
-# virm1.change_speed(0.05)
+# virm1.move(x=-17.5, y=2, z=1)
+virm1.move(x=0.5, y=2, z=0.755)
+virm1.change_speed(0.05)
 
 loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 1.95)
 loco1.move(x=0.5, y=2, z=0.755)
@@ -132,6 +134,7 @@ loco2.rails = rails_2
 
 grid.generate()
 loco1.rails = rails3
+virm1.rails = rails3
 clock = pygame.time.Clock()
 
 GL.glMatrixMode(GL.GL_PROJECTION)

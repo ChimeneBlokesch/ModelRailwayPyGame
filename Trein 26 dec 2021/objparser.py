@@ -209,7 +209,7 @@ class Object3D:
         GL.glEndList()
         # [print(t) for t in temp]
 
-    def render(self, pos=Punt(0, 0, 0), rotate=Punt(0, 0, 0), flip=False):
+    def render(self, pos=Punt(0, 0, 0), rotate=Punt(0, 0, 0), flip=False, scale_value=(2, 2, 2)):
         GL.glPushMatrix()
         GL.glTranslate(pos.x, pos.y, pos.z)
         GL.glRotate(rotate.x, 1, 0, 0)
@@ -219,10 +219,9 @@ class Object3D:
         if flip:
             GL.glScale(1, -1, 1)
 
-        scale_value = 2
         # y=scale_value * ((x-1) ** 1 + x | 0)
         # Blijkbaar werkt dit niet samen :(
-        GL.glScale(scale_value, scale_value, scale_value)
+        GL.glScale(*scale_value)
         GL.glCallList(self.gl_list)
         GL.glPopMatrix()
 
