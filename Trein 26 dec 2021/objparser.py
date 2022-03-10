@@ -86,7 +86,7 @@ class Object3D:
         return contents
 
     def read_image_file(self, filename):
-        surf = pygame.image.load(filename)
+        surf = pygame.image.load(filename).convert_alpha()
         image = pygame.image.tostring(surf, 'RGBA', 1)
         ix, iy = surf.get_rect().size
 

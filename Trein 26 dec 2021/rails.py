@@ -75,7 +75,7 @@ class Rails:
 
     def render(self):
         self.object.render(self.pos, Punt(0, 0, self.rotation),
-                           self.is_flipped)
+                           self.is_flipped, scale_value=(2, 2, 0))
 
     def move(self, x=None, y=None, z=None):
         x = x + self.start_x if x is not None else self.pos.x
