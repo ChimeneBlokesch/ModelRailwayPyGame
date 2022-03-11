@@ -26,28 +26,28 @@ GL.glShadeModel(GL.GL_SMOOTH)
 grid = Grid()
 
 innercity = grid.add_trein(
-    "innercity", "new_innercity4.obj", 0.5, -1.5, 0.5, 3.75, 0.5, 0.3)
+    "innercity", "new_innercity4.obj", 0.5, -1.5)
 # innercity.move(x=0.5, y=2)
 innercity.move(x=0.5, y=2)
 innercity.rotate(x=90)
-# innercity.change_speed(-0.05)
+innercity.change_speed(-0.05)
 
 # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-# virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
-# virm1.rotate(x=90)  # Nutteloos?
+virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
+virm1.rotate(x=90)
 # # virm1.move(x=0.75, z=0.91)
 # # x is horizontaal
 # # y is verticaal
 # # z is hoogte
 # virm1.move(x=0.5, y=3.5, z=1)
 # virm1.move(x=-17.5, y=2, z=1)
-# virm1.move(x=0.5, y=2, z=0.4)
-# virm1.change_speed(0.05)
+virm1.move(x=0.5, y=2, z=0.4)
+virm1.change_speed(0.05)
 
-# loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 1.95)
-# loco1.move(x=0.5, y=2)
-# loco1.rotate(x=90)
-# # loco1.change_speed(0.05)
+loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 1.95)
+loco1.move(x=0.5, y=2)
+loco1.rotate(x=90)
+loco1.change_speed(0.05)
 
 rails1 = grid.add_bocht("rails1", 45, rotation=0)
 rails1.move(x=-4.5, y=-7)
@@ -118,7 +118,7 @@ grid.connect_rails(rails15, rails12)
 for r in grid.rails:
     print_rails_info(r)
 
-loco2 = grid.add_trein("Loco2", "lego_loco_kop.obj", 2, 2, 2, 3, 2, 1)
+loco2 = grid.add_trein("Loco2", "lego_loco_kop.obj", 2, 2)
 loco2.move(x=2, y=2, z=0.755)
 loco2.rotate(x=90)
 loco2.change_speed(-0.05)
@@ -138,10 +138,10 @@ rails_3.move(2, -2)
 grid.connect_rails(rails_1, rails_2)
 grid.connect_rails(rails_2, rails_3)
 loco2.rails = rails_2
-# loco1.rails = rails3
-# virm1.rails = rails3
+loco1.rails = rails3
+virm1.rails = rails3
 
-# innercity.rails = rails3
+innercity.rails = rails3
 
 grid.generate()
 clock = pygame.time.Clock()
@@ -213,12 +213,8 @@ while 1:
     for t in grid.treinen:
         trein_x, trein_y = t.mid
         print(t.name, trein_x, trein_y)
-        # create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
-        # create_line(t.pos[0], t.pos[1], 5,
-        #             t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
-        front_x, front_y = t.front
-        create_line(front_x, front_y, 5, front_x, front_y, -5, (0.2, 0.3, 0.6))
-        back_x, back_y = t.back
-        create_line(back_x, back_y, 10, back_x, back_y, -10, (0.2, 0.3, 0.2))
+        create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
+        create_line(t.pos[0], t.pos[1], 5,
+                    t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
 
     pygame.display.flip()
