@@ -25,7 +25,8 @@ GL.glShadeModel(GL.GL_SMOOTH)
 
 grid = Grid()
 
-innercity = grid.add_trein("innercity", "new_innercity4.obj", 0.5, -1.5)
+innercity = grid.add_trein(
+    "innercity", "new_innercity4.obj", 0.5, -1.5, 0.5, 3.75, 0.5, 0.3)
 # innercity.move(x=0.5, y=2)
 innercity.move(x=0.5, y=2)
 innercity.rotate(x=90)
@@ -117,7 +118,7 @@ grid.connect_rails(rails15, rails12)
 for r in grid.rails:
     print_rails_info(r)
 
-loco2 = grid.add_trein("Loco2", "lego_loco_kop.obj", 2, 2)
+loco2 = grid.add_trein("Loco2", "lego_loco_kop.obj", 2, 2, 2, 3, 2, 1)
 loco2.move(x=2, y=2, z=0.755)
 loco2.rotate(x=90)
 loco2.change_speed(-0.05)
@@ -140,7 +141,7 @@ loco2.rails = rails_2
 # loco1.rails = rails3
 # virm1.rails = rails3
 
-innercity.rails = rails3
+# innercity.rails = rails3
 
 grid.generate()
 clock = pygame.time.Clock()
@@ -210,10 +211,14 @@ while 1:
     grid.rijden()
 
     for t in grid.treinen:
-        trein_x, trein_y = t.get_ref_punt()
+        trein_x, trein_y = t.mid
         print(t.name, trein_x, trein_y)
-        create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
-        create_line(t.pos[0], t.pos[1], 5,
-                    t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
+        # create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
+        # create_line(t.pos[0], t.pos[1], 5,
+        #             t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
+        front_x, front_y = t.front
+        create_line(front_x, front_y, 5, front_x, front_y, -5, (0.2, 0.3, 0.6))
+        back_x, back_y = t.back
+        create_line(back_x, back_y, 10, back_x, back_y, -10, (0.2, 0.3, 0.2))
 
     pygame.display.flip()

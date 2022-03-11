@@ -6,7 +6,8 @@ from constants import SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
 
 
 class Trein:
-    def __init__(self, name, filename, x, y):
+    def __init__(self, name, filename, mid_x, mid_y,
+                 front_x, front_y, back_x, back_y):
         self.name = name
         self.path_to_obj_file = TREINEN_MAP + filename
         self.object = self.create_object()
@@ -14,7 +15,9 @@ class Trein:
         self.speed = 0
         self.rotate_pos = Punt(0, 0, 0)
         self.pos = Punt(0, 0, 0)
-        self.ref_punt = (x, y)
+        self.mid = (mid_x, mid_y)
+        self.front = (front_x, front_y)
+        self.back = (back_x, back_y)
         self.rails = None
 
     def create_object(self):
@@ -55,23 +58,22 @@ class Trein:
 
         self.rotate_pos = Punt(x, y, z)
 
-    def get_ref_punt(self):
-        return self.ref_punt
-
     def rijden(self):
         if self.rails is None:
             return
 
+        # TODO: change to begin-/endpoint
         if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
-                                      ref_punt) < abs(self.speed):
+                                      front) < abs(self.speed):
             print("Next rails")
             if not self.rails.next:
+                # End of rail, go in opposite direction.
                 self.change_speed(self.speed)
             elif self.rails.type == RAILS_BOCHT and \
                     self.rails.next.type == RAILS_BOCHT and \
                     self.rails.own_next_prev != self.rails.next.own_next_prev:
-                # These two rails belong to each so the other rails can be
-                # ignored.
+                # These two rails belong to each other so the other rails can
+                # be ignored.
                 if not self.rails.next.next:
                     self.change_speed(self.speed)
                 else:
@@ -79,15 +81,16 @@ class Trein:
             else:
                 self.rails = self.rails.next
         elif self.speed > 0 and afstand(*self.rails.ref_punt_prev, *self.
-                                        ref_punt) < abs(self.speed):
+                                        back) < abs(self.speed):
             print("Prev rails")
             if not self.rails.prev:
+                # End of rail, go in opposite direction.
                 self.change_speed(self.speed)
             elif self.rails.type == RAILS_BOCHT and \
                     self.rails.prev.type == RAILS_BOCHT and \
                     self.rails.own_next_prev != self.rails.prev.own_next_prev:
-                # These two rails belong to each so the other rails can be
-                # ignored.
+                # These two rails belong to each pther so the other rails can
+                # be ignored.
                 if not self.rails.prev.prev:
                     self.change_speed(self.speed)
                 else:
@@ -98,7 +101,7 @@ class Trein:
         # Depending on rails.angle the train rotates
         if self.rails.type == RAILS_RECHT:
             # 0 of 180
-            old_x, old_y = self.ref_punt
+            old_x, old_y = self.mid
             TEMP_SCALE = 100
             old_x *= TEMP_SCALE
             old_y *= TEMP_SCALE
@@ -117,15 +120,15 @@ class Trein:
                 #                  / TEMP_SCALE,
                 #                  old_y / TEMP_SCALE)
 
-                self.ref_punt = (round((old_x+direction * TEMP_SCALE) /
-                                       TEMP_SCALE, 2),
-                                 round(old_y / TEMP_SCALE, 2))
+                self.mid = (round((old_x+direction * TEMP_SCALE) /
+                                  TEMP_SCALE, 2),
+                            round(old_y / TEMP_SCALE, 2))
             elif self.rails.rotation == 90:
                 # Vertical
                 self.move(y=direction + self.pos.y)
-                self.ref_punt = (round(old_x / TEMP_SCALE, 2),
-                                 round((old_y + direction * TEMP_SCALE) /
-                                 TEMP_SCALE, 2))
+                self.mid = (round(old_x / TEMP_SCALE, 2),
+                            round((old_y + direction * TEMP_SCALE) /
+                                  TEMP_SCALE, 2))
         elif self.rails.type == RAILS_BOCHT:
             rotation = self.rotate_pos.y + SPEEDUP_BOCHT * self.speed
             self.rotate(y=rotation)
@@ -155,8 +158,8 @@ class Trein:
 
             rotation = math.radians(rotation)
 
-            self.ref_punt = (round(width * math.cos(rotation) + pos_x, 2),
-                             round(height * math.sin(rotation) + pos_y, 2))
+            self.mid = (round(width * math.cos(rotation) + pos_x, 2),
+                        round(height * math.sin(rotation) + pos_y, 2))
 
             self.move(x=round(width * math.cos(rotation) + pos_x, 2),
                       y=round(height * math.sin(rotation) + pos_y, 2))

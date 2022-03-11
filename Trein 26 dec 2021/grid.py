@@ -16,8 +16,8 @@ class Grid:
             trein.generate()
 
     def render(self):
-        create_assenstelsel()
-        create_grid()
+        # create_assenstelsel()
+        # create_grid()
         create_ground()
 
         for rails in self.rails:
@@ -26,8 +26,10 @@ class Grid:
         for trein in self.treinen:
             trein.render()
 
-    def add_trein(self, name, filename, x, y):
-        new_trein = Trein(name, filename, x, y)
+    def add_trein(self, name, filename, mid_x, mid_y,
+                  front_x, front_y, back_x, back_y):
+        new_trein = Trein(name, filename, mid_x, mid_y,
+                          front_x, front_y, back_x, back_y)
         self.treinen.append(new_trein)
         return new_trein
 
