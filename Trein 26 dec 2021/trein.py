@@ -34,11 +34,6 @@ class Trein:
                                scale_value=(2, 1, 1.5))
             return
 
-        if self.name.startswith("innercity"):
-            self.object.render(self.pos, self.rotate_pos,
-                               scale_value=(1, 1, 1))
-            return
-
         self.object.render(self.pos, self.rotate_pos)
 
     def move(self, x=None, y=None, z=None):

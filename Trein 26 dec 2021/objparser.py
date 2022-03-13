@@ -209,7 +209,8 @@ class Object3D:
         GL.glEndList()
         # [print(t) for t in temp]
 
-    def render(self, pos=Punt(0, 0, 0), rotate=Punt(0, 0, 0), flip=False, scale_value=(2, 2, 2)):
+    def render(self, pos=Punt(0, 0, 0), rotate=Punt(0, 0, 0), flip=False,
+               scale_value=(1, 1, 1)):
         GL.glPushMatrix()
         GL.glTranslate(pos.x, pos.y, pos.z)
         GL.glRotate(rotate.x, 1, 0, 0)

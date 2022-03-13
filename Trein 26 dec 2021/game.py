@@ -25,6 +25,11 @@ GL.glShadeModel(GL.GL_SMOOTH)
 
 grid = Grid()
 
+f3 = grid.add_trein("f3", "moztex.obj", 0.5, -1.5)
+f3.move(x=0.5, y=2)
+f3.rotate(x=90)
+f3.change_speed(-0.08)
+
 innercity = grid.add_trein(
     "innercity", "new_innercity4.obj", 0.5, -1.5)
 # innercity.move(x=0.5, y=2)
@@ -36,9 +41,6 @@ innercity.change_speed(-0.05)
 virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
 virm1.rotate(x=90)
 # # virm1.move(x=0.75, z=0.91)
-# # x is horizontaal
-# # y is verticaal
-# # z is hoogte
 # virm1.move(x=0.5, y=3.5, z=1)
 # virm1.move(x=-17.5, y=2, z=1)
 virm1.move(x=0.5, y=2, z=0.4)
@@ -47,7 +49,7 @@ virm1.change_speed(0.05)
 loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 1.95)
 loco1.move(x=0.5, y=2)
 loco1.rotate(x=90)
-loco1.change_speed(0.05)
+loco1.change_speed(0.1)
 
 rails1 = grid.add_bocht("rails1", 45, rotation=0)
 rails1.move(x=-4.5, y=-7)
@@ -137,11 +139,12 @@ rails_3.move(2, -2)
 
 grid.connect_rails(rails_1, rails_2)
 grid.connect_rails(rails_2, rails_3)
+
 loco2.rails = rails_2
 loco1.rails = rails3
 virm1.rails = rails3
-
 innercity.rails = rails3
+f3.rails = rails3
 
 grid.generate()
 clock = pygame.time.Clock()
