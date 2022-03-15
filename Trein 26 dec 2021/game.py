@@ -19,26 +19,26 @@ GL.glEnable(GL.GL_DEPTH_TEST)
 GL.glShadeModel(GL.GL_SMOOTH)
 
 
-# virm2 = Trein("VIRM3_2", "VIRM3.obj")
+# virm2 = Trein("VIRM3_2", "VIRM3")
 # virm2.generate()
 
 
 grid = Grid()
 
-f3 = grid.add_trein("f3", "moztex.obj", 0.5, -1.5)
+f3 = grid.add_trein("f3", "icityvagon", 0.5, -1.5)
 f3.move(x=0.5, y=2)
 f3.rotate(x=90)
 f3.change_speed(-0.08)
 
-innercity = grid.add_trein(
-    "innercity", "new_innercity4.obj", 0.5, -1.5)
+innercity = grid.add_trein("innercity", "innercity", 0.5, -1.5,
+                           mtl_images={'Material.004': 'innercity6'})
 # innercity.move(x=0.5, y=2)
 innercity.move(x=0.5, y=2)
 innercity.rotate(x=90)
 innercity.change_speed(-0.05)
 
 # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-virm1 = grid.add_trein("VIRM3_1", "VIRM3.obj", 0.5, -1.5)
+virm1 = grid.add_trein("VIRM3_1", "VIRM3", 0.5, -1.5)
 virm1.rotate(x=90)
 # # virm1.move(x=0.75, z=0.91)
 # virm1.move(x=0.5, y=3.5, z=1)
@@ -46,8 +46,8 @@ virm1.rotate(x=90)
 virm1.move(x=0.5, y=2, z=0.4)
 virm1.change_speed(0.05)
 
-loco1 = grid.add_trein("Loco1", "lego_loco_kop.obj", 0.5, 1.95)
-loco1.move(x=0.5, y=2)
+loco1 = grid.add_trein("Loco1", "lego_loco_kop", 0.5, 1.95)
+loco1.move(x=0.5, y=2, z=0.5)
 loco1.rotate(x=90)
 loco1.change_speed(0.1)
 
@@ -117,11 +117,11 @@ grid.connect_rails(rails1, rails16)
 grid.connect_rails(rails16, rails15)
 grid.connect_rails(rails15, rails12)
 
-for r in grid.rails:
-    print_rails_info(r)
+# for r in grid.rails:
+#     print_rails_info(r)
 
-loco2 = grid.add_trein("Loco2", "lego_loco_kop.obj", 2, 2)
-loco2.move(x=2, y=2, z=0.755)
+loco2 = grid.add_trein("Loco2", "lego_loco_kop", 2, 2)
+loco2.move(x=2, y=2, z=0.5)
 loco2.rotate(x=90)
 loco2.change_speed(-0.05)
 
@@ -215,7 +215,7 @@ while 1:
 
     for t in grid.treinen:
         trein_x, trein_y = t.mid
-        print(t.name, trein_x, trein_y)
+        # print(t.name, trein_x, trein_y)
         create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
         create_line(t.pos[0], t.pos[1], 5,
                     t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))

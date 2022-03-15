@@ -26,8 +26,8 @@ class Grid:
         for trein in self.treinen:
             trein.render()
 
-    def add_trein(self, name, filename, mid_x, mid_y):
-        new_trein = Trein(name, filename, mid_x, mid_y)
+    def add_trein(self, name, filename, mid_x, mid_y, mtl_images=None):
+        new_trein = Trein(name, filename, mid_x, mid_y, mtl_images)
         self.treinen.append(new_trein)
         return new_trein
 

@@ -30,7 +30,7 @@ def RAILS_IMG_PATH(type_rails):
     return RAILS_MAP + RAILS_IMG_FILE[type_rails]
 
 
-def RAILS_OBJ_PATH(type_rails, angle=None):
+def RAILS_OBJ_NAME(type_rails, angle=None):
     num = 3
     name = "recht_" + str(num)
 
@@ -38,7 +38,7 @@ def RAILS_OBJ_PATH(type_rails, angle=None):
         num = 6
         name = "bocht_" + str(angle) + "_" + str(num)
 
-    return RAILS_MAP + name + ".obj"
+    return name
 
 
 def REF_PUNT_RECHT(is_horizontal, go_left_down):
@@ -146,7 +146,7 @@ class Bocht(Rails):
         self.own_next_prev = next_prev
         self.pos = Punt(self.start_x, self.start_y, self.start_z)
 
-        return Object3D(RAILS_OBJ_PATH(RAILS_BOCHT, self.angle), swap_yz=True)
+        return Object3D(RAILS_MAP, RAILS_OBJ_NAME(RAILS_BOCHT, self.angle), swap_yz=True)
 
     def flip(self):
         self.is_flipped = True
@@ -185,4 +185,4 @@ class Recht(Rails):
         self.go_left_down = go_left_down
 
     def create_object(self):
-        return Object3D(RAILS_OBJ_PATH(RAILS_RECHT), swap_yz=True)
+        return Object3D(RAILS_MAP, RAILS_OBJ_NAME(RAILS_RECHT), swap_yz=True)

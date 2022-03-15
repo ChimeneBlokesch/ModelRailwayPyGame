@@ -1,22 +1,66 @@
 import os
 import pygame
 import OpenGL.GL as GL
+import sqlite3
 
-from constants import Punt
+from constants import TREINEN_MAP, Punt
 
 
 IMAGE_PREFIX = "image_"
 
 
 class Object3D:
-    def __init__(self, filename, swap_yz=False):
+    def __init__(self, folder, obj_name, swap_yz=False):
         self.vertices = []
         self.normals = []
         self.texcoords = []
         self.faces = []
         self.gl_list = 0
         self.swap_yz = swap_yz
-        self.read_obj_file(filename)
+        self.folder = folder
+        self.obj_name = obj_name
+        self.read_obj_file(folder + obj_name + ".obj")
+
+    def change_img(self, mtl_images):
+        for mtl_name in mtl_images.keys():
+            # Set image.
+            filename = mtl_images[mtl_name] + ".png"
+            self.mtl[mtl_name]["map_Kd"] = filename
+            self.mtl[mtl_name]["map_d"] = filename
+            imagefile = os.path.join(TREINEN_MAP, filename)
+            image = self.read_image_file(imagefile)
+            self.mtl[mtl_name][IMAGE_PREFIX + "map_Kd"] = image
+            self.mtl[mtl_name][IMAGE_PREFIX + "map_d"] = image
+
+    def update_db(self):
+        conn = sqlite3.connect("treinen.db")
+        cursor = conn.cursor()
+        try:
+            cursor.execute(
+                """INSERT INTO soort VALUES(null, ?, 3)""", (self.obj_name,))
+        except sqlite3.IntegrityError:
+            ...
+
+        for m in self.mtl:
+            if "map_Kd" not in self.mtl[m]:
+                continue
+
+            cursor.execute("""SELECT id from soort where name = ?""",
+                           (self.obj_name,))
+            trein = cursor.fetchall()[0][0]
+            cursor.execute("""SELECT id from plaatjes where name = ?""",
+                           (self.mtl[m]["map_Kd"],))
+            img = cursor.fetchall()[0][0]
+
+            try:
+                cursor.execute("""
+                    INSERT INTO materialen(name, img, trein) VALUES(?,?,?)""",
+                               (m, img, trein))
+            except sqlite3.IntegrityError:
+                ...
+
+        conn.commit()
+        conn.close()
 
     def read_obj_file(self, filename):
         material = None
@@ -33,7 +77,9 @@ class Object3D:
                 if line[0] == "mtllib":
                     self.mtl = self.read_mtl_file(
                         os.path.join(dirname, line[1]))
-                    ...
+
+                    if not self.obj_name.startswith('bocht') and not self.obj_name.startswith('recht'):
+                        self.update_db()
                     continue
 
                 if line[0] in ["v", "vn"]:
@@ -175,7 +221,6 @@ class Object3D:
                 GL.glBindTexture(GL.GL_TEXTURE_2D, texid)
 
                 if material == "top":
-                    # print("top", mtl['Kd'])
                     GL.glColor(0.4, 0.4, 0.4)
                     GL.glColor(0.035601, 0.042311, 0.051269)
                     GL.glColor(0.412, 0.455, 0.498)

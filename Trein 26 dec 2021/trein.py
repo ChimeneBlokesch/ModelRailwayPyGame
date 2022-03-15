@@ -6,9 +6,10 @@ from constants import SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
 
 
 class Trein:
-    def __init__(self, name, filename, mid_x, mid_y):
+    def __init__(self, name, obj_name, mid_x, mid_y, mtl_images=None):
         self.name = name
-        self.path_to_obj_file = TREINEN_MAP + filename
+        self.obj_name = obj_name
+        self.mtl_images = mtl_images
         self.object = self.create_object()
         self.start_angle = 0
         self.speed = 0
@@ -18,7 +19,12 @@ class Trein:
         self.rails = None
 
     def create_object(self):
-        return Object3D(self.path_to_obj_file)
+        model = Object3D(TREINEN_MAP, self.obj_name)
+
+        if self.mtl_images:
+            model.change_img(self.mtl_images)
+
+        return model
 
     def generate(self):
         self.object.generate()
@@ -57,7 +63,7 @@ class Trein:
         # TODO: change to begin-/endpoint
         if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
                                       pos[:2]) < abs(self.speed):
-            print("Next rails")
+            # print("Next rails")
             if not self.rails.next:
                 # End of rail, go in opposite direction.
                 self.change_speed(self.speed)
@@ -74,7 +80,7 @@ class Trein:
                 self.rails = self.rails.next
         elif self.speed > 0 and afstand(*self.rails.ref_punt_prev, *self.
                                         pos[:2]) < abs(self.speed):
-            print("Prev rails")
+            # print("Prev rails")
             if not self.rails.prev:
                 # End of rail, go in opposite direction.
                 self.change_speed(self.speed)
