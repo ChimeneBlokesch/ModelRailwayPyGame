@@ -5,6 +5,7 @@ import OpenGL.GLU as GLU
 from constants import print_rails_info
 from grid import Grid
 from lijnen import create_line
+from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
 
 pygame.init()
 viewport = (800, 600)
@@ -25,20 +26,21 @@ GL.glShadeModel(GL.GL_SMOOTH)
 
 grid = Grid()
 
-f3 = grid.add_trein("f3", "icityvagon", 0.5, -1.5)
-f3.move(x=0.5, y=2)
-f3.rotate(x=90)
-f3.change_speed(-0.08)
+icityvagon = grid.add_trein("f3", "icityvagon", 0.5, -1.5, TREIN_PASSAGIER)
+icityvagon.move(x=0.5, y=-2.4)
+icityvagon.rotate(x=90)
 
 innercity = grid.add_trein("innercity", "innercity", 0.5, -1.5,
-                           mtl_images={'Material.004': 'innercity6'})
+                           TREIN_LOCOMOTIEF, mtl_images={'Material.004': 'innercity6'})
 # innercity.move(x=0.5, y=2)
 innercity.move(x=0.5, y=2)
 innercity.rotate(x=90)
 innercity.change_speed(-0.05)
 
+innercity.attach_trein(icityvagon)
+
 # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-virm1 = grid.add_trein("VIRM3_1", "VIRM3", 0.5, -1.5)
+virm1 = grid.add_trein("VIRM3_1", "VIRM3", 0.5, -1.5, TREIN_LOCOMOTIEF)
 virm1.rotate(x=90)
 # # virm1.move(x=0.75, z=0.91)
 # virm1.move(x=0.5, y=3.5, z=1)
@@ -46,7 +48,7 @@ virm1.rotate(x=90)
 virm1.move(x=0.5, y=2, z=0.4)
 virm1.change_speed(0.05)
 
-loco1 = grid.add_trein("Loco1", "lego_loco_kop", 0.5, 1.95)
+loco1 = grid.add_trein("Loco1", "lego_loco_kop", 0.5, 1.95, TREIN_LOCOMOTIEF)
 loco1.move(x=0.5, y=2, z=0.5)
 loco1.rotate(x=90)
 loco1.change_speed(0.1)
@@ -120,7 +122,7 @@ grid.connect_rails(rails15, rails12)
 # for r in grid.rails:
 #     print_rails_info(r)
 
-loco2 = grid.add_trein("Loco2", "lego_loco_kop", 2, 2)
+loco2 = grid.add_trein("Loco2", "lego_loco_kop", 2, 2, TREIN_LOCOMOTIEF)
 loco2.move(x=2, y=2, z=0.5)
 loco2.rotate(x=90)
 loco2.change_speed(-0.05)
@@ -144,7 +146,7 @@ loco2.rails = rails_2
 loco1.rails = rails3
 virm1.rails = rails3
 innercity.rails = rails3
-f3.rails = rails3
+icityvagon.rails = rails3
 
 grid.generate()
 clock = pygame.time.Clock()
@@ -213,7 +215,8 @@ while 1:
 
     grid.rijden()
 
-    for t in grid.treinen:
+    # for t in grid.treinen:
+    for t in grid.locomotieven:
         trein_x, trein_y = t.mid
         # print(t.name, trein_x, trein_y)
         create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))

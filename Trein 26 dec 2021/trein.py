@@ -4,9 +4,14 @@ from objparser import Object3D
 
 from constants import SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
 
+# These indices correspond with the primary keys of the 'type' table.
+TREIN_PASSAGIER = 0
+TREIN_GOEDEREN = 1
+TREIN_LOCOMOTIEF = 2
+
 
 class Trein:
-    def __init__(self, name, obj_name, mid_x, mid_y, mtl_images=None):
+    def __init__(self, name, obj_name, mid_x, mid_y, type_trein, mtl_images=None):
         self.name = name
         self.obj_name = obj_name
         self.mtl_images = mtl_images
@@ -17,6 +22,10 @@ class Trein:
         self.pos = Punt(0, 0, 0)
         self.mid = (mid_x, mid_y)
         self.rails = None
+        self.trein_next = None
+
+        # Locomotief, passagier, goederen
+        self.type = type_trein
 
     def create_object(self):
         model = Object3D(TREINEN_MAP, self.obj_name)
@@ -59,6 +68,11 @@ class Trein:
     def rijden(self):
         if self.rails is None:
             return
+
+        # TODO:
+        # Als er een trein meerdere wagons heeft, deze wagons snelheid
+        # van locomotief geven. Hiervoor is grid nodig om
+        # locomotieven eerst te berekenen.
 
         # TODO: change to begin-/endpoint
         if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
@@ -163,5 +177,17 @@ class Trein:
             self.move(x=round(width * math.cos(rotation) + pos_x, 2),
                       y=round(height * math.sin(rotation) + pos_y, 2))
 
+        # Change speed of train behind it
+        # if self.trein_next:
+        #     self.trein_next.change_speed(-self.speed)
+
     def change_speed(self, speed):
         self.speed = -speed
+
+    def attach_trein(self, trein=None):
+        # Also possible to deattach trein
+        self.trein_next = trein
+
+        # Change speed to own speed
+        if trein:
+            self.trein_next.change_speed(-self.speed)

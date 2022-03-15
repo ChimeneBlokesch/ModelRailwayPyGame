@@ -1,4 +1,4 @@
-from trein import Trein
+from trein import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
 from rails import HOOGTE_RAILS, RAILS_BOCHT, Rails, Bocht, Recht, NEXT, PREV
 from ground import create_assenstelsel, create_grid, create_ground
 
@@ -6,13 +6,20 @@ from ground import create_assenstelsel, create_grid, create_ground
 class Grid:
     def __init__(self):
         self.rails = []
-        self.treinen = []
+        self.locomotieven = []
+        self.goederen = []
+        self.passagiers = []
 
     def generate(self):
         for rails in self.rails:
             rails.generate()
 
-        for trein in self.treinen:
+        # for trein in self.treinen:
+        for trein in self.locomotieven:
+            trein.generate()
+        for trein in self.passagiers:
+            trein.generate()
+        for trein in self.goederen:
             trein.generate()
 
     def render(self):
@@ -23,12 +30,26 @@ class Grid:
         for rails in self.rails:
             rails.render()
 
-        for trein in self.treinen:
+        # for trein in self.treinen:
+        for trein in self.locomotieven:
             trein.render()
 
-    def add_trein(self, name, filename, mid_x, mid_y, mtl_images=None):
-        new_trein = Trein(name, filename, mid_x, mid_y, mtl_images)
-        self.treinen.append(new_trein)
+        for trein in self.passagiers:
+            trein.render()
+
+        for trein in self.goederen:
+            trein.render()
+
+    def add_trein(self, name, filename, mid_x, mid_y, type_trein, mtl_images=None):
+        new_trein = Trein(name, filename, mid_x, mid_y, type_trein, mtl_images)
+
+        if type_trein == TREIN_LOCOMOTIEF:
+            self.locomotieven.append(new_trein)
+        elif type_trein == TREIN_PASSAGIER:
+            self.passagiers.append(new_trein)
+        elif type_trein == TREIN_GOEDEREN:
+            self.goederen.append(new_trein)
+
         return new_trein
 
     def add_rails(self, type_rails, angle=None, is_flipped=False, pos_x=0,
@@ -63,7 +84,13 @@ class Grid:
         return new_rails
 
     def rijden(self):
-        for trein in self.treinen:
+        for trein in self.locomotieven:
+            trein.rijden()
+
+        for trein in self.passagiers:
+            trein.rijden()
+
+        for trein in self.goederen:
             trein.rijden()
 
         self.render()
