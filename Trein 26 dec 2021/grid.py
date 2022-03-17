@@ -40,8 +40,10 @@ class Grid:
         for trein in self.goederen:
             trein.render()
 
-    def add_trein(self, name, filename, mid_x, mid_y, type_trein, mtl_images=None):
-        new_trein = Trein(name, filename, mid_x, mid_y, type_trein, mtl_images)
+    def add_trein(self,  name, obj_name, type_trein, start_x=0, start_y=0,
+                  start_z=0, rot_x=0, rot_y=0, rot_z=0, mtl_images=None):
+        new_trein = Trein(name, obj_name, type_trein, start_x, start_y,
+                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
         if type_trein == TREIN_LOCOMOTIEF:
             self.locomotieven.append(new_trein)
