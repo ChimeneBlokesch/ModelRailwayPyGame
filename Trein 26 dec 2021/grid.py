@@ -40,11 +40,10 @@ class Grid:
         for trein in self.goederen:
             trein.render()
 
-    def add_trein(self,  name, obj_name, type_trein, start_x=0, start_y=0,
-                  start_z=0, rot_x=0, rot_y=0, rot_z=0, mtl_images=None):
-        new_trein = Trein(name, obj_name, type_trein, start_x, start_y,
-                          start_z, rot_x, rot_y, rot_z, mtl_images)
+    def add_trein(self, *args, **kwargs):
+        new_trein = Trein(*args, **kwargs)
 
+        type_trein = new_trein.type
         if type_trein == TREIN_LOCOMOTIEF:
             self.locomotieven.append(new_trein)
         elif type_trein == TREIN_PASSAGIER:
@@ -54,34 +53,18 @@ class Grid:
 
         return new_trein
 
-    def add_rails(self, type_rails, angle=None, is_flipped=False, pos_x=0,
-                  pos_y=0, pos_z=HOOGTE_RAILS, rotation=0, next_rails=None,
-                  prev_rails=None, ref_punt_next=None, ref_punt_prev=None):
-        new_rails = Rails(type_rails, angle, is_flipped, pos_x,
-                          pos_y, pos_z, rotation, next_rails,
-                          prev_rails, ref_punt_next, ref_punt_prev)
+    def add_rails(self, *args, **kwargs):
+        new_rails = Rails(*args, **kwargs)
         self.rails.append(new_rails)
         return new_rails
 
-    def add_bocht(self, name, angle, is_flipped=False,
-                  pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
-                  rotation=0, next_rails=None, prev_rails=None,
-                  ref_punt_next=None, ref_punt_prev=None):
-        new_rails = Bocht(name, angle, is_flipped=is_flipped, pos_x=pos_x,
-                          pos_y=pos_y, pos_z=pos_z, rotation=rotation,
-                          next_rails=next_rails, prev_rails=prev_rails,
-                          ref_punt_next=ref_punt_next,
-                          ref_punt_prev=ref_punt_prev)
+    def add_bocht(self, *args, **kwargs):
+        new_rails = Bocht(*args, **kwargs)
         self.rails.append(new_rails)
         return new_rails
 
-    def add_recht(self, name, is_horizontal=True, go_left_down=False,
-                  pos_x=0, pos_y=0, pos_z=HOOGTE_RAILS,
-                  rotation=0, next_rails=None, prev_rails=None):
-        new_rails = Recht(name, is_horizontal, go_left_down=go_left_down,
-                          pos_x=pos_x, pos_y=pos_y, pos_z=pos_z,
-                          rotation=rotation,
-                          next_rails=next_rails, prev_rails=prev_rails)
+    def add_recht(self, *args, **kwargs):
+        new_rails = Recht(*args, **kwargs)
         self.rails.append(new_rails)
         return new_rails
 
