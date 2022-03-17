@@ -11,16 +11,16 @@ TREIN_LOCOMOTIEF = 2
 
 
 class Trein:
-    def __init__(self, name, obj_name, mid_x, mid_y, type_trein, mtl_images=None):
+    def __init__(self, name, obj_name, type_trein, start_x=0, start_y=0,
+                 start_z=0, rot_x=0, rot_y=0, rot_z=0, mtl_images=None):
         self.name = name
         self.obj_name = obj_name
         self.mtl_images = mtl_images
         self.object = self.create_object()
         self.start_angle = 0
         self.speed = 0
-        self.rotate_pos = Punt(0, 0, 0)
-        self.pos = Punt(0, 0, 0)
-        self.mid = (mid_x, mid_y)
+        self.rotate_pos = Punt(rot_x, rot_y, rot_z)
+        self.pos = Punt(start_x, start_y, start_z)
         self.rails = None
         self.trein_next = None
 
@@ -114,9 +114,6 @@ class Trein:
         if self.rails.type == RAILS_RECHT:
             # 0 of 180
             TEMP_SCALE = 100
-            old_mid_x, old_mid_y = self.mid
-            old_mid_x *= TEMP_SCALE
-            old_mid_y *= TEMP_SCALE
 
             # Direction is -1 or 1, depending on it goes right/up or left/down.
             direction = ((self.rails.go_left_down-1) **
@@ -128,19 +125,9 @@ class Trein:
             if self.rails.rotation == 0:
                 # Horizontal
                 self.move(x=direction + self.pos.x)
-                # self.ref_punt = ((old_x + direction * TEMP_SCALE)
-                #                  / TEMP_SCALE,
-                #                  old_y / TEMP_SCALE)
-
-                self.mid = (round((old_mid_x+direction * TEMP_SCALE) /
-                                  TEMP_SCALE, 2),
-                            round(old_mid_y / TEMP_SCALE, 2))
             elif self.rails.rotation == 90:
                 # Vertical
                 self.move(y=direction + self.pos.y)
-                self.mid = (round(old_mid_x / TEMP_SCALE, 2),
-                            round((old_mid_y + direction * TEMP_SCALE) /
-                                  TEMP_SCALE, 2))
 
         elif self.rails.type == RAILS_BOCHT:
             rotation = self.rotate_pos.y + SPEEDUP_BOCHT * self.speed
@@ -170,9 +157,6 @@ class Trein:
                     pos_y = self.rails.ref_punt_next[1]
 
             rotation = math.radians(rotation)
-
-            self.mid = (round(width * math.cos(rotation) + pos_x, 2),
-                        round(height * math.sin(rotation) + pos_y, 2))
 
             self.move(x=round(width * math.cos(rotation) + pos_x, 2),
                       y=round(height * math.sin(rotation) + pos_y, 2))

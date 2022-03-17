@@ -20,37 +20,25 @@ GL.glEnable(GL.GL_DEPTH_TEST)
 GL.glShadeModel(GL.GL_SMOOTH)
 
 
-# virm2 = Trein("VIRM3_2", "VIRM3")
-# virm2.generate()
-
-
 grid = Grid()
 
-icityvagon = grid.add_trein("f3", "icityvagon", 0.5, -1.5, TREIN_PASSAGIER)
-icityvagon.move(x=0.5, y=-2.4)
-icityvagon.rotate(x=90)
+icityvagon = grid.add_trein("f3", "icityvagon", TREIN_PASSAGIER, start_x=0.5,
+                            start_y=-2.4, rot_x=90)
 
-innercity = grid.add_trein("innercity", "innercity", 0.5, -1.5,
-                           TREIN_LOCOMOTIEF, mtl_images={'Material.004': 'innercity6'})
-# innercity.move(x=0.5, y=2)
-innercity.move(x=0.5, y=2)
-innercity.rotate(x=90)
+innercity = grid.add_trein("innercity", "innercity", TREIN_LOCOMOTIEF,
+                           start_x=0.5, start_y=1.5, rot_x=90,
+                           mtl_images={'Material.004': 'innercity6'})
 innercity.change_speed(-0.05)
 
 innercity.attach_trein(icityvagon)
 
 # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-virm1 = grid.add_trein("VIRM3_1", "VIRM3", 0.5, -1.5, TREIN_LOCOMOTIEF)
-virm1.rotate(x=90)
-# # virm1.move(x=0.75, z=0.91)
-# virm1.move(x=0.5, y=3.5, z=1)
-# virm1.move(x=-17.5, y=2, z=1)
-virm1.move(x=0.5, y=2, z=0.4)
+virm1 = grid.add_trein("VIRM3_1", "VIRM3", TREIN_LOCOMOTIEF,
+                       start_x=0.5, start_y=2, start_z=0.4, rot_x=90)
 virm1.change_speed(0.05)
 
-loco1 = grid.add_trein("Loco1", "lego_loco_kop", 0.5, 1.95, TREIN_LOCOMOTIEF)
-loco1.move(x=0.5, y=2, z=0.5)
-loco1.rotate(x=90)
+loco1 = grid.add_trein("Loco1", "lego_loco_kop", TREIN_LOCOMOTIEF,
+                       start_x=0.5, start_y=2, start_z=0.5, rot_x=90)
 loco1.change_speed(0.1)
 
 rails1 = grid.add_bocht("rails1", 45, rotation=0)
@@ -122,9 +110,8 @@ grid.connect_rails(rails15, rails12)
 # for r in grid.rails:
 #     print_rails_info(r)
 
-loco2 = grid.add_trein("Loco2", "lego_loco_kop", 2, 2, TREIN_LOCOMOTIEF)
-loco2.move(x=2, y=2, z=0.5)
-loco2.rotate(x=90)
+loco2 = grid.add_trein("Loco2", "lego_loco_kop", TREIN_LOCOMOTIEF,
+                       start_x=2, start_y=2, start_z=0.5, rot_x=90)
 loco2.change_speed(-0.05)
 
 rails_1 = grid.add_recht("rails_1",
@@ -145,7 +132,7 @@ grid.connect_rails(rails_2, rails_3)
 loco2.rails = rails_2
 loco1.rails = rails3
 virm1.rails = rails3
-innercity.rails = rails3
+innercity.rails = rails4
 icityvagon.rails = rails3
 
 grid.generate()
@@ -217,9 +204,9 @@ while 1:
 
     # for t in grid.treinen:
     for t in grid.locomotieven:
-        trein_x, trein_y = t.mid
+        # trein_x, trein_y = t.pos[:2]
         # print(t.name, trein_x, trein_y)
-        create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
+        # create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
         create_line(t.pos[0], t.pos[1], 5,
                     t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
 
