@@ -7,6 +7,8 @@ from grid import Grid
 from lijnen import create_line
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
 
+MOVE_STEP = 0.1
+ROTATE_STEP = 1
 pygame.init()
 viewport = (800, 600)
 hx = viewport[0]/2
@@ -23,7 +25,8 @@ GL.glShadeModel(GL.GL_SMOOTH)
 grid = Grid()
 
 icityvagon = grid.add_trein("f3", "icityvagon", TREIN_PASSAGIER, start_x=0.5,
-                            start_y=-2.4, rot_x=90)
+                            start_y=-2.4, rot_x=90,
+                            mtl_images={'Material.006': 'icityvagon6'})
 
 innercity = grid.add_trein("innercity", "innercity", TREIN_LOCOMOTIEF,
                            start_x=0.5, start_y=1.5, rot_x=90,
@@ -152,7 +155,7 @@ GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
 rx, ry = (0, -50)
 tx, ty = (0, 0)
-zpos = 15
+tz = 15
 rotate = move = False
 
 
@@ -165,9 +168,9 @@ while 1:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
-                zpos = max(1, zpos-1)
+                tz = max(1, tz-1)
             elif event.button == 5:
-                zpos += 1
+                tz += 1
             elif event.button == 1:
                 rotate = True
             elif event.button == 3:
@@ -186,6 +189,26 @@ while 1:
                 tx += i / 100
                 ty -= j / 100
 
+    keys = pygame.key.get_pressed()
+    SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
+
+    # Left and right are switched.
+    tx += SPEEDUP_STEP * MOVE_STEP * \
+        (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT])
+    ty += SPEEDUP_STEP * MOVE_STEP * (keys[pygame.K_DOWN] * keys[pygame.K_LCTRL] -
+                                      keys[pygame.K_UP] * keys[pygame.K_LCTRL])
+    # rx += ROTATE_STEP * (keys[pygame.K_DOWN] -
+    #                      keys[pygame.K_UP])
+    tz += SPEEDUP_STEP * MOVE_STEP * (keys[pygame.K_DOWN] - keys[pygame.K_UP])
+
+    if keys[pygame.K_LSHIFT]:
+        print(" ")
+        rx += SPEEDUP_STEP * ROTATE_STEP * \
+            (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT])
+        ry += SPEEDUP_STEP * ROTATE_STEP * (keys[pygame.K_DOWN] -
+                                            keys[pygame.K_UP])
+        # rz += MOVE_STEP * (keys[pygame.K_DOWN] - keys[pygame.K_UP])
+
     # Choose backgroundcolor
     # GL.glClearColor(0.8, 0.8, 0.8, 1)
 
@@ -195,7 +218,7 @@ while 1:
     # Reset all graphic/shape's position
     GL.glLoadIdentity()
 
-    GL.glTranslate(tx * 10, ty * 10, - zpos)
+    GL.glTranslate(tx * 10, ty * 10, - tz)
 
     GL.glRotate(rx, 0, 1, 0)
     GL.glRotate(ry, 1, 0, 0)
