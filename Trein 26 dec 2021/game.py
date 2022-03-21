@@ -2,10 +2,11 @@ import sys
 import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
-from constants import print_rails_info
+from constants import print_rails_info, show_coordinates
 from grid import Grid
 from lijnen import create_line
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
+import math
 
 MOVE_STEP = 0.1
 ROTATE_STEP = 1
@@ -152,12 +153,10 @@ GL.glMatrixMode(GL.GL_MODELVIEW)
 GL.glEnable(GL.GL_BLEND)
 GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
+tx, ty, tz = (0, 0, 15)
+rx, ry, rz = (0, -90, 0)  # (0, 0) is bovenaanzicht
 
-rx, ry = (0, -50)
-tx, ty = (0, 0)
-tz = 15
 rotate = move = False
-
 
 while 1:
     clock.tick(30)
@@ -168,12 +167,16 @@ while 1:
             sys.exit()
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
+                # Zoom in
                 tz = max(1, tz-1)
             elif event.button == 5:
+                # Zoom out
                 tz += 1
             elif event.button == 1:
+                # Left
                 rotate = True
             elif event.button == 3:
+                # Right
                 move = True
         elif event.type == pygame.MOUSEBUTTONUP:
             if event.button == 1:
@@ -188,26 +191,166 @@ while 1:
             if move:
                 tx += i / 100
                 ty -= j / 100
+        # elif event.type == pygame.KEYDOWN:
+        #     print("Current camera position", tx, ty, tz)
+        #     print("Current camera rotation", rx, ry, rz)
+        # elif event.type == pygame.KEYUP:
+        #     # DEBUG
+        #     print("Current camera position", tx, ty, tz)
+        #     print("Current camera rotation", rx, ry, rz)
 
     keys = pygame.key.get_pressed()
     SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
 
-    # Left and right are switched.
+    # TODO: welke richting er naar verplaatst wordt, hangt af van huidige
+    # rotatie en keys.
+
+    # Zoom
+    tz += SPEEDUP_STEP * MOVE_STEP * \
+        (keys[pygame.K_z] - keys[pygame.K_x])
+
+    # Move to left or right
     tx += SPEEDUP_STEP * MOVE_STEP * \
         (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT])
-    ty += SPEEDUP_STEP * MOVE_STEP * (keys[pygame.K_DOWN] * keys[pygame.K_LCTRL] -
-                                      keys[pygame.K_UP] * keys[pygame.K_LCTRL])
+
+    # Rotate around point of grid
+    rz += SPEEDUP_STEP * ROTATE_STEP * \
+        (keys[pygame.K_COMMA] - keys[pygame.K_PERIOD])
+
+    # Move further or back
+    # tz += SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_DOWN] - keys[pygame.K_UP])
+    # ty += SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_r] - keys[pygame.K_e])
+    # ry += SPEEDUP_STEP * ROTATE_STEP * \
+    #     (keys[pygame.K_p] - keys[pygame.K_o])
+
+    # Move up or down with rx, ry, rz = 0,245,0
+    # Further or back with rx, ry, rz = 0,0,0
+    # ty += SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_PAGEDOWN] - keys[pygame.K_PAGEUP])
+
+    # Move up or down with rx, ry, rz = 0,0,0
+    # Further or back with rx, ry, rz = 0,245,0
+    # tz += SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_PAGEDOWN] - keys[pygame.K_PAGEUP])
+
+    # Move up or down!!!
+    # Deze is goed!
+    ty += SPEEDUP_STEP * MOVE_STEP * \
+        (keys[pygame.K_PAGEDOWN] - keys[pygame.K_PAGEUP]) * \
+        math.sin(math.radians(ry))
+
+    # Move up or down!!!
+    # Deze is goed! TODO herhaal dit voor further, back
+    tz += SPEEDUP_STEP * MOVE_STEP * \
+        (keys[pygame.K_PAGEDOWN] - keys[pygame.K_PAGEUP]) * \
+        math.cos(math.radians(ry))
+
+    ry += 1 * keys[pygame.K_LCTRL] * \
+        (keys[pygame.K_UP] - keys[pygame.K_DOWN])
+
+    # # Zoom, further, back
+    # add_tz = SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_e] - keys[pygame.K_d])
+    # # (math.cos(math.radians(rx)) + math.cos(math.radians(ry)) + math.cos(math.radians(rz))) / \
+    # # (math.cos(math.radians(rx)) +
+    # #  math.cos(math.radians(ry)) + math.cos(math.radians(rz)))
+
+    # add_ty = SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_e] - keys[pygame.K_d])  # * \
+
+    # # math.cos(math.radians(ry))
+    # if add_tz != 0:
+    #     print("tz", add_tz)
+    # tz += add_tz
+
+    # # Further, back, up, down
+    # add_ty = SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_s] - keys[pygame.K_w]) * \
+    #     math.cos(math.radians(ry))
+    # # (math.sin(math.radians(rx)) + math.cos(math.radians(ry)) + math.sin(math.radians(rz))) / \
+    # # (math.sin(math.radians(rx)) + math.cos(math.radians(ry)) + math.sin(math.radians(rz)))
+    # if add_ty != 0:
+    #     print("ty", add_ty)
+    # ty += add_ty
+
+    # #  Left and right
+    # add_tx = SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_q] - keys[pygame.K_a]) * \
+    #     (math.cos(math.radians(ry)) + math.cos(math.radians(rx)) + math.sin(math.radians(rz))) / \
+    #     (math.cos(math.radians(ry)) +
+    #      math.cos(math.radians(rx)) + math.sin(math.radians(rz)))
+    # if add_tx != 0:
+    #     print("tx", add_tx)
+    # tx += add_tx
+    # ry += SPEEDUP_STEP * 0.01 * (keys[pygame.K_s] - keys[pygame.K_w]) * math.sin(math.radians())
+
+    # add_tz = SPEEDUP_STEP * MOVE_STEP * 0.1 * \
+    #     (keys[pygame.K_UP] - keys[pygame.K_DOWN]) * \
+    #     (math.sin(math.radians(rx)) + math.cos(math.radians(ry)) + math.cos(math.radians(rz))) / \
+    #     (math.sin(math.radians(rx)) +
+    #      math.cos(math.radians(ry)) + math.cos(math.radians(rz)))
+    # tz += add_tz
+
+    # Further, back, up, down
+    # add_ty = SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_UP] - keys[pygame.K_DOWN]) * \
+    #     (math.sin(math.radians(rx)) + math.cos(math.radians(ry)) + math.sin(math.radians(rz))) / \
+    #     (math.sin(math.radians(rx)) +
+    #      math.cos(math.radians(ry)) + math.sin(math.radians(rz)))
+    # ty += add_ty
+
+    # Als rx,rz = 0,0
+    # sin(0) = 0        cos(0) = 1
+    # ty veranderen voor verder, terug
+    # tz veranderen voor zoom
+
+    # Als ry = -90
+    # ty veranderen voor zoom
+    # tz veranderen voor verder, terug
+
+    if keys[pygame.K_0]:
+        tx, ty, tz = 0, 0, 0
+
+    if keys[pygame.K_1]:
+        # tx up, down
+        tx, ty, tz = 1, 0, 0
+
+    if keys[pygame.K_2]:
+        tx, ty, tz = 0, 1, 0
+
+    if keys[pygame.K_3]:
+        tx, ty, tz = 0, 0, 1
+
+    if keys[pygame.K_4]:
+        ry = -90
+        ty = -0.3
+
+    # Rotate to left or right
+    # rx += 5 * SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_COMMA] - keys[pygame.K_PERIOD])
+    # ry += 5 * SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_COMMA] - keys[pygame.K_PERIOD])
+
     # rx += ROTATE_STEP * (keys[pygame.K_DOWN] -
     #                      keys[pygame.K_UP])
-    tz += SPEEDUP_STEP * MOVE_STEP * (keys[pygame.K_DOWN] - keys[pygame.K_UP])
+    # ry += 5 * SPEEDUP_STEP * MOVE_STEP * \
+    #     (keys[pygame.K_DOWN] - keys[pygame.K_UP])
+    # if keys[pygame.K_UP] or keys[pygame.K_DOWN]:
+    #     # tx += SPEEDUP_STEP * MOVE_STEP * math.cos(math.radians(rx)) * (keys[pygame.K_DOWN] -
+    #     #                                                  keys[pygame.K_UP])
+    #     tz += SPEEDUP_STEP * MOVE_STEP * \
+    #         (keys[pygame.K_DOWN] - keys[pygame.K_UP])
+    #     # print(SPEEDUP_STEP * MOVE_STEP *
+    #     #       (keys[pygame.K_DOWN] - keys[pygame.K_UP]))
 
-    if keys[pygame.K_LSHIFT]:
-        print(" ")
-        rx += SPEEDUP_STEP * ROTATE_STEP * \
-            (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT])
-        ry += SPEEDUP_STEP * ROTATE_STEP * (keys[pygame.K_DOWN] -
-                                            keys[pygame.K_UP])
-        # rz += MOVE_STEP * (keys[pygame.K_DOWN] - keys[pygame.K_UP])
+    # if keys[pygame.K_LSHIFT]:
+    #     rx += SPEEDUP_STEP * ROTATE_STEP * \
+    #         (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT])
+    #     ry += SPEEDUP_STEP * ROTATE_STEP * (keys[pygame.K_DOWN] -
+    #                                         keys[pygame.K_UP])
+    # rz += MOVE_STEP * (keys[pygame.K_DOWN] - keys[pygame.K_UP])
 
     # Choose backgroundcolor
     # GL.glClearColor(0.8, 0.8, 0.8, 1)
@@ -220,8 +363,14 @@ while 1:
 
     GL.glTranslate(tx * 10, ty * 10, - tz)
 
+    rx = rx % 360
+    ry = ry % 360
+    rz = rz % 360
     GL.glRotate(rx, 0, 1, 0)
     GL.glRotate(ry, 1, 0, 0)
+    GL.glRotate(rz, 0, 0, 1)
+
+    show_coordinates(tx*10, ty*10, -tz, rx, ry, rz)
 
     grid.rijden()
 

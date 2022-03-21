@@ -1,6 +1,10 @@
 import numpy as np
 import math
 from collections import namedtuple
+import pygame
+import OpenGL.GL as GL
+import OpenGL.GLU as GLU
+pygame.init()
 
 TREINEN_MAP = "treinen/"
 RAILS_MAP = "rails/"
@@ -15,6 +19,12 @@ LENGTE_VAKJE = 2
 
 # Factor to multiply with the train's speed used in curves.
 SPEEDUP_BOCHT = 10
+
+
+FONT = pygame.font.Font(None, 60)
+COLOR_ACTIVE = (50, 120, 210)
+COLOR_INACTIVE = (255, 255, 255)
+COLOR_TEXT = (43, 56, 43)
 
 
 def angle_between(p1, p2):
@@ -43,3 +53,12 @@ def print_rails_info(rails):
     next_name = rails.next.name if rails.next else None
     print(rails.name, rails.get_ref_punten(),
           prev_name, next_name)
+
+
+def show_coordinates(tx, ty, tz, rx, ry, rz):
+    text = f"{int(tx)} {int(ty)} {int(tz)} {int(rx)} {int(ry)} {int(rz)}"
+    textsurface = FONT.render(text, False, (250, 250, 250))
+    textData = pygame.image.tostring(textsurface, "RGBA", True)
+    GL.glWindowPos2d(0, 0)
+    GL.glDrawPixels(textsurface.get_width(), textsurface.get_height(
+    ), GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, textData)
