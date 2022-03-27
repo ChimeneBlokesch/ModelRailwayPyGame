@@ -25,6 +25,10 @@ GL.glShadeModel(GL.GL_SMOOTH)
 
 grid = Grid()
 
+sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
+                     start_x=0.5, start_y=1.5, rot_x=90)
+sgm.change_speed(-0.05)
+
 icityvagon = grid.add_trein("f3", "icityvagon", TREIN_PASSAGIER, start_x=0.5,
                             start_y=-2.4, rot_x=90,
                             mtl_images={'Material.006': 'icityvagon6'})
@@ -138,6 +142,7 @@ loco1.rails = rails3
 virm1.rails = rails3
 innercity.rails = rails4
 icityvagon.rails = rails3
+sgm.rails = rails4
 
 grid.generate()
 clock = pygame.time.Clock()
@@ -235,18 +240,46 @@ while 1:
     # tz += SPEEDUP_STEP * MOVE_STEP * \
     #     (keys[pygame.K_PAGEDOWN] - keys[pygame.K_PAGEUP])
 
+    # Move further, back!!!
+    if not keys[pygame.K_LCTRL]:
+        # Bij bovenaanzicht gaan deze nu in- en uitzoomen.
+        # Bij ry = 270 in- en uitzoomen en bij ry = 180 further en back.
+        # tz verandert bij ry = 270.
+        # ty verandert bij ry = 180.
+        # ty += SPEEDUP_STEP * MOVE_STEP * \
+        #     (keys[pygame.K_UP] - keys[pygame.K_DOWN]) * \
+        #     math.sin(math.radians(ry + (((ry > 180) | 0)*2-1) * 90))
+        ty += SPEEDUP_STEP * MOVE_STEP * \
+            (keys[pygame.K_UP] - keys[pygame.K_DOWN])
+
+        # tz += SPEEDUP_STEP * MOVE_STEP * \
+        #     (keys[pygame.K_UP] - keys[pygame.K_DOWN]) * \
+        #     math.cos(math.radians(ry + (((ry > 180) | 0)*2-1) * 90))
+
+        # 270 +
+
+        # cos(270) = 0
+        # cos(180) = -1
+        # sin(270) = -1
+        # sin(180) = 0
+
+        # Doel:
+        # Bij ry = 270:
+        # ty veranderen
+
     # Move up or down!!!
     # Deze is goed!
     ty += SPEEDUP_STEP * MOVE_STEP * \
-        (keys[pygame.K_PAGEDOWN] - keys[pygame.K_PAGEUP]) * \
+        (keys[pygame.K_PAGEUP] - keys[pygame.K_PAGEDOWN]) * \
         math.sin(math.radians(ry))
 
     # Move up or down!!!
     # Deze is goed! TODO herhaal dit voor further, back
     tz += SPEEDUP_STEP * MOVE_STEP * \
-        (keys[pygame.K_PAGEDOWN] - keys[pygame.K_PAGEUP]) * \
+        (keys[pygame.K_PAGEUP] - keys[pygame.K_PAGEDOWN]) * \
         math.cos(math.radians(ry))
 
+    # Rotate up or down
     ry += 1 * keys[pygame.K_LCTRL] * \
         (keys[pygame.K_UP] - keys[pygame.K_DOWN])
 
@@ -357,11 +390,10 @@ while 1:
 
     # Remove everything from screen (i.e. displays all white)
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+    grid.rijden()
 
     # Reset all graphic/shape's position
     GL.glLoadIdentity()
-
-    GL.glTranslate(tx * 10, ty * 10, - tz)
 
     rx = rx % 360
     ry = ry % 360
@@ -369,10 +401,9 @@ while 1:
     GL.glRotate(rx, 0, 1, 0)
     GL.glRotate(ry, 1, 0, 0)
     GL.glRotate(rz, 0, 0, 1)
+    GL.glTranslate(tx * 10, ty * 10, - tz)
 
     show_coordinates(tx*10, ty*10, -tz, rx, ry, rz)
-
-    grid.rijden()
 
     # for t in grid.treinen:
     for t in grid.locomotieven:
