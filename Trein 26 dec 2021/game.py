@@ -8,7 +8,7 @@ from lijnen import create_line
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
 import math
 
-MOVE_STEP = 0.1
+MOVE_STEP = 0.05
 ROTATE_STEP = 1
 pygame.init()
 viewport = (800, 600)
@@ -27,7 +27,7 @@ grid = Grid()
 
 sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
                      start_x=0.5, start_y=1.5, rot_x=90)
-sgm.change_speed(-0.05)
+# sgm.change_speed(-0.05)
 
 icityvagon = grid.add_trein("f3", "icityvagon", TREIN_PASSAGIER, start_x=0.5,
                             start_y=-2.4, rot_x=90,
@@ -160,6 +160,7 @@ GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
 tx, ty, tz = (0, 0, 15)
 rx, ry, rz = (0, -90, 0)  # (0, 0) is bovenaanzicht
+scale = 0
 
 rotate = move = False
 
@@ -213,22 +214,22 @@ while 1:
     rz += SPEEDUP_STEP * ROTATE_STEP * \
         (keys[pygame.K_COMMA] - keys[pygame.K_PERIOD])
 
-    # Move further, back!!!
+    # Move further, back
     if not keys[pygame.K_LCTRL]:
-        ty += SPEEDUP_STEP * MOVE_STEP * \
+        ty += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
             (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
             math.cos(math.radians(rz))
 
-        tx += SPEEDUP_STEP * MOVE_STEP * \
+        tx += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
             (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
             math.sin(math.radians(rz))
 
-    # Move up or down!!!
-    tz += SPEEDUP_STEP * 5 * MOVE_STEP * \
+    # Move up or down
+    tz += SPEEDUP_STEP * MOVE_STEP * \
         (keys[pygame.K_PAGEUP] - keys[pygame.K_PAGEDOWN])
 
     # Rotate up or down
-    ry += 1 * keys[pygame.K_LCTRL] * \
+    ry += SPEEDUP_STEP * ROTATE_STEP * keys[pygame.K_LCTRL] * \
         (keys[pygame.K_UP] - keys[pygame.K_DOWN])
 
     # Choose backgroundcolor
@@ -260,4 +261,8 @@ while 1:
         create_line(t.pos[0], t.pos[1], 5,
                     t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
 
+    scale += (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
+    # print([1 + (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05] * 3)
+    # GL.glScale(*[1 + (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05] * 3)
+    GL.glScale(*[1 + scale] * 3)
     pygame.display.flip()
