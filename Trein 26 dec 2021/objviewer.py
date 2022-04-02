@@ -29,7 +29,9 @@ GL.glEnable(GL.GL_DEPTH_TEST)
 GL.glShadeModel(GL.GL_SMOOTH)
 
 # LOAD OBJECT AFTER PYGAME INIT
-virm = Object3D(sys.argv[1])
+print("Folder", sys.argv[1])
+print("obj name", sys.argv[2])
+virm = Object3D(sys.argv[1], sys.argv[2])
 virm.generate()
 
 clock = pygame.time.Clock()

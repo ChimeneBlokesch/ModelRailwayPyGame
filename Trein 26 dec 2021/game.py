@@ -174,10 +174,12 @@ while 1:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 4:
                 # Zoom in
-                tz = max(1, tz-1)
+                scale += 0.05
+                # tz = max(1, tz-1)
             elif event.button == 5:
                 # Zoom out
-                tz += 1
+                # tz += 1
+                scale -= 0.05
             elif event.button == 1:
                 # Left
                 rotate = True
@@ -261,8 +263,6 @@ while 1:
         create_line(t.pos[0], t.pos[1], 5,
                     t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
 
-    scale += (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
-    # print([1 + (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05] * 3)
-    # GL.glScale(*[1 + (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05] * 3)
+    scale += SPEEDUP_STEP * (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
     GL.glScale(*[1 + scale] * 3)
     pygame.display.flip()

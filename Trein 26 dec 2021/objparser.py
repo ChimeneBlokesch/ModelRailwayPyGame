@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pygame
 import OpenGL.GL as GL
 import sqlite3
@@ -132,7 +133,11 @@ class Object3D:
         return contents
 
     def read_image_file(self, filename):
-        surf = pygame.image.load(filename).convert_alpha()
+        try:
+            surf = pygame.image.load(filename).convert_alpha()
+        except FileNotFoundError:
+            print(filename, "not found")
+            exit()
         image = pygame.image.tostring(surf, 'RGBA', 1)
         ix, iy = surf.get_rect().size
 
@@ -203,39 +208,17 @@ class Object3D:
         for face in self.faces:
             vertices, normals, texture_coords, material = face
             mtl = self.mtl[material]
-            temp1 = None
             GL.glColor(1, 1, 1)
-            # GL.glColor(*mtl['Kd'])
 
             if IMAGE_PREFIX + "map_Kd" in mtl:
                 # use diffuse texmap
-                temp1 = "map_Kd:" + \
-                    str(mtl["map_Kd"]) + " " + \
-                    str(mtl[IMAGE_PREFIX + "map_Kd"])
-
                 GL.glBindTexture(GL.GL_TEXTURE_2D,
                                  mtl[IMAGE_PREFIX + 'map_Kd'])
             else:
                 # use diffuse color, because this is the mostly used color
                 texid = GL.glGenTextures(1)
                 GL.glBindTexture(GL.GL_TEXTURE_2D, texid)
-
-                if material == "top":
-                    GL.glColor(0.4, 0.4, 0.4)
-                    GL.glColor(0.035601, 0.042311, 0.051269)
-                    GL.glColor(0.412, 0.455, 0.498)
-                    # GL.glColor(0.053031, 0.060235, 0.076577)
-                    # GL.glColor(0.301, 0.266, 0.266)
-                elif material == "voorkant":
-                    # print("voorkant", mtl['Kd'])
-                    GL.glColor(0.1, 0.1, 0.1)
-                else:
-                    ...
-                    GL.glColor(*mtl['Kd'])
-                temp1 = "Kd:" + str(mtl["Kd"])
-
-            temp.add(
-                (material, temp1))
+                GL.glColor(mtl['Kd'])
 
             GL.glBegin(GL.GL_POLYGON)
 
@@ -252,7 +235,6 @@ class Object3D:
 
         GL.glDisable(GL.GL_TEXTURE_2D)
         GL.glEndList()
-        # [print(t) for t in temp]
 
     def render(self, pos=Punt(0, 0, 0), rotate=Punt(0, 0, 0), flip=False,
                scale_value=(1, 1, 1)):
