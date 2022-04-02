@@ -203,7 +203,6 @@ class Object3D:
         GL.glNewList(self.gl_list, GL.GL_COMPILE)
         GL.glEnable(GL.GL_TEXTURE_2D)
         GL.glFrontFace(GL.GL_CCW)
-        temp = set()
 
         for face in self.faces:
             vertices, normals, texture_coords, material = face
@@ -250,7 +249,7 @@ class Object3D:
         # y=scale_value * ((x-1) ** 1 + x | 0)
         # Blijkbaar werkt dit niet samen :(
         GL.glScale(*scale_value)
-        GL.glCallList(self.gl_list)
+        GL.glCallList(np.array(self.gl_list))
         GL.glPopMatrix()
 
     def free(self):

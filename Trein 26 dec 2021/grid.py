@@ -1,6 +1,7 @@
 from trein import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
 from rails import HOOGTE_RAILS, RAILS_BOCHT, Rails, Bocht, Recht, NEXT, PREV
 from ground import create_assenstelsel, create_grid, create_ground
+from poppetje import Poppetje
 
 
 class Grid:
@@ -9,6 +10,7 @@ class Grid:
         self.locomotieven = []
         self.goederen = []
         self.passagiers = []
+        self.poppetjes = []
 
     def generate(self):
         for rails in self.rails:
@@ -21,6 +23,9 @@ class Grid:
             trein.generate()
         for trein in self.goederen:
             trein.generate()
+
+        for pop in self.poppetjes:
+            pop.generate()
 
     def render(self):
         # create_assenstelsel()
@@ -39,6 +44,14 @@ class Grid:
 
         for trein in self.goederen:
             trein.render()
+
+        for pop in self.poppetjes:
+            pop.render()
+
+    def add_poppetje(self, *args, **kwargs):
+        new_pop = Poppetje(*args, **kwargs)
+        self.poppetjes.append(new_pop)
+        return new_pop
 
     def add_trein(self, *args, **kwargs):
         new_trein = Trein(*args, **kwargs)

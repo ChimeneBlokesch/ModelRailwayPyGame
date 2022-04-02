@@ -28,7 +28,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS type (
                                         name text NOT NULL UNIQUE
                                     ); """)
 
-for x in ["passagier", "goederen", "locomotief"]:
+for x in ["passagier", "goederen", "locomotief", "poppetje"]:
     try:
         cursor.execute("""INSERT INTO type(name) VALUES(?)""", (x,))
     except sqlite3.IntegrityError:

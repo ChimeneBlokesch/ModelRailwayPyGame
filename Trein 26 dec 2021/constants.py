@@ -8,6 +8,7 @@ pygame.init()
 
 TREINEN_MAP = "treinen/"
 RAILS_MAP = "rails/"
+POPPETJES_MAP = "poppetjes/"
 
 Punt = namedtuple("Punt", ["x", "y", "z"])
 

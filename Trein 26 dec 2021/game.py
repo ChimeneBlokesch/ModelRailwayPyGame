@@ -2,6 +2,7 @@ import sys
 import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
+from camera import Camera
 from constants import print_rails_info, show_coordinates
 from grid import Grid
 from lijnen import create_line
@@ -24,6 +25,9 @@ GL.glShadeModel(GL.GL_SMOOTH)
 
 
 grid = Grid()
+camera = Camera()
+
+pepper = grid.add_poppetje("Pepper", "lego_pepper2", start_x=-5, rot_x=90)
 
 sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
                      start_x=0.5, start_y=1.5, rot_x=90)
@@ -158,10 +162,6 @@ GL.glMatrixMode(GL.GL_MODELVIEW)
 GL.glEnable(GL.GL_BLEND)
 GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
-tx, ty, tz = (0, 0, 15)
-rx, ry, rz = (0, -90, 0)  # (0, 0) is bovenaanzicht
-scale = 0
-
 rotate = move = False
 
 while 1:
@@ -199,40 +199,16 @@ while 1:
             if move:
                 tx += i / 100
                 ty -= j / 100
+        elif event.type == pygame.KEYDOWN and pygame.K_2:
+            # Switch to Pepper
+            pepper.is_player = True
+
+            # TODO: Move camera
 
     keys = pygame.key.get_pressed()
-    SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
-
-    # Move to left or right
-    tx += SPEEDUP_STEP * MOVE_STEP * \
-        (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]) * \
-        math.cos(math.radians(rz))
-
-    ty += SPEEDUP_STEP * MOVE_STEP * \
-        (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * \
-        math.sin(math.radians(rz))
-
-    # Rotate around point of grid
-    rz += SPEEDUP_STEP * ROTATE_STEP * \
-        (keys[pygame.K_COMMA] - keys[pygame.K_PERIOD])
-
-    # Move further, back
-    if not keys[pygame.K_LCTRL]:
-        ty += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
-            (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
-            math.cos(math.radians(rz))
-
-        tx += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
-            (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
-            math.sin(math.radians(rz))
-
-    # Move up or down
-    tz += SPEEDUP_STEP * MOVE_STEP * \
-        (keys[pygame.K_PAGEUP] - keys[pygame.K_PAGEDOWN])
-
-    # Rotate up or down
-    ry += SPEEDUP_STEP * ROTATE_STEP * keys[pygame.K_LCTRL] * \
-        (keys[pygame.K_UP] - keys[pygame.K_DOWN])
+    camera.render(keys)
+    tx, ty, tz = camera.pos
+    rx, ry, rz = camera.rotate_pos
 
     # Choose backgroundcolor
     # GL.glClearColor(0.8, 0.8, 0.8, 1)
@@ -244,9 +220,6 @@ while 1:
     # Reset all graphic/shape's position
     GL.glLoadIdentity()
 
-    rx = rx % 360
-    ry = ry % 360
-    rz = rz % 360
     GL.glRotate(rx, 0, 1, 0)
     GL.glRotate(ry, 1, 0, 0)
     GL.glRotate(rz, 0, 0, 1)
@@ -263,6 +236,5 @@ while 1:
         create_line(t.pos[0], t.pos[1], 5,
                     t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
 
-    scale += SPEEDUP_STEP * (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
-    GL.glScale(*[1 + scale] * 3)
+    GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()
