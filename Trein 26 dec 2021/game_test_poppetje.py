@@ -90,7 +90,7 @@ class Game:
         create_line(*list(self.pepper.pos[:2]) + [self.pepper.pos[2] + 1],
                     *(list(self.pepper.pos[:2]) + [0]), (34, 65, 34))
 
-        # GL.glScale(*[1 + self.camera.scale] * 3)
+        GL.glScale(*[1 + self.camera.scale] * 3)
         pygame.display.flip()
 
     def handle_events(self):
@@ -129,10 +129,6 @@ class Game:
                 # Switch to Pepper
                 self.pepper.is_player = True
 
-                print("Move to Pepper")
-                print(*self.pepper.pos)
-                print(*self.pepper.rotate_pos)
-
                 # GLU.gluLookAt(*self.camera.pos, *self.pepper.pos, 0, 1, 0)
 
                 # Move self.camera to Pepper
@@ -142,12 +138,12 @@ class Game:
                 # self.camera.rotate(y=270)
                 # print(*self.camera.pos)
                 # self.camera.rotate(*self.pepper.rotate_pos)
-                self.camera.mode = CAMERA_POPPETJE
+                self.camera.camera_to_poppetje(self.pepper)
 
                 # When self.camera gets moved, Pepper also should be moved
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
                 self.pepper.is_player = False
-                self.camera.mode = CAMERA_FREE
+                self.camera.camera_to_free()
 
             if self.camera.mode == CAMERA_POPPETJE:
                 self.pepper.handle_event(event)

@@ -107,6 +107,7 @@ class Poppetje:
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
+            return
             if event.key == pygame.K_UP:
                 self.speed = RUN_SPEED
             elif event.key == pygame.K_DOWN:

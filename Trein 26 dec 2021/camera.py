@@ -19,12 +19,26 @@ class Camera:
         self.scale = 0
         self.mode = CAMERA_FREE
 
+        # Poppetje mode
+        self.distance_from_player = -3
+        self.pitch = 45
+        self.angle = 0
+        self.poppetje = None
+
     def move(self, x=None, y=None, z=None):
         x = x if x is not None else self.pos.x
         y = y if y is not None else self.pos.y
         z = z if z is not None else self.pos.z
 
         self.pos = Punt(x, y, z)
+
+    def move_delta(self, dx=0, dy=0, dz=0):
+        self.move(self.pos.x + dx, self.pos.y + dy, self.pos.z + dz)
+
+    def rotate_delta(self, dx=0, dy=0, dz=0):
+        self.rotate(self.rotate_pos.x + dx,
+                    self.rotate_pos.y + dy,
+                    self.rotate_pos.z + dz)
 
     def rotate(self, x=None, y=None, z=None):
         x = x if x is not None else self.rotate_pos.x
@@ -33,10 +47,7 @@ class Camera:
 
         self.rotate_pos = Punt(x, y, z)
 
-    def render(self, keys):
-        # TODO When playing as Pepper, rotate around pepper.pos, by using
-        # sinus and cosinus to have new x and y.
-
+    def free_camera(self, keys):
         SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
         tx, ty, tz = (0, 0, 0)
         rx, ry, rz = (0, 0, 0)
@@ -91,3 +102,51 @@ class Camera:
             (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
 
         return (tx, ty, tz), (rx, ry, rz)
+
+    def poppetje_camera(self, keys):
+        SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
+        # zoom
+        zoomlevel = SPEEDUP_STEP * (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
+        self.distance_from_player -= zoomlevel
+
+        # pitch
+        d_pitch = SPEEDUP_STEP * keys[pygame.K_LCTRL] * \
+            (keys[pygame.K_UP] - keys[pygame.K_DOWN]) * 0.5
+        self.pitch -= d_pitch
+
+        # angle
+        d_angle = SPEEDUP_STEP * (keys[pygame.K_COMMA] - keys[pygame.K_PERIOD])
+        self.angle += d_angle
+
+        # Horizontal and vertical distance
+        horizontal = self.distance_from_player * \
+            math.cos(math.radians(self.pitch))
+        vertical = self.distance_from_player * \
+            math.sin(math.radians(self.pitch))
+
+        # Camera position
+        theta = self.poppetje.rotate_pos.y + self.angle
+        offset_x = horizontal * math.sin(math.radians(theta))
+        offset_y = horizontal * math.cos(math.radians(theta))
+        self.move(x=self.poppetje.pos.x + offset_x,
+                  y=self.poppetje.pos.y + offset_y,
+                  z=self.poppetje.pos.z + vertical)
+
+        return (-1, -1, -1), (-1, -1, -1)  # TODO: maybe not needed anymore
+
+    def render(self, keys):
+        # TODO When playing as Pepper, rotate around pepper.pos, by using
+        # sinus and cosinus to have new x and y.
+
+        if self.mode == CAMERA_FREE:
+            return self.free_camera(keys)
+
+        return self.poppetje_camera(keys)
+
+    def camera_to_poppetje(self, pop):
+        self.mode = CAMERA_POPPETJE
+        self.poppetje = pop
+
+    def camera_to_free(self):
+        self.mode = CAMERA_FREE
+        self.poppetje = None
