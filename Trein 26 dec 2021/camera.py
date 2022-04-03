@@ -24,6 +24,7 @@ class Camera:
         self.pitch = 45
         self.angle = 0
         self.poppetje = None
+        self.yaw = 0
 
     def move(self, x=None, y=None, z=None):
         x = x if x is not None else self.pos.x
@@ -89,9 +90,7 @@ class Camera:
         #     #     tx += ...
         #     GLU.gluLookAt()
 
-        self.move(self.pos[0] + tx,
-                  self.pos[1] + ty,
-                  self.pos[2] + tz)
+        self.move(self.pos[0] + tx, self.pos[1] + ty, self.pos[2] + tz)
 
         self.rotate((self.rotate_pos[0] + rx) % 360,
                     (self.rotate_pos[1] + ry) % 360,
@@ -131,6 +130,10 @@ class Camera:
         self.move(x=self.poppetje.pos.x + offset_x,
                   y=self.poppetje.pos.y + offset_y,
                   z=self.poppetje.pos.z + vertical)
+
+        # Yaw
+        self.yaw = ((self.poppetje.rotate_pos.y + self.angle) - 180) % 360
+        self.rotate(x=self.yaw)
 
         return (-1, -1, -1), (-1, -1, -1)  # TODO: maybe not needed anymore
 
