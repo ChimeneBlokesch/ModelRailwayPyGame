@@ -51,6 +51,57 @@ class Game:
     def loop(self):
         pygame.event.pump()
 
+        self.handle_events()
+
+        keys = pygame.key.get_pressed()
+        diff_pos, diff_rotate_pos = self.camera.render(keys)
+        # print("HIER", diff_pos, diff_rotate_pos, self.camera.mode)
+
+        tx, ty, tz = self.camera.pos
+        rx, ry, rz = self.camera.rotate_pos
+
+        # Choose backgroundcolor
+        # GL.glClearColor(0.8, 0.8, 0.8, 1)
+
+        # Remove everything from screen (i.e. displays all white)
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+        self.grid.rijden()
+
+        # Reset all graphic/shape's position
+        GL.glLoadIdentity()
+
+        GL.glRotate(rx, 0, 1, 0)
+        GL.glRotate(ry, 1, 0, 0)
+        GL.glRotate(rz, 0, 0, 1)
+
+        GL.glTranslate(tx, ty, tz)
+
+        if self.camera.mode == CAMERA_POPPETJE:
+            # Move Pepper with the same distances as the self.camera.
+            old_pos = self.peper.pos
+            self.peper.move(self.peper.pos[0] - diff_pos[0],
+                            self.peper.pos[1] - diff_pos[1],
+                            self.peper.pos[2] - diff_pos[2])
+
+            angle = angle_between_vectors(old_pos, self.peper.pos)
+            if angle:
+                print("angle", angle)
+
+            self.peper.rotate(y=self.peper.rotate_pos[1] + angle / 5 *
+                              (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
+
+            # *[self.peper.pos[i] + diff_pos[i] for i in range(3)])
+            # self.peper.rotate(*[self.peper.rotate_pos[i] + diff_rotate_pos[i]
+            #                 for i in range(3)])
+
+        show_coordinates(tx, ty, tz, rx, ry, rz)
+        create_line(*list(self.peper.pos[:2]) + [self.peper.pos[2] + 1],
+                    *(list(self.peper.pos[:2]) + [0]), (34, 65, 34))
+
+        # GL.glScale(*[1 + self.camera.scale] * 3)
+        pygame.display.flip()
+
+    def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -105,54 +156,6 @@ class Game:
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
                 self.peper.is_player = False
                 self.camera.mode = CAMERA_FREE
-
-        keys = pygame.key.get_pressed()
-        diff_pos, diff_rotate_pos = self.camera.render(keys)
-        # print("HIER", diff_pos, diff_rotate_pos, self.camera.mode)
-
-        tx, ty, tz = self.camera.pos
-        rx, ry, rz = self.camera.rotate_pos
-
-        # Choose backgroundcolor
-        # GL.glClearColor(0.8, 0.8, 0.8, 1)
-
-        # Remove everything from screen (i.e. displays all white)
-        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-        self.grid.rijden()
-
-        # Reset all graphic/shape's position
-        GL.glLoadIdentity()
-
-        GL.glRotate(rx, 0, 1, 0)
-        GL.glRotate(ry, 1, 0, 0)
-        GL.glRotate(rz, 0, 0, 1)
-
-        GL.glTranslate(tx, ty, tz)
-
-        if self.camera.mode == CAMERA_POPPETJE:
-            # Move Pepper with the same distances as the self.camera.
-            old_pos = self.peper.pos
-            self.peper.move(self.peper.pos[0] - diff_pos[0],
-                            self.peper.pos[1] - diff_pos[1],
-                            self.peper.pos[2] - diff_pos[2])
-
-            angle = angle_between_vectors(old_pos, self.peper.pos)
-            if angle:
-                print("angle", angle)
-
-            self.peper.rotate(y=self.peper.rotate_pos[1] + angle / 5 *
-                              (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
-
-            # *[self.peper.pos[i] + diff_pos[i] for i in range(3)])
-            # self.peper.rotate(*[self.peper.rotate_pos[i] + diff_rotate_pos[i]
-            #                 for i in range(3)])
-
-        show_coordinates(tx, ty, tz, rx, ry, rz)
-        create_line(*list(self.peper.pos[:2]) + [self.peper.pos[2] + 1],
-                    *(list(self.peper.pos[:2]) + [0]), (34, 65, 34))
-
-        # GL.glScale(*[1 + self.camera.scale] * 3)
-        pygame.display.flip()
 
 
 if __name__ == "__main__":
