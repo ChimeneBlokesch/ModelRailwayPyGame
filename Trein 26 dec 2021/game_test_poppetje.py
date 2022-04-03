@@ -32,8 +32,8 @@ class Game:
         self.grid = Grid()
         self.camera = Camera()
 
-        self.peper = self.grid.add_poppetje("Pepper", "lego_pepper2",
-                                            rot_x=90, rot_y=180)
+        self.pepper = self.grid.add_poppetje("Pepper", "lego_pepper2",
+                                             rot_x=90, rot_y=180)
 
         self.grid.generate()
 
@@ -48,9 +48,11 @@ class Game:
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
+        self.lastFrameTime = self.getCurrentTime()
+        self.delta = 0
+
     def loop(self):
         pygame.event.pump()
-
         self.handle_events()
 
         keys = pygame.key.get_pressed()
@@ -77,26 +79,16 @@ class Game:
         GL.glTranslate(tx, ty, tz)
 
         if self.camera.mode == CAMERA_POPPETJE:
-            # Move Pepper with the same distances as the self.camera.
-            old_pos = self.peper.pos
-            self.peper.move(self.peper.pos[0] - diff_pos[0],
-                            self.peper.pos[1] - diff_pos[1],
-                            self.peper.pos[2] - diff_pos[2])
+            # Move Pepper depending on the keys.
+            self.pepper.walk(self.dt)
 
-            angle = angle_between_vectors(old_pos, self.peper.pos)
-            if angle:
-                print("angle", angle)
-
-            self.peper.rotate(y=self.peper.rotate_pos[1] + angle / 5 *
-                              (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
-
-            # *[self.peper.pos[i] + diff_pos[i] for i in range(3)])
-            # self.peper.rotate(*[self.peper.rotate_pos[i] + diff_rotate_pos[i]
+            # *[self.pepper.pos[i] + diff_pos[i] for i in range(3)])
+            # self.pepper.rotate(*[self.pepper.rotate_pos[i] + diff_rotate_pos[i]
             #                 for i in range(3)])
 
         show_coordinates(tx, ty, tz, rx, ry, rz)
-        create_line(*list(self.peper.pos[:2]) + [self.peper.pos[2] + 1],
-                    *(list(self.peper.pos[:2]) + [0]), (34, 65, 34))
+        create_line(*list(self.pepper.pos[:2]) + [self.pepper.pos[2] + 1],
+                    *(list(self.pepper.pos[:2]) + [0]), (34, 65, 34))
 
         # GL.glScale(*[1 + self.camera.scale] * 3)
         pygame.display.flip()
@@ -135,27 +127,40 @@ class Game:
             #         ty -= j / 100
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
                 # Switch to Pepper
-                self.peper.is_player = True
+                self.pepper.is_player = True
 
                 print("Move to Pepper")
-                print(*self.peper.pos)
-                print(*self.peper.rotate_pos)
+                print(*self.pepper.pos)
+                print(*self.pepper.rotate_pos)
 
-                # GLU.gluLookAt(*self.camera.pos, *self.peper.pos, 0, 1, 0)
+                # GLU.gluLookAt(*self.camera.pos, *self.pepper.pos, 0, 1, 0)
 
                 # Move self.camera to Pepper
-                # self.camera.move(x=self.peper.pos[0] - 1,
-                #             y=self.peper.pos[1] - 1,
-                #             z=self.peper.pos[2] - 0.5)
+                # self.camera.move(x=self.pepper.pos[0] - 1,
+                #             y=self.pepper.pos[1] - 1,
+                #             z=self.pepper.pos[2] - 0.5)
                 # self.camera.rotate(y=270)
                 # print(*self.camera.pos)
-                # self.camera.rotate(*self.peper.rotate_pos)
+                # self.camera.rotate(*self.pepper.rotate_pos)
                 self.camera.mode = CAMERA_POPPETJE
 
                 # When self.camera gets moved, Pepper also should be moved
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
-                self.peper.is_player = False
+                self.pepper.is_player = False
                 self.camera.mode = CAMERA_FREE
+
+            if self.camera.mode == CAMERA_POPPETJE:
+                self.pepper.handle_event(event)
+
+        currentFrameTime = self.getCurrentTime()
+        self.dt = (currentFrameTime - self.lastFrameTime)/1000
+        self.lastFrameTime = currentFrameTime
+
+    def getCurrentTime(self):
+        return float(1000*pygame.time.get_ticks())
+
+    def getFrameTimeSeconds(self):
+        return float(self.dt)
 
 
 if __name__ == "__main__":

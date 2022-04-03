@@ -70,10 +70,3 @@ def show_coordinates(tx, ty, tz, rx, ry, rz):
     GL.glDrawPixels(textsurface.get_width(), textsurface.get_height(
     ), GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, textData)
 
-
-def getCurrentTime():
-    return float(1000*pygame.time.get_ticks())
-
-
-def getFrameTimeSeconds(dt):
-    return float(dt)
