@@ -34,9 +34,15 @@ def angle_between(p1, p2):
     return np.rad2deg((ang1 - ang2) % (2 * np.pi))
 
 
-def angle_between_vectors(x1, y1, x2, y2):
-    teller = x1 * x2 + y1 * y2
-    noemer = math.sqrt((x1 ** 2 + y1 ** 2)) * math.sqrt((x2 ** 2 + y2 ** 2))
+def angle_between_vectors(v1, v2):
+    teller = np.dot(v1, v2)
+    noemer = np.linalg.norm(v1) * np.linalg.norm(v2)
+
+    if noemer == 0 or teller == 0 or np.allclose([noemer], [teller]):
+        return 0
+
+    print("teller", teller)
+    print("noemer", noemer)
 
     return math.degrees(math.acos(teller/noemer))
 
@@ -63,3 +69,11 @@ def show_coordinates(tx, ty, tz, rx, ry, rz):
     GL.glWindowPos2d(0, 0)
     GL.glDrawPixels(textsurface.get_width(), textsurface.get_height(
     ), GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, textData)
+
+
+def getCurrentTime():
+    return float(1000*pygame.time.get_ticks())
+
+
+def getFrameTimeSeconds(dt):
+    return float(dt)
