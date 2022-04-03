@@ -14,9 +14,10 @@ CAMERA_POPPETJE = 1
 
 class Camera:
     def __init__(self):
-        self.pos = Punt(0, 0, 15)
-        self.rotate_pos = Punt(0, -90, 0)  # (0, 0) is bovenaanzicht
+        self.pos = Punt(0, 1.5, -1.5)
+        self.rotate_pos = Punt(0, 283, 0)  # (0, 0) is bovenaanzicht
         self.scale = 0
+        self.mode = CAMERA_FREE
 
     def move(self, x=None, y=None, z=None):
         x = x if x is not None else self.pos.x
@@ -33,9 +34,12 @@ class Camera:
         self.rotate_pos = Punt(x, y, z)
 
     def render(self, keys):
+        # TODO When playing as Pepper, rotate around pepper.pos, by using
+        # sinus and cosinus to have new x and y.
+
         SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
-        tx, ty, tz = self.pos
-        rx, ry, rz = self.rotate_pos
+        tx, ty, tz = (0, 0, 0)
+        rx, ry, rz = (0, 0, 0)
 
         # Move to left or right
         tx += SPEEDUP_STEP * MOVE_STEP * \
@@ -61,20 +65,29 @@ class Camera:
                 math.sin(math.radians(rz))
 
         # Move up or down
-        tz += SPEEDUP_STEP * MOVE_STEP * \
+        tz += SPEEDUP_STEP * 2 * MOVE_STEP * \
             (keys[pygame.K_PAGEUP] - keys[pygame.K_PAGEDOWN])
 
         # Rotate up or down
         ry += SPEEDUP_STEP * ROTATE_STEP * keys[pygame.K_LCTRL] * \
             (keys[pygame.K_UP] - keys[pygame.K_DOWN])
 
-        self.move(tx, ty, tz)
+        # if self.mode == CAMERA_POPPETJE:
+        #     # Rotate around poppetje.
+        #     # if keys[pygame.K_COMMA] or keys[pygame.K_PERIOD]:
+        #     #     tx += ...
+        #     GLU.gluLookAt()
 
-        rx = rx % 360
-        ry = ry % 360
-        rz = rz % 360
+        self.move(self.pos[0] + tx,
+                  self.pos[1] + ty,
+                  self.pos[2] + tz)
 
-        self.rotate(rx, ry, rz)
+        self.rotate((self.rotate_pos[0] + rx) % 360,
+                    (self.rotate_pos[1] + ry) % 360,
+                    (self.rotate_pos[2] + rz) % 360)
 
+        # TODO: kijken of move en rotate afhangen van scale
         self.scale += SPEEDUP_STEP * \
             (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
+
+        return (tx, ty, tz), (rx, ry, rz)

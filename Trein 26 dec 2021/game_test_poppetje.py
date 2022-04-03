@@ -53,34 +53,34 @@ while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            sys.exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 4:
-                # Zoom in
-                tz = max(1, tz-1)
-            elif event.button == 5:
-                # Zoom out
-                tz += 1
-            elif event.button == 1:
-                # Left
-                rotate = True
-            elif event.button == 3:
-                # Right
-                move = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                rotate = False
-            elif event.button == 3:
-                move = False
-        elif event.type == pygame.MOUSEMOTION:
-            i, j = event.rel
-            if rotate:
-                rx += i / 10
-                ry += j / 10
-            if move:
-                tx += i / 100
-                ty -= j / 100
+        # elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+        #     sys.exit()
+        # elif event.type == pygame.MOUSEBUTTONDOWN:
+        #     if event.button == 4:
+        #         # Zoom in
+        #         tz = max(1, tz-1)
+        #     elif event.button == 5:
+        #         # Zoom out
+        #         tz += 1
+        #     elif event.button == 1:
+        #         # Left
+        #         rotate = True
+        #     elif event.button == 3:
+        #         # Right
+        #         move = True
+        # elif event.type == pygame.MOUSEBUTTONUP:
+        #     if event.button == 1:
+        #         rotate = False
+        #     elif event.button == 3:
+        #         move = False
+        # elif event.type == pygame.MOUSEMOTION:
+        #     i, j = event.rel
+        #     if rotate:
+        #         rx += i / 10
+        #         ry += j / 10
+        #     if move:
+        #         tx += i / 100
+        #         ty -= j / 100
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
             # Switch to Pepper
             pepper.is_player = True
@@ -89,7 +89,7 @@ while 1:
             print(*pepper.pos)
             print(*pepper.rotate_pos)
 
-            GLU.gluLookAt(*camera.pos, *pepper.pos, 0, 1, 0)
+            # GLU.gluLookAt(*camera.pos, *pepper.pos, 0, 1, 0)
 
             # Move camera to Pepper
             # camera.move(x=pepper.pos[0] - 1,
@@ -139,7 +139,6 @@ while 1:
 
         pepper.rotate(y=pepper.rotate_pos[1] + angle / 5 *
                       (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
-        GLU.gluLookAt(*camera.pos, *pepper.pos, 1, 1, 0)
 
         # *[pepper.pos[i] + diff_pos[i] for i in range(3)])
         # pepper.rotate(*[pepper.rotate_pos[i] + diff_rotate_pos[i]
@@ -149,5 +148,5 @@ while 1:
     create_line(*list(pepper.pos[:2]) + [pepper.pos[2] + 1],
                 *(list(pepper.pos[:2]) + [0]), (34, 65, 34))
 
-    GL.glScale(*[1 + camera.scale] * 3)
+    # GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()
