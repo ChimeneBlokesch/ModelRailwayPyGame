@@ -1,9 +1,10 @@
 import sys
+import numpy as np
 import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
-from camera import Camera
-from constants import print_rails_info, show_coordinates
+from camera import CAMERA_FREE, CAMERA_POPPETJE, Camera
+from constants import angle_between_vectors, print_rails_info, show_coordinates
 from grid import Grid
 from lijnen import create_line
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
@@ -27,7 +28,7 @@ GL.glShadeModel(GL.GL_SMOOTH)
 grid = Grid()
 camera = Camera()
 
-pepper = grid.add_poppetje("Pepper", "lego_pepper2", start_x=-5, rot_x=90)
+pepper = grid.add_poppetje("Pepper", "lego_pepper2", rot_x=90, rot_y=180)
 
 sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
                      start_x=0.5, start_y=1.5, rot_x=90)
@@ -171,42 +172,62 @@ while 1:
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 4:
-                # Zoom in
-                scale += 0.05
-                # tz = max(1, tz-1)
-            elif event.button == 5:
-                # Zoom out
-                # tz += 1
-                scale -= 0.05
-            elif event.button == 1:
-                # Left
-                rotate = True
-            elif event.button == 3:
-                # Right
-                move = True
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if event.button == 1:
-                rotate = False
-            elif event.button == 3:
-                move = False
-        elif event.type == pygame.MOUSEMOTION:
-            i, j = event.rel
-            if rotate:
-                rx += i / 10
-                ry += j / 10
-            if move:
-                tx += i / 100
-                ty -= j / 100
-        elif event.type == pygame.KEYDOWN and pygame.K_2:
+        # elif event.type == pygame.MOUSEBUTTONDOWN:
+        #     if event.button == 4:
+        #         # Zoom in
+        #         scale += 0.05
+        #         # tz = max(1, tz-1)
+        #     elif event.button == 5:
+        #         # Zoom out
+        #         # tz += 1
+        #         scale -= 0.05
+        #     elif event.button == 1:
+        #         # Left
+        #         rotate = True
+        #     elif event.button == 3:
+        #         # Right
+        #         move = True
+        # elif event.type == pygame.MOUSEBUTTONUP:
+        #     if event.button == 1:
+        #         rotate = False
+        #     elif event.button == 3:
+        #         move = False
+        # elif event.type == pygame.MOUSEMOTION:
+        #     i, j = event.rel
+        #     if rotate:
+        #         rx += i / 10
+        #         ry += j / 10
+        #     if move:
+        #         tx += i / 100
+        #         ty -= j / 100
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
             # Switch to Pepper
             pepper.is_player = True
 
-            # TODO: Move camera
+            print("Move to Pepper")
+            print(*pepper.pos)
+            print(*pepper.rotate_pos)
+
+            GLU.gluLookAt(*camera.pos, *pepper.pos, 0, 1, 0)
+
+            # Move camera to Pepper
+            # camera.move(x=pepper.pos[0] - 1,
+            #             y=pepper.pos[1] - 1,
+            #             z=pepper.pos[2] - 0.5)
+            # camera.rotate(y=270)
+            # print(*camera.pos)
+            # camera.rotate(*pepper.rotate_pos)
+            camera.mode = CAMERA_POPPETJE
+
+            # When camera gets moved, Pepper also should be moved
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
+            pepper.is_player = False
+            camera.mode = CAMERA_FREE
 
     keys = pygame.key.get_pressed()
-    camera.render(keys)
+    diff_pos, diff_rotate_pos = camera.render(keys)
+    # print("HIER", diff_pos, diff_rotate_pos, camera.mode)
+
     tx, ty, tz = camera.pos
     rx, ry, rz = camera.rotate_pos
 
@@ -224,9 +245,26 @@ while 1:
     GL.glRotate(ry, 1, 0, 0)
     GL.glRotate(rz, 0, 0, 1)
 
-    GL.glTranslate(tx * 10, ty * 10, -tz)
+    GL.glTranslate(tx, ty, tz)
+    if camera.mode == CAMERA_POPPETJE:
+        old_pos = pepper.pos
+        pepper.move(pepper.pos[0] - diff_pos[0],
+                    pepper.pos[1] - diff_pos[1],
+                    pepper.pos[2] - diff_pos[2])
 
-    show_coordinates(tx*10, ty*10, -tz, rx, ry, rz)
+        angle = angle_between_vectors(old_pos, pepper.pos)
+        if angle:
+            print("angle", angle)
+
+        pepper.rotate(y=pepper.rotate_pos[1] + angle / 5 *
+                      (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
+        GLU.gluLookAt(*camera.pos, *pepper.pos, 1, 1, 0)
+
+        # *[pepper.pos[i] + diff_pos[i] for i in range(3)])
+        # pepper.rotate(*[pepper.rotate_pos[i] + diff_rotate_pos[i]
+        #                 for i in range(3)])
+
+    show_coordinates(tx, ty, tz, rx, ry, rz)
 
     # for t in grid.treinen:
     for t in grid.locomotieven:
