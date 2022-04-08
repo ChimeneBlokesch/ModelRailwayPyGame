@@ -204,11 +204,7 @@ while 1:
             # Switch to Pepper
             pepper.is_player = True
 
-            print("Move to Pepper")
-            print(*pepper.pos)
-            print(*pepper.rotate_pos)
-
-            GLU.gluLookAt(*camera.pos, *pepper.pos, 0, 1, 0)
+            # GLU.gluLookAt(*camera.pos, *pepper.pos, 0, 1, 0)
 
             # Move camera to Pepper
             # camera.move(x=pepper.pos[0] - 1,
@@ -217,15 +213,18 @@ while 1:
             # camera.rotate(y=270)
             # print(*camera.pos)
             # camera.rotate(*pepper.rotate_pos)
-            camera.mode = CAMERA_POPPETJE
+            camera.camera_to_poppetje(pepper)
 
-            # When camera gets moved, Pepper also should be moved
+        # When camera gets moved, Pepper also should be moved
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
             pepper.is_player = False
-            camera.mode = CAMERA_FREE
+            camera.camera_to_free()
+
+        if camera.mode == CAMERA_POPPETJE:
+            pepper.handle_event(event)
 
     keys = pygame.key.get_pressed()
-    diff_pos, diff_rotate_pos = camera.render(keys)
+    camera.render(keys)
     # print("HIER", diff_pos, diff_rotate_pos, camera.mode)
 
     tx, ty, tz = camera.pos
@@ -247,24 +246,9 @@ while 1:
 
     GL.glTranslate(tx, ty, tz)
     if camera.mode == CAMERA_POPPETJE:
-        old_pos = pepper.pos
-        pepper.move(pepper.pos[0] - diff_pos[0],
-                    pepper.pos[1] - diff_pos[1],
-                    pepper.pos[2] - diff_pos[2])
+        pepper.walk(50)
 
-        angle = angle_between_vectors(old_pos, pepper.pos)
-        if angle:
-            print("angle", angle)
-
-        pepper.rotate(y=pepper.rotate_pos[1] + angle / 5 *
-                      (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
-        GLU.gluLookAt(*camera.pos, *pepper.pos, 1, 1, 0)
-
-        # *[pepper.pos[i] + diff_pos[i] for i in range(3)])
-        # pepper.rotate(*[pepper.rotate_pos[i] + diff_rotate_pos[i]
-        #                 for i in range(3)])
-
-    show_coordinates(tx, ty, tz, rx, ry, rz)
+    show_coordinates(tx, ty, tz, rx, ry, rz, *pepper.pos, *pepper.rotate_pos)
 
     # for t in grid.treinen:
     for t in grid.locomotieven:

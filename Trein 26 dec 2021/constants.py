@@ -62,11 +62,11 @@ def print_rails_info(rails):
           prev_name, next_name)
 
 
-def show_coordinates(tx, ty, tz, rx, ry, rz):
-    text = f"{int(tx)} {int(ty)} {int(tz)} {int(rx)} {int(ry)} {int(rz)}"
+def show_coordinates(tx, ty, tz, rx, ry, rz, ptx, pty, ptz, prx, pry, prz):
+    text = f"{int(tx)} {int(ty)} {int(tz)} {int(rx)} {int(ry)} {int(rz)}       "
+    text += f"{int(ptx)} {int(pty)} {int(ptz)} {int(prx)} {int(pry)} {int(prz)}"
     textsurface = FONT.render(text, False, (250, 250, 250))
     textData = pygame.image.tostring(textsurface, "RGBA", True)
     GL.glWindowPos2d(0, 0)
     GL.glDrawPixels(textsurface.get_width(), textsurface.get_height(
     ), GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, textData)
-

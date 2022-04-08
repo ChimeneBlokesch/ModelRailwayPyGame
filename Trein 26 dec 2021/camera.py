@@ -1,3 +1,4 @@
+import numpy as np
 import pygame
 import math
 from constants import Punt
@@ -124,16 +125,25 @@ class Camera:
             math.sin(math.radians(self.pitch))
 
         # Camera position
-        theta = self.poppetje.rotate_pos.y + self.angle
+        theta = -self.poppetje.rotate_pos.y + self.angle
         offset_x = horizontal * math.sin(math.radians(theta))
         offset_y = horizontal * math.cos(math.radians(theta))
-        self.move(x=self.poppetje.pos.x + offset_x,
-                  y=self.poppetje.pos.y + offset_y,
-                  z=self.poppetje.pos.z + vertical)
+        temp_old_pos = self.pos
+        self.move(x=-self.poppetje.pos.x + offset_x,
+                  y=-self.poppetje.pos.y + offset_y,
+                  z=-self.poppetje.pos.z + vertical)
+
+        # TODO: rotation of Pepper can be the negation of the rotation of
+        # camera. When rotating camera still moves faster than Pepper.
+        # Weird transition when rotating if 180 or 90 degrees
+        # Camera rotation degrees looks not the same as Pepper.
 
         # Yaw
-        self.yaw = ((self.poppetje.rotate_pos.y + self.angle) - 180) % 360
+        self.yaw = (-180 + theta) % 360
         self.rotate(x=self.yaw)
+
+        if not np.allclose(temp_old_pos, self.pos):
+            print("Camera", *self.pos, *self.rotate_pos)
 
         return (-1, -1, -1), (-1, -1, -1)  # TODO: maybe not needed anymore
 

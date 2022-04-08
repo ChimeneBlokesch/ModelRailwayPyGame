@@ -7,7 +7,7 @@ from constants import POPPETJES_MAP, SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
 
 RUN_SPEED = 0.01
 WALK_SPEED = RUN_SPEED / 2
-ROTATE_SPEED = 0.001
+ROTATE_SPEED = 0.1
 JUMP_SPEED = 0.1
 GRAVITY = -0.001
 TERRAIN_HEIGHT = 0
@@ -25,6 +25,7 @@ class Poppetje:
         self.speed = 0
         self.turn_speed = 0
         self.up_speed = 0
+        self.speedup = 1
         self.rotate_pos = Punt(rot_x, rot_y, rot_z)
         self.pos = Punt(start_x, start_y, start_z)
         self.is_player = False
@@ -54,9 +55,9 @@ class Poppetje:
         # print("New pos Pepper", self.pos)
 
     def rotate(self, x=None, y=None, z=None):
-        x = x if x is not None else self.rotate_pos.x
-        y = y if y is not None else self.rotate_pos.y
-        z = z if z is not None else self.rotate_pos.z
+        x = x % 360 if x is not None else self.rotate_pos.x
+        y = y % 360 if y is not None else self.rotate_pos.y
+        z = z % 360 if z is not None else self.rotate_pos.z
 
         self.rotate_pos = Punt(x, y, z)
 
@@ -72,16 +73,19 @@ class Poppetje:
         # TODO: maybe skip keeping track of time, just go one time step further
         # self.change_direction(keys)
 
-        self.rotate_delta(dy=self.turn_speed * dt)
-        distance = self.speed * dt
+        self.rotate_delta(dy=self.speedup * self.turn_speed * dt)
+
+        # if self.turn_speed:
+        #     print("turn speed", self.turn_speed)
+        #     print("rot_y", self.rotate_pos.y)
+        distance = self.speedup * self.speed * dt
         self.up_speed += GRAVITY * dt
 
-        dx = (distance * math.sin(math.radians(self.rotate_pos.y)))
+        dx = -(distance * math.sin(math.radians(self.rotate_pos.y)))
         dy = (distance * math.cos(math.radians(self.rotate_pos.y)))
 
-        if distance:
-            print(distance, self.up_speed,
-                  dx, dy, self.pos, self.rotate_pos)
+        if distance or self.turn_speed:
+            print("Pepper", *self.pos, *self.rotate_pos)
 
         self.move_delta(dx=dx, dy=dy)
 
@@ -107,20 +111,22 @@ class Poppetje:
 
     def handle_event(self, event):
         if event.type == pygame.KEYDOWN:
-            return
             if event.key == pygame.K_UP:
-                self.speed = RUN_SPEED
-            elif event.key == pygame.K_DOWN:
                 self.speed = -RUN_SPEED
+            elif event.key == pygame.K_DOWN:
+                self.speed = RUN_SPEED
             elif event.key == pygame.K_LEFT:
-                self.turn_speed = RUN_SPEED
+                self.turn_speed = ROTATE_SPEED
             elif event.key == pygame.K_RIGHT:
-                self.turn_speed = -RUN_SPEED
+                self.turn_speed = -ROTATE_SPEED
             elif event.key == pygame.K_SPACE:
                 self.jump()
+            elif event.key == pygame.K_RSHIFT:
+                self.speedup += 2
         else:
             self.speed = 0
             self.turn_speed = 0
+            self.speedup = 1
 
     def jump(self):
         if self.jump_level < 2:

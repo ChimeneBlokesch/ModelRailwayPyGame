@@ -56,8 +56,7 @@ class Game:
         self.handle_events()
 
         keys = pygame.key.get_pressed()
-        diff_pos, diff_rotate_pos = self.camera.render(keys)
-        # print("HIER", diff_pos, diff_rotate_pos, self.camera.mode)
+        self.camera.render(keys)
 
         tx, ty, tz = self.camera.pos
         rx, ry, rz = self.camera.rotate_pos
@@ -90,6 +89,7 @@ class Game:
         create_line(*list(self.pepper.pos[:2]) + [self.pepper.pos[2] + 1],
                     *(list(self.pepper.pos[:2]) + [0]), (34, 65, 34))
 
+        create_line(0, 0, 50, 0, 0, -50, (10, 10, 10))
         GL.glScale(*[1 + self.camera.scale] * 3)
         pygame.display.flip()
 
