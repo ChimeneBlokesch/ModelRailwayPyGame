@@ -4,7 +4,7 @@ import pygame
 import OpenGL.GL as GL
 import sqlite3
 
-from constants import TREINEN_MAP, Punt
+from constants import TREINEN_MAP, Punt, gamma_correction
 
 
 IMAGE_PREFIX = "image_"
@@ -217,7 +217,7 @@ class Object3D:
                 # use diffuse color, because this is the mostly used color
                 texid = GL.glGenTextures(1)
                 GL.glBindTexture(GL.GL_TEXTURE_2D, texid)
-                GL.glColor(mtl['Kd'])
+                GL.glColor(gamma_correction(*mtl['Kd']))
 
             GL.glBegin(GL.GL_POLYGON)
 

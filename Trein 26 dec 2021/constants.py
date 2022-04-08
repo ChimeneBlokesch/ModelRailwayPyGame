@@ -70,3 +70,7 @@ def show_coordinates(tx, ty, tz, rx, ry, rz, ptx, pty, ptz, prx, pry, prz):
     GL.glWindowPos2d(0, 0)
     GL.glDrawPixels(textsurface.get_width(), textsurface.get_height(
     ), GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, textData)
+
+
+def gamma_correction(r, g, b, gamma=0.45):
+    return r ** gamma, g ** gamma, b ** gamma
