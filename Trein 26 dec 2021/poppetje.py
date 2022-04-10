@@ -5,6 +5,8 @@ from objparser import Object3D
 
 from constants import POPPETJES_MAP, SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
 
+# Scale for poppetje scale_value=(5,5,5)
+# Run speed can be divided by 5, to get speed for (1,1,1), but jump speed not.
 RUN_SPEED = 0.01
 WALK_SPEED = RUN_SPEED / 2
 ROTATE_SPEED = 0.1
