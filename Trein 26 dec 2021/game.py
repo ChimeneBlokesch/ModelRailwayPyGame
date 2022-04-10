@@ -189,6 +189,8 @@ while 1:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
             pepper.is_player = False
             camera.camera_to_free()
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_4:
+            camera.camera_to_trein(virm1)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_3:
             debug = not debug
 

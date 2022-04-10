@@ -11,6 +11,7 @@ ROTATE_STEP = 1
 
 CAMERA_FREE = 0
 CAMERA_POPPETJE = 1
+CAMERA_TREIN = 2
 
 
 class Camera:
@@ -24,7 +25,7 @@ class Camera:
         self.distance_from_player = -2
         self.pitch = 45
         self.angle = 0
-        self.poppetje = None
+        self.object = None
         self.yaw = 0
 
     def move(self, x=None, y=None, z=None):
@@ -116,13 +117,13 @@ class Camera:
             math.sin(math.radians(self.pitch))
 
         # Camera position
-        theta = -self.poppetje.rotate_pos.y + self.angle
+        theta = -self.object.rotate_pos.y + self.angle
         offset_x = horizontal * math.sin(math.radians(theta))
         offset_y = horizontal * math.cos(math.radians(theta))
         temp_old_pos = self.pos
-        self.move(x=-self.poppetje.pos.x + offset_x,
-                  y=-self.poppetje.pos.y + offset_y,
-                  z=-self.poppetje.pos.z + vertical)
+        self.move(x=-self.object.pos.x + offset_x,
+                  y=-self.object.pos.y + offset_y,
+                  z=-self.object.pos.z + vertical)
 
         # Yaw
         self.yaw = (-180 + theta) % 360
@@ -135,15 +136,19 @@ class Camera:
         # TODO When playing as Pepper, rotate around pepper.pos, by using
         # sinus and cosinus to have new x and y.
 
-        if self.mode == CAMERA_FREE:
-            return self.free_camera(keys)
+        if self.mode == CAMERA_POPPETJE or self.mode == CAMERA_TREIN:
+            return self.poppetje_camera(keys)
 
-        return self.poppetje_camera(keys)
+        return self.free_camera(keys)
 
     def camera_to_poppetje(self, pop):
         self.mode = CAMERA_POPPETJE
-        self.poppetje = pop
+        self.object = pop
+
+    def camera_to_trein(self, trein):
+        self.mode = CAMERA_TREIN
+        self.object = trein
 
     def camera_to_free(self):
         self.mode = CAMERA_FREE
-        self.poppetje = None
+        self.object = None
