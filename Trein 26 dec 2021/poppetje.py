@@ -68,7 +68,7 @@ class Poppetje:
                     self.rotate_pos.y + dy,
                     self.rotate_pos.z + dz)
 
-    def walk(self, dt):
+    def walk(self, dt=50):
         # TODO: maybe skip keeping track of time, just go one time step further
         # self.change_direction(keys)
 
@@ -112,7 +112,7 @@ class Poppetje:
             self.turn_speed = -ROTATE_SPEED \
                 if event.type == pygame.KEYDOWN else 0
             # self.speed = -RUN_SPEED if event.type == pygame.KEYDOWN else 0
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_RSHIFT:
             self.jump()
 
     def jump(self):

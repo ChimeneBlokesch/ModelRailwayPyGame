@@ -10,14 +10,21 @@ from lijnen import create_line
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
 import math
 
+FULL_SCREEN = False
+
 MOVE_STEP = 0.05
 ROTATE_STEP = 1
 pygame.init()
 viewport = (800, 600)
 hx = viewport[0]/2
 hy = viewport[1]/2
-srf = pygame.display.set_mode(
-    viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN)
+
+if FULL_SCREEN:
+    srf = pygame.display.set_mode(
+        viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN)
+else:
+    srf = pygame.display.set_mode(
+        viewport, pygame.OPENGL | pygame.DOUBLEBUF)
 
 
 GL.glEnable(GL.GL_COLOR_MATERIAL)
@@ -52,7 +59,7 @@ virm1 = grid.add_trein("VIRM3_1", "VIRM3", TREIN_LOCOMOTIEF,
 virm1.change_speed(0.05)
 
 loco1 = grid.add_trein("Loco1", "lego_loco_kop", TREIN_LOCOMOTIEF,
-                       start_x=0.5, start_y=2, start_z=0.5, rot_x=90)
+                       start_x=0.5, start_y=2, start_z=0.3, rot_x=90)
 loco1.change_speed(0.1)
 
 rails1 = grid.add_bocht("rails1", 45, rotation=0)
@@ -125,7 +132,7 @@ grid.connect_rails(rails15, rails12)
 #     print_rails_info(r)
 
 loco2 = grid.add_trein("Loco2", "lego_loco_kop", TREIN_LOCOMOTIEF,
-                       start_x=2, start_y=2, start_z=0.5, rot_x=90)
+                       start_x=2, start_y=2, start_z=0.3, rot_x=90)
 loco2.change_speed(-0.05)
 
 rails_1 = grid.add_recht("rails_1",
@@ -165,6 +172,8 @@ GL.glEnable(GL.GL_BLEND)
 GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
 rotate = move = False
+points = []
+debug = False
 
 while 1:
     clock.tick(30)
@@ -173,60 +182,21 @@ while 1:
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
-        # elif event.type == pygame.MOUSEBUTTONDOWN:
-        #     if event.button == 4:
-        #         # Zoom in
-        #         scale += 0.05
-        #         # tz = max(1, tz-1)
-        #     elif event.button == 5:
-        #         # Zoom out
-        #         # tz += 1
-        #         scale -= 0.05
-        #     elif event.button == 1:
-        #         # Left
-        #         rotate = True
-        #     elif event.button == 3:
-        #         # Right
-        #         move = True
-        # elif event.type == pygame.MOUSEBUTTONUP:
-        #     if event.button == 1:
-        #         rotate = False
-        #     elif event.button == 3:
-        #         move = False
-        # elif event.type == pygame.MOUSEMOTION:
-        #     i, j = event.rel
-        #     if rotate:
-        #         rx += i / 10
-        #         ry += j / 10
-        #     if move:
-        #         tx += i / 100
-        #         ty -= j / 100
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
             # Switch to Pepper
             pepper.is_player = True
-
-            # GLU.gluLookAt(*camera.pos, *pepper.pos, 0, 1, 0)
-
-            # Move camera to Pepper
-            # camera.move(x=pepper.pos[0] - 1,
-            #             y=pepper.pos[1] - 1,
-            #             z=pepper.pos[2] - 0.5)
-            # camera.rotate(y=270)
-            # print(*camera.pos)
-            # camera.rotate(*pepper.rotate_pos)
             camera.camera_to_poppetje(pepper)
-
-        # When camera gets moved, Pepper also should be moved
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
             pepper.is_player = False
             camera.camera_to_free()
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_3:
+            debug = not debug
 
         if camera.mode == CAMERA_POPPETJE:
             pepper.handle_event(event)
 
     keys = pygame.key.get_pressed()
     camera.render(keys)
-    # print("HIER", diff_pos, diff_rotate_pos, camera.mode)
 
     tx, ty, tz = camera.pos
     rx, ry, rz = camera.rotate_pos
@@ -251,13 +221,14 @@ while 1:
 
     show_coordinates(tx, ty, tz, rx, ry, rz, *pepper.pos, *pepper.rotate_pos)
 
-    # for t in grid.treinen:
     for t in grid.locomotieven:
-        # trein_x, trein_y = t.pos[:2]
-        # print(t.name, trein_x, trein_y)
-        # create_line(trein_x, trein_y, 5, trein_x, trein_y, -5, (0.8, 0.3, 0.6))
         create_line(t.pos[0], t.pos[1], 5,
                     t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
 
+    if debug:
+        points.append(camera.pos)
+
+    [create_line(-x, -y, 3, -x, -y, -3, (100, 0, 100))
+        for x, y, _ in points]
     GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()

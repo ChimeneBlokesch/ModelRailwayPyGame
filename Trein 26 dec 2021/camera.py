@@ -51,19 +51,17 @@ class Camera:
 
     def free_camera(self, keys):
         SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
-        old_tx, old_ty, old_tz = self.pos
-        old_rx, old_ry, old_rz = self.rotate_pos
         tx, ty, tz = (0, 0, 0)
         rx, ry, rz = (0, 0, 0)
 
         # Move to left or right
         tx += SPEEDUP_STEP * MOVE_STEP * \
             (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]) * \
-            math.cos(math.radians(old_rz))
+            math.cos(math.radians(self.rotate_pos.z))
 
         ty += SPEEDUP_STEP * MOVE_STEP * \
             (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * \
-            math.sin(math.radians(old_rz))
+            math.sin(math.radians(self.rotate_pos.z))
 
         # Rotate around point of grid
         rz += SPEEDUP_STEP * ROTATE_STEP * \
@@ -73,11 +71,11 @@ class Camera:
         if not keys[pygame.K_LCTRL]:
             ty += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
                 (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
-                math.cos(math.radians(old_rz))
+                math.cos(math.radians(self.rotate_pos.z))
 
             tx += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
                 (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
-                math.sin(math.radians(old_rz))
+                math.sin(math.radians(self.rotate_pos.z))
 
         # Move up or down
         tz += SPEEDUP_STEP * 2 * MOVE_STEP * \
@@ -126,14 +124,9 @@ class Camera:
                   y=-self.poppetje.pos.y + offset_y,
                   z=-self.poppetje.pos.z + vertical)
 
-        # TODO: rotation of Pepper can be the negation of the rotation of
-        # camera. When rotating camera still moves faster than Pepper.
-        # Weird transition when rotating if 180 or 90 degrees
-        # Camera rotation degrees looks not the same as Pepper.
-
         # Yaw
         self.yaw = (-180 + theta) % 360
-        self.rotate(x=self.yaw)
+        self.rotate(z=self.yaw)
 
         if not np.allclose(temp_old_pos, self.pos):
             print("Camera", *self.pos, *self.rotate_pos)
