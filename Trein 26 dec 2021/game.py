@@ -16,7 +16,8 @@ pygame.init()
 viewport = (800, 600)
 hx = viewport[0]/2
 hy = viewport[1]/2
-srf = pygame.display.set_mode(viewport, pygame.OPENGL | pygame.DOUBLEBUF)
+srf = pygame.display.set_mode(
+    viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN)
 
 
 GL.glEnable(GL.GL_COLOR_MATERIAL)
@@ -30,8 +31,8 @@ camera = Camera()
 
 pepper = grid.add_poppetje("Pepper", "lego_pepper2", rot_x=90, rot_y=180)
 
-sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
-                     start_x=0.5, start_y=1.5, rot_x=90)
+# sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
+#                      start_x=0.5, start_y=1.5, rot_x=90)
 # sgm.change_speed(-0.05)
 
 icityvagon = grid.add_trein("f3", "icityvagon", TREIN_PASSAGIER, start_x=0.5,
@@ -147,7 +148,7 @@ loco1.rails = rails3
 virm1.rails = rails3
 innercity.rails = rails4
 icityvagon.rails = rails3
-sgm.rails = rails4
+# sgm.rails = rails4
 
 grid.generate()
 clock = pygame.time.Clock()

@@ -8,8 +8,8 @@ from constants import POPPETJES_MAP, SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
 RUN_SPEED = 0.01
 WALK_SPEED = RUN_SPEED / 2
 ROTATE_SPEED = 0.1
-JUMP_SPEED = 0.1
-GRAVITY = -0.001
+JUMP_SPEED = 0.03
+GRAVITY = -0.0001
 TERRAIN_HEIGHT = 0
 
 pygame.init()
@@ -110,23 +110,23 @@ class Poppetje:
         #                       (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
 
     def handle_event(self, event):
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                self.speed = -RUN_SPEED
-            elif event.key == pygame.K_DOWN:
-                self.speed = RUN_SPEED
-            elif event.key == pygame.K_LEFT:
-                self.turn_speed = ROTATE_SPEED
-            elif event.key == pygame.K_RIGHT:
-                self.turn_speed = -ROTATE_SPEED
-            elif event.key == pygame.K_SPACE:
-                self.jump()
-            elif event.key == pygame.K_RSHIFT:
-                self.speedup += 2
-        else:
-            self.speed = 0
-            self.turn_speed = 0
-            self.speedup = 1
+        if event.type not in [pygame.KEYDOWN, pygame.KEYUP]:
+            return
+
+        if event.key == pygame.K_UP:
+            self.speed = -RUN_SPEED if event.type == pygame.KEYDOWN else 0
+        elif event.key == pygame.K_DOWN:
+            self.speed = RUN_SPEED if event.type == pygame.KEYDOWN else 0
+        elif event.key == pygame.K_LEFT:
+            self.turn_speed = -ROTATE_SPEED \
+                if event.type == pygame.KEYDOWN else 0
+        elif event.key == pygame.K_RIGHT:
+            self.turn_speed = ROTATE_SPEED \
+                if event.type == pygame.KEYDOWN else 0
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            self.jump()
+        elif event.key == pygame.K_RSHIFT:
+            self.speedup = 3 if event.type == pygame.KEYDOWN else 1
 
     def jump(self):
         if self.jump_level < 2:
