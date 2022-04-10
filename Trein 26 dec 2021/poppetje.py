@@ -5,13 +5,11 @@ from objparser import Object3D
 
 from constants import POPPETJES_MAP, SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
 
-# Scale for poppetje scale_value=(5,5,5)
-# Run speed can be divided by 5, to get speed for (1,1,1), but jump speed not.
-RUN_SPEED = 0.01
+RUN_SPEED = 0.1
 WALK_SPEED = RUN_SPEED / 2
-ROTATE_SPEED = 0.1
-JUMP_SPEED = 0.03
-GRAVITY = -0.0001
+ROTATE_SPEED = 1
+JUMP_SPEED = 0.1
+GRAVITY = -0.01
 TERRAIN_HEIGHT = 0
 
 pygame.init()
@@ -70,17 +68,17 @@ class Poppetje:
                     self.rotate_pos.y + dy,
                     self.rotate_pos.z + dz)
 
-    def walk(self, dt=50):
+    def walk(self):
         # TODO: maybe skip keeping track of time, just go one time step further
         # self.change_direction(keys)
 
-        self.rotate_delta(dy=self.turn_speed * dt)
+        self.rotate_delta(dy=self.turn_speed)
 
         # if self.turn_speed:
         #     print("turn speed", self.turn_speed)
         #     print("rot_y", self.rotate_pos.y)
-        distance = self.speed * dt
-        self.up_speed += GRAVITY * dt
+        distance = self.speed
+        self.up_speed += GRAVITY
 
         dx = -(distance * math.sin(math.radians(self.rotate_pos.y)))
         dy = (distance * math.cos(math.radians(self.rotate_pos.y)))
@@ -90,7 +88,7 @@ class Poppetje:
 
         self.move_delta(dx=dx, dy=dy)
 
-        dz = (self.up_speed * dt)
+        dz = (self.up_speed)
         self.move_delta(dz=dz)
 
         if self.pos.z < TERRAIN_HEIGHT:

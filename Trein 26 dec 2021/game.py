@@ -217,7 +217,7 @@ while 1:
 
     GL.glTranslate(tx, ty, tz)
     if camera.mode == CAMERA_POPPETJE:
-        pepper.walk(50)
+        pepper.walk()
 
     show_coordinates(tx, ty, tz, rx, ry, rz, *pepper.pos, *pepper.rotate_pos)
 

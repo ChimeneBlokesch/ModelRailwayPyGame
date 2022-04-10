@@ -21,7 +21,7 @@ class Camera:
         self.mode = CAMERA_FREE
 
         # Poppetje mode
-        self.distance_from_player = -3
+        self.distance_from_player = -2
         self.pitch = 45
         self.angle = 0
         self.poppetje = None
