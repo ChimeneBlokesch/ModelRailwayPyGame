@@ -38,9 +38,9 @@ class Camera:
         self.move(self.pos.x + dx, self.pos.y + dy, self.pos.z + dz)
 
     def rotate_delta(self, dx=0, dy=0, dz=0):
-        self.rotate(self.rotate_pos.x + dx,
-                    self.rotate_pos.y + dy,
-                    self.rotate_pos.z + dz)
+        self.rotate((self.rotate_pos.x + dx) % 360,
+                    (self.rotate_pos.y + dy) % 360,
+                    (self.rotate_pos.z + dz) % 360)
 
     def rotate(self, x=None, y=None, z=None):
         x = x if x is not None else self.rotate_pos.x
@@ -51,17 +51,19 @@ class Camera:
 
     def free_camera(self, keys):
         SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
+        old_tx, old_ty, old_tz = self.pos
+        old_rx, old_ry, old_rz = self.rotate_pos
         tx, ty, tz = (0, 0, 0)
         rx, ry, rz = (0, 0, 0)
 
         # Move to left or right
         tx += SPEEDUP_STEP * MOVE_STEP * \
             (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]) * \
-            math.cos(math.radians(rz))
+            math.cos(math.radians(old_rz))
 
         ty += SPEEDUP_STEP * MOVE_STEP * \
             (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * \
-            math.sin(math.radians(rz))
+            math.sin(math.radians(old_rz))
 
         # Rotate around point of grid
         rz += SPEEDUP_STEP * ROTATE_STEP * \
@@ -71,11 +73,11 @@ class Camera:
         if not keys[pygame.K_LCTRL]:
             ty += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
                 (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
-                math.cos(math.radians(rz))
+                math.cos(math.radians(old_rz))
 
             tx += SPEEDUP_STEP * 0.5 * MOVE_STEP * \
                 (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * \
-                math.sin(math.radians(rz))
+                math.sin(math.radians(old_rz))
 
         # Move up or down
         tz += SPEEDUP_STEP * 2 * MOVE_STEP * \
@@ -85,17 +87,8 @@ class Camera:
         ry += SPEEDUP_STEP * ROTATE_STEP * keys[pygame.K_LCTRL] * \
             (keys[pygame.K_UP] - keys[pygame.K_DOWN])
 
-        # if self.mode == CAMERA_POPPETJE:
-        #     # Rotate around poppetje.
-        #     # if keys[pygame.K_COMMA] or keys[pygame.K_PERIOD]:
-        #     #     tx += ...
-        #     GLU.gluLookAt()
-
-        self.move(self.pos[0] + tx, self.pos[1] + ty, self.pos[2] + tz)
-
-        self.rotate((self.rotate_pos[0] + rx) % 360,
-                    (self.rotate_pos[1] + ry) % 360,
-                    (self.rotate_pos[2] + rz) % 360)
+        self.move_delta(tx, ty, tz)
+        self.rotate_delta(rx, ry, rz)
 
         # TODO: kijken of move en rotate afhangen van scale
         self.scale += SPEEDUP_STEP * \
@@ -144,8 +137,6 @@ class Camera:
 
         if not np.allclose(temp_old_pos, self.pos):
             print("Camera", *self.pos, *self.rotate_pos)
-
-        return (-1, -1, -1), (-1, -1, -1)  # TODO: maybe not needed anymore
 
     def render(self, keys):
         # TODO When playing as Pepper, rotate around pepper.pos, by using
