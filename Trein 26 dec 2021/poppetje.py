@@ -25,7 +25,6 @@ class Poppetje:
         self.speed = 0
         self.turn_speed = 0
         self.up_speed = 0
-        self.speedup = 1
         self.rotate_pos = Punt(rot_x, rot_y, rot_z)
         self.pos = Punt(start_x, start_y, start_z)
         self.is_player = False
@@ -44,7 +43,7 @@ class Poppetje:
         self.object.generate()
 
     def render(self):
-        self.object.render(self.pos, self.rotate_pos, scale_value=(5, 5, 5))
+        self.object.render(self.pos, self.rotate_pos)
 
     def move(self, x=None, y=None, z=None):
         x = x if x is not None else self.pos.x
@@ -73,12 +72,12 @@ class Poppetje:
         # TODO: maybe skip keeping track of time, just go one time step further
         # self.change_direction(keys)
 
-        self.rotate_delta(dy=self.speedup * self.turn_speed * dt)
+        self.rotate_delta(dy=self.turn_speed * dt)
 
         # if self.turn_speed:
         #     print("turn speed", self.turn_speed)
         #     print("rot_y", self.rotate_pos.y)
-        distance = self.speedup * self.speed * dt
+        distance = self.speed * dt
         self.up_speed += GRAVITY * dt
 
         dx = -(distance * math.sin(math.radians(self.rotate_pos.y)))
@@ -97,18 +96,6 @@ class Poppetje:
             self.move(z=0)
             self.jump_level = 0
 
-        # old_pos = self.peper.pos
-        #  self.peper.move(self.peper.pos[0] - diff_pos[0],
-        #                   self.peper.pos[1] - diff_pos[1],
-        #                   self.peper.pos[2] - diff_pos[2])
-
-        #   angle = angle_between_vectors(old_pos, self.peper.pos)
-        #    if angle:
-        #         print("angle", angle)
-
-        #     self.peper.rotate(y=self.peper.rotate_pos[1] + angle / 5 *
-        #                       (keys[pygame.K_LEFT] - keys[pygame.K_RIGHT]))
-
     def handle_event(self, event):
         if event.type not in [pygame.KEYDOWN, pygame.KEYUP]:
             return
@@ -118,15 +105,15 @@ class Poppetje:
         elif event.key == pygame.K_DOWN:
             self.speed = RUN_SPEED if event.type == pygame.KEYDOWN else 0
         elif event.key == pygame.K_LEFT:
-            self.turn_speed = -ROTATE_SPEED \
-                if event.type == pygame.KEYDOWN else 0
-        elif event.key == pygame.K_RIGHT:
             self.turn_speed = ROTATE_SPEED \
                 if event.type == pygame.KEYDOWN else 0
+            # self.speed = -RUN_SPEED if event.type == pygame.KEYDOWN else 0
+        elif event.key == pygame.K_RIGHT:
+            self.turn_speed = -ROTATE_SPEED \
+                if event.type == pygame.KEYDOWN else 0
+            # self.speed = -RUN_SPEED if event.type == pygame.KEYDOWN else 0
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             self.jump()
-        elif event.key == pygame.K_RSHIFT:
-            self.speedup = 3 if event.type == pygame.KEYDOWN else 1
 
     def jump(self):
         if self.jump_level < 2:
