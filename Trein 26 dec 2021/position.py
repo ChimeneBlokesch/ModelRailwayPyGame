@@ -1,5 +1,9 @@
 class Position:
     def __init__(self, x=0, y=0, z=0, tilt=0, pan=0):
+        """
+        tilt: vertical rotation
+        pan: horizontal rotation
+        """
         self.x = x
         self.y = y
         self.z = z
@@ -17,6 +21,10 @@ class Position:
             self.z = z
 
     def rotate(self, tilt=None, pan=None):
+        """
+        tilt: vertical rotation
+        pan: horizontal rotation
+        """
         if tilt:
             self.tilt = tilt % 360
 
@@ -27,5 +35,9 @@ class Position:
         self.move(self.x + dx, self.y + dy, self.z + dz)
 
     def rotate_delta(self, d_tilt=0, d_pan=0):
+        """
+        tilt: vertical rotation
+        pan: horizontal rotation
+        """
         self.rotate(self.tilt + d_tilt,
                     self.pan + d_pan)
