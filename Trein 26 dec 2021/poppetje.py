@@ -27,6 +27,8 @@ class Poppetje:
         self.up_speed = 0
         self.rotate_pos = Punt(rot_x, rot_y, rot_z)
         self.pos = Punt(start_x, start_y, start_z)
+
+        self.pos.x, self.pos.y, self.pos.z
         self.is_player = False
         self.jump_level = 0  # 0: on ground, 1: small jump, 2: big jump
 
@@ -69,9 +71,7 @@ class Poppetje:
                     self.rotate_pos.z + dz)
 
     def walk(self):
-        # TODO: maybe skip keeping track of time, just go one time step further
-        # self.change_direction(keys)
-
+        # TODO: als key left/right bij camera.py
         self.rotate_delta(dy=self.turn_speed)
 
         # if self.turn_speed:
