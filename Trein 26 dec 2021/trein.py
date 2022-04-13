@@ -50,9 +50,15 @@ class Trein:
         self.object.render(self.pos)
 
     def rijden(self):
+        print(self.name, self.speed,
+              self.pos.get_pos(), self.pos.get_rotate())
         if self.rails is None:
             return
 
+        print(self.rails.name, self.pos.get_x_y(), self.rails.ref_punt_next, afstand(*self.rails.ref_punt_next, *self.
+                                                                                     pos.get_x_y()),
+              afstand(*self.rails.ref_punt_prev, *self.
+                      pos.get_x_y()))
         # TODO:
         # Als er een trein meerdere wagons heeft, deze wagons snelheid
         # van locomotief geven. Hiervoor is grid nodig om
@@ -118,6 +124,7 @@ class Trein:
 
         elif self.rails.type == RAILS_BOCHT:
             rotation = self.pos.ry + SPEEDUP_BOCHT * self.speed
+            print(self.name, "bocht", self.pos.ry, self.speed, rotation)
             self.pos.rotate(y=rotation)
 
             width = abs(
@@ -143,6 +150,7 @@ class Trein:
                     pos_x = self.rails.ref_punt_prev[0]
                     pos_y = self.rails.ref_punt_next[1]
 
+            print("pos_x,pos_y", pos_x, pos_y)
             rotation = math.radians(rotation)
 
             self.pos.move(x=round(width * math.cos(rotation) + pos_x, 2),

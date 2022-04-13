@@ -38,14 +38,18 @@ class Position:
     #         self.pan = pan % 360
 
     def rotate(self, x=None, y=None, z=None):
+        # Don't put '% 360' after the variables, because otherwise with a curve
+        # -360 for example becomes 0 and when added with speed, will lead to a
+        # rotation of zero. Another possible workaround is also adding 1e-6 to
+        # the rotation.
         if x:
-            self.rx = x % 360
+            self.rx = x
 
         if y:
-            self.ry = y % 360
+            self.ry = y
 
         if z:
-            self.rz = z % 360
+            self.rz = z
 
     def move_delta(self, dx=0, dy=0, dz=0):
         self.move(self.x + dx, self.y + dy, self.z + dz)
@@ -59,7 +63,8 @@ class Position:
     #                 self.pan + d_pan)
 
     def rotate_delta(self, dx=0, dy=0, dz=0):
-        self.rotate(self.rx + dx, self.ry+dy, self.rz+dz)
+        self.rotate((self.rx + dx) % 360, (self.ry+dy) %
+                    360, (self.rz+dz) % 360)
 
     def get_x_y(self):
         return self.x, self.y
