@@ -17,13 +17,13 @@ class Position:
         self.rz = rz
 
     def move(self, x=None, y=None, z=None):
-        if x:
+        if x is not None:
             self.x = x
 
-        if y:
+        if y is not None:
             self.y = y
 
-        if z:
+        if z is not None:
             self.z = z
 
     # def rotate(self, tilt=None, pan=None):
@@ -42,13 +42,13 @@ class Position:
         # -360 for example becomes 0 and when added with speed, will lead to a
         # rotation of zero. Another possible workaround is also adding 1e-6 to
         # the rotation.
-        if x:
+        if x is not None:
             self.rx = x
 
-        if y:
+        if y is not None:
             self.ry = y
 
-        if z:
+        if z is not None:
             self.rz = z
 
     def move_delta(self, dx=0, dy=0, dz=0):
