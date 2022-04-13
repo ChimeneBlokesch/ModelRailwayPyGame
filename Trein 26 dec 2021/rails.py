@@ -1,6 +1,7 @@
 from objparser import Object3D
 
 from constants import RAILS_MAP, Punt
+from position import Position
 
 RAILS_RECHT = 0
 RAILS_BOCHT = 1
@@ -74,7 +75,9 @@ class Rails:
         return self.object.generate()
 
     def render(self):
-        self.object.render(self.pos, Punt(0, 0, self.rotation),
+        # TODO
+        temp_pos = Position(*self.pos, 0, 0, self.rotation)
+        self.object.render(temp_pos,
                            self.is_flipped, scale_value=(2, 2, 0))
 
     def move(self, x=None, y=None, z=None):

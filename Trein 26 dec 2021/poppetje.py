@@ -4,6 +4,7 @@ from objparser import Object3D
 
 
 from constants import POPPETJES_MAP, SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
+from position import Position
 
 RUN_SPEED = 0.1
 WALK_SPEED = RUN_SPEED / 2
@@ -45,7 +46,9 @@ class Poppetje:
         self.object.generate()
 
     def render(self):
-        self.object.render(self.pos, self.rotate_pos)
+        # TODO
+        temp_pos = Position(*self.pos, *self.rotate_pos)
+        self.object.render(temp_pos)
 
     def move(self, x=None, y=None, z=None):
         x = x if x is not None else self.pos.x

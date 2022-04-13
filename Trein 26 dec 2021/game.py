@@ -200,8 +200,8 @@ while 1:
     keys = pygame.key.get_pressed()
     camera.render(keys)
 
-    tx, ty, tz = camera.pos
-    rx, ry, rz = camera.rotate_pos
+    tx, ty, tz = camera.pos.get_pos()
+    rx, ry, rz = camera.pos.get_rotate()
 
     # Choose backgroundcolor
     # GL.glClearColor(0.8, 0.8, 0.8, 1)
@@ -221,14 +221,17 @@ while 1:
     if camera.mode == CAMERA_POPPETJE:
         pepper.walk()
 
+    # TODO
+    # show_coordinates(tx, ty, tz, rx, ry, rz, *
+    #                  (pepper.pos.get_pos()), *(pepper.pos.get_rotate()))
     show_coordinates(tx, ty, tz, rx, ry, rz, *pepper.pos, *pepper.rotate_pos)
 
     for t in grid.locomotieven:
-        create_line(t.pos[0], t.pos[1], 5,
-                    t.pos[0], t.pos[1], -5, (0.6, 0.6, 0.8))
+        create_line(t.pos.x, t.pos.y, 5,
+                    t.pos.x, t.pos.y, -5, (0.6, 0.6, 0.8))
 
     if debug:
-        points.append(camera.pos)
+        points.append(camera.pos.get_pos())
 
     [create_line(-x, -y, 3, -x, -y, -3, (100, 0, 100))
         for x, y, _ in points]

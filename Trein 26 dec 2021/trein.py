@@ -1,3 +1,4 @@
+from position import Position
 from rails import RAILS_BOCHT, RAILS_RECHT
 import math
 from objparser import Object3D
@@ -19,8 +20,7 @@ class Trein:
         self.object = self.create_object()
         self.start_angle = 0
         self.speed = 0
-        self.rotate_pos = Punt(rot_x, rot_y, rot_z)
-        self.pos = Punt(start_x, start_y, start_z)
+        self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.rails = None
         self.trein_next = None
 
@@ -40,30 +40,14 @@ class Trein:
 
     def render(self):
         if self.name.startswith("VIRM"):
-            self.object.render(self.pos, self.rotate_pos,
-                               scale_value=(2, 0.7, 0.7))
+            self.object.render(self.pos, scale_value=(2, 0.7, 0.7))
             return
 
         if self.name.startswith("Loco"):
-            self.object.render(self.pos, self.rotate_pos,
-                               scale_value=(2, 1, 1.5))
+            self.object.render(self.pos, scale_value=(2, 1, 1.5))
             return
 
-        self.object.render(self.pos, self.rotate_pos)
-
-    def move(self, x=None, y=None, z=None):
-        x = x if x is not None else self.pos.x
-        y = y if y is not None else self.pos.y
-        z = z if z is not None else self.pos.z
-
-        self.pos = Punt(x, y, z)
-
-    def rotate(self, x=None, y=None, z=None):
-        x = x if x is not None else self.rotate_pos.x
-        y = y if y is not None else self.rotate_pos.y
-        z = z if z is not None else self.rotate_pos.z
-
-        self.rotate_pos = Punt(x, y, z)
+        self.object.render(self.pos)
 
     def rijden(self):
         if self.rails is None:
@@ -76,7 +60,7 @@ class Trein:
 
         # TODO: change to begin-/endpoint
         if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
-                                      pos[:2]) < abs(self.speed):
+                                      pos.get_x_y()) < abs(self.speed):
             # print("Next rails")
             if not self.rails.next:
                 # End of rail, go in opposite direction.
@@ -93,7 +77,7 @@ class Trein:
             else:
                 self.rails = self.rails.next
         elif self.speed > 0 and afstand(*self.rails.ref_punt_prev, *self.
-                                        pos[:2]) < abs(self.speed):
+                                        pos.get_x_y()) < abs(self.speed):
             # print("Prev rails")
             if not self.rails.prev:
                 # End of rail, go in opposite direction.
@@ -122,16 +106,19 @@ class Trein:
             # The increase of the position.
             direction *= self.speed
 
+            # TODO change back
+            # if self.rails.get_rotation() == 0:
             if self.rails.rotation == 0:
                 # Horizontal
-                self.move(x=direction + self.pos.x)
+                self.pos.move_delta(dx=direction)
+            # elif self.rails.get_rotation() == 90:
             elif self.rails.rotation == 90:
                 # Vertical
-                self.move(y=direction + self.pos.y)
+                self.pos.move_delta(dy=direction)
 
         elif self.rails.type == RAILS_BOCHT:
-            rotation = self.rotate_pos.y + SPEEDUP_BOCHT * self.speed
-            self.rotate(y=rotation)
+            rotation = self.pos.ry + SPEEDUP_BOCHT * self.speed
+            self.pos.rotate(y=rotation)
 
             width = abs(
                 self.rails.ref_punt_prev[0] - self.rails.ref_punt_next[0])
@@ -158,8 +145,8 @@ class Trein:
 
             rotation = math.radians(rotation)
 
-            self.move(x=round(width * math.cos(rotation) + pos_x, 2),
-                      y=round(height * math.sin(rotation) + pos_y, 2))
+            self.pos.move(x=round(width * math.cos(rotation) + pos_x, 2),
+                          y=round(height * math.sin(rotation) + pos_y, 2))
 
         # Change speed of train behind it
         # if self.trein_next:

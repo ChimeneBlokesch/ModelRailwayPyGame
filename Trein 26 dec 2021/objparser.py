@@ -4,7 +4,7 @@ import pygame
 import OpenGL.GL as GL
 import sqlite3
 
-from constants import TREINEN_MAP, Punt, gamma_correction
+from constants import TREINEN_MAP, gamma_correction
 
 
 IMAGE_PREFIX = "image_"
@@ -235,13 +235,13 @@ class Object3D:
         GL.glDisable(GL.GL_TEXTURE_2D)
         GL.glEndList()
 
-    def render(self, pos=Punt(0, 0, 0), rotate=Punt(0, 0, 0), flip=False,
+    def render(self, pos, flip=False,
                scale_value=(1, 1, 1)):
         GL.glPushMatrix()
         GL.glTranslate(pos.x, pos.y, pos.z)
-        GL.glRotate(rotate.x, 1, 0, 0)
-        GL.glRotate(rotate.y, 0, 1, 0)
-        GL.glRotate(rotate.z, 0, 0, 1)
+        GL.glRotate(pos.rx, 1, 0, 0)
+        GL.glRotate(pos.ry, 0, 1, 0)
+        GL.glRotate(pos.rz, 0, 0, 1)
 
         if flip:
             GL.glScale(1, -1, 1)
