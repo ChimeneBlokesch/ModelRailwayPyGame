@@ -221,10 +221,8 @@ while 1:
     if camera.mode == CAMERA_POPPETJE:
         pepper.walk()
 
-    # TODO
-    # show_coordinates(tx, ty, tz, rx, ry, rz, *
-    #                  (pepper.pos.get_pos()), *(pepper.pos.get_rotate()))
-    show_coordinates(tx, ty, tz, rx, ry, rz, *pepper.pos, *pepper.rotate_pos)
+    show_coordinates(tx, ty, tz, rx, ry, rz, *
+                     (pepper.pos.get_pos()), *(pepper.pos.get_rotate()))
 
     for t in grid.locomotieven:
         create_line(t.pos.x, t.pos.y, 5,
