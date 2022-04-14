@@ -64,7 +64,7 @@ class Rails:
         self.start_x, self.start_y, self.start_z = (0, 0, 0)
 
         # Only uses z-axis to rotate.
-        self.position = Position(x=pos_x, y=pos_y, z=pos_z, rz=rotation)
+        self.pos = Position(x=pos_x, y=pos_y, z=pos_z, rz=rotation)
 
         self.image_file = lambda type_rails: RAILS_IMG_PATH(type_rails)
         self.next = next_rails
@@ -78,25 +78,25 @@ class Rails:
         return self.object.generate()
 
     def render(self):
-        self.object.render(self.position, self.is_flipped,
+        self.object.render(self.pos, self.is_flipped,
                            scale_value=(2, 2, 0))
 
     def move(self, x=None, y=None, z=None, add_start=True):
-        x = x + self.start_x * add_start if x is not None else self.position.x
-        y = y + self.start_y * add_start if y is not None else self.position.y
-        z = z + self.start_z * add_start if z is not None else self.position.z
+        x = x + self.start_x * add_start if x is not None else self.pos.x
+        y = y + self.start_y * add_start if y is not None else self.pos.y
+        z = z + self.start_z * add_start if z is not None else self.pos.z
 
         if self.ref_punt_prev:
-            self.ref_punt_prev = (x - self.position.x + self.ref_punt_prev[0],
-                                  y - self.position.y + self.ref_punt_prev[1])
+            self.ref_punt_prev = (x - self.pos.x + self.ref_punt_prev[0],
+                                  y - self.pos.y + self.ref_punt_prev[1])
         if self.ref_punt_next:
-            self.ref_punt_next = (x - self.position.x + self.ref_punt_next[0],
-                                  y - self.position.y + self.ref_punt_next[1])
+            self.ref_punt_next = (x - self.pos.x + self.ref_punt_next[0],
+                                  y - self.pos.y + self.ref_punt_next[1])
 
-        self.position.move(x, y, z)
+        self.pos.move(x, y, z)
 
     def rotate(self, z):
-        self.position.rotate(z=z)
+        self.pos.rotate(z=z)
 
     def get_ref_punt(self):
         if self.ref_punt_next:
@@ -114,7 +114,7 @@ class Rails:
         self.prev = rails
 
     def get_rotation(self):
-        return self.position.rz
+        return self.pos.rz
 
 
 class Bocht(Rails):
@@ -145,7 +145,7 @@ class Bocht(Rails):
             self.is_flipped, next_prev = info
         self.ref_punt_own = (0, 0)
 
-        self.position.rotate(z=rotation)
+        self.pos.rotate(z=rotation)
 
         if next_prev == NEXT:
             self.ref_punt_next = self.ref_punt_own
@@ -153,7 +153,7 @@ class Bocht(Rails):
             self.ref_punt_prev = self.ref_punt_own
 
         self.own_next_prev = next_prev
-        self.position.move(self.start_x, self.start_y, self.start_z)
+        self.pos.move(self.start_x, self.start_y, self.start_z)
 
         return Object3D(RAILS_MAP, RAILS_OBJ_NAME(RAILS_BOCHT, self.angle), swap_yz=True)
 
@@ -167,7 +167,7 @@ class Bocht(Rails):
             self.ref_punt_next = ref_punt
 
     def move(self, x, y, z=None, add_start=True):
-        z = z if z is not None else self.position.z
+        z = z if z is not None else self.pos.z
         super().move(x=x, y=y, z=z, add_start=add_start)
 
         if self.own_next_prev == NEXT:
@@ -188,7 +188,7 @@ class Recht(Rails):
                          ref_punt_next=ref_punt_next,
                          ref_punt_prev=ref_punt_prev)
 
-        self.position.rotate(z=90 * (not is_horizontal | 0))
+        self.pos.rotate(z=90 * (not is_horizontal | 0))
         self.image_file = self.image_file(RAILS_RECHT)
         self.object = self.create_object()
         self.type = RAILS_RECHT
