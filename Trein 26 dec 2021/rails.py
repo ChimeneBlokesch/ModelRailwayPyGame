@@ -1,6 +1,6 @@
 from objparser import Object3D
 
-from constants import RAILS_MAP, Punt
+from constants import RAILS_MAP
 from position import Position
 import numpy as np
 

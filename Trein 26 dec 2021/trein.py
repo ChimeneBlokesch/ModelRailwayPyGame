@@ -3,7 +3,7 @@ from rails import RAILS_BOCHT, RAILS_RECHT
 import math
 from objparser import Object3D
 
-from constants import SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
+from constants import SPEEDUP_BOCHT, TREINEN_MAP, afstand
 
 # These indices correspond with the primary keys of the 'type' table.
 TREIN_PASSAGIER = 0

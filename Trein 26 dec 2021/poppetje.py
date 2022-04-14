@@ -3,7 +3,7 @@ import pygame
 from objparser import Object3D
 
 
-from constants import POPPETJES_MAP, SPEEDUP_BOCHT, Punt, TREINEN_MAP, afstand
+from constants import POPPETJES_MAP, SPEEDUP_BOCHT, TREINEN_MAP, afstand
 from position import Position
 
 RUN_SPEED = 0.1

@@ -1,7 +1,6 @@
 import numpy as np
 import pygame
 import math
-from constants import Punt
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 from constants import print_rails_info, show_coordinates
@@ -18,7 +17,6 @@ CAMERA_TREIN = 2
 class Camera:
     def __init__(self):
         self.pos = Position(x=0, y=1.5, z=-1.5, rx=0, ry=283, rz=0)
-        # self.rotate_pos = Punt(0, 283, 0)  # (0, 0) is bovenaanzicht
         self.scale = 0
         self.mode = CAMERA_FREE
 

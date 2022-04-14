@@ -10,8 +10,6 @@ TREINEN_MAP = "treinen/"
 RAILS_MAP = "rails/"
 POPPETJES_MAP = "poppetjes/"
 
-Punt = namedtuple("Punt", ["x", "y", "z"])
-
 BREEDTE_RAILS = 5
 
 WIDTH_GRID = 30
