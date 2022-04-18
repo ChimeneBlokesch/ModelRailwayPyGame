@@ -115,7 +115,9 @@ class PoppetjeObject:
     """
 
     # , trui, mouw, riem, broek, broek_midden, extra=[]
-    def __init__(self, name, hat_hair, hat_hair_color, face, trui_color, trui_voor, mouw, start_x=0, start_y=0, start_z=0,
+    def __init__(self, name, hat_hair, hat_hair_color, face,
+                 trui_color, trui_voor, mouw, riem, broek, broek_midden,
+                 start_x=0, start_y=0, start_z=0,
                  rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
         """
         Colors should be given as the tuple (r, g, b) and not gamma corrected.
@@ -130,13 +132,15 @@ class PoppetjeObject:
                          start_y, start_z, rot_x, rot_y, rot_z)
         self.arms = Arms(mouw, start_x, start_y, start_z, rot_x, rot_y, rot_z,
                          is_brickbot=is_brickbot)
+        self.legs = Legs(riem, broek, broek_midden,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
 
     def generate(self):
-        for o in [self.hat, self.head, self.trui, self.arms]:
+        for o in [self.hat, self.head, self.trui, self.arms, self.legs]:
             o.generate()
 
     def render(self):
-        for o in [self.hat, self.head, self.trui, self.arms]:
+        for o in [self.hat, self.head, self.trui, self.arms, self.legs]:
             o.render()
 
 
@@ -230,3 +234,54 @@ class Hand(BasisObject):
         super().__init__(hand + "_" + obj, POPPETJES2_MAP,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z,
                          mtl_images)
+
+
+class Legs:
+    def __init__(self, riem, broek, broek_midden,
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        self.between = Between(riem, broek_midden,
+                               start_x, start_y, start_z, rot_x, rot_y, rot_z)
+        self.l_leg = Leg(broek, True,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
+
+        self.r_leg = Leg(broek, False,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
+
+    def generate(self):
+        for o in [self.between, self.l_leg, self.r_leg]:
+            o.generate()
+
+    def render(self):
+        for o in [self.between, self.l_leg, self.r_leg]:
+            o.render()
+
+
+class Between(BasisObject):
+    def __init__(self, riem, broek_midden, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        mtl_images = {"riem": (False, riem),
+                      "broek_midden": (False, broek_midden)}
+        super().__init__("between", POPPETJES2_MAP,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                         mtl_images)
+
+    def change_riem(self, color):
+        mtl_images = {"riem": (False, color)}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)
+
+    def change_broek_midden(self, color):
+        mtl_images = {"broek_midden": (False, color)}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)
+
+
+class Leg(BasisObject):
+    def __init__(self, color, is_left,
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        hand = "l" if is_left else "r"
+        mtl_images = {"broek": (False, color)}
+        super().__init__(hand + "_leg", POPPETJES2_MAP,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                         mtl_images)
+
+    def change_color(self, color):
+        mtl_images = {"broek": (False, color)}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)

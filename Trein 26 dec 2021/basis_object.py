@@ -8,6 +8,7 @@ class BasisObject:
         self.folder = folder
         self.mtl_images = mtl_images
         self.object = self.create_object()
+
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
 
     def create_object(self):

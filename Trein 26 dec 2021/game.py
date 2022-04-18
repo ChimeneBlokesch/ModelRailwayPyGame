@@ -45,6 +45,7 @@ pepper = grid.add_poppetje(
 pop = grid.add_poppetje2(
     "Pop", "hair_001", hex_to_rgb("49332A"), "POST", hex_to_rgb("F00000"),
     "POST", hex_to_rgb("FFFFFF"),
+    hex_to_rgb("009cff"), hex_to_rgb("009cff"), hex_to_rgb("009cff"),
     rot_x=90)
 # sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
 #                      start_x=0.5, start_y=1.5, rot_x=90)
