@@ -11,7 +11,7 @@ IMAGE_PREFIX = "image_"
 
 
 class Object3D:
-    def __init__(self, folder, obj_name, swap_yz=False):
+    def __init__(self, folder, obj_name, mtl_images={}, swap_yz=False):
         self.vertices = []
         self.normals = []
         self.texcoords = []
@@ -20,6 +20,7 @@ class Object3D:
         self.swap_yz = swap_yz
         self.folder = folder
         self.obj_name = obj_name
+        self.mtl_images = mtl_images
         self.read_obj_file(folder + obj_name + ".obj")
 
     def change_img(self, mtl_images, folder):
@@ -59,11 +60,13 @@ class Object3D:
             if "map_Kd" not in self.mtl[m]:
                 continue
 
+            img_file = self.mtl[m]["map_Kd"].split("\\")[-1]
+
             cursor.execute("""SELECT id from soort where name = ?""",
                            (self.obj_name,))
             trein = cursor.fetchall()[0][0]
             cursor.execute("""SELECT id from plaatjes where name = ?""",
-                           (self.mtl[m]["map_Kd"],))
+                           (img_file,))
             img = cursor.fetchall()[0][0]
 
             try:
@@ -113,6 +116,7 @@ class Object3D:
     def read_mtl_file(self, filename):
         contents = {}
         mtl = None
+        mtl_name = ""
         dirname = os.path.dirname(filename)
 
         for line in open(filename, "r"):
@@ -126,13 +130,17 @@ class Object3D:
 
             if line[0] == 'newmtl':
                 # Contents wordt bijgewerkt door de mtl variable.
-                mtl = contents[line[1]] = {}
+                mtl_name = line[1]
+                mtl = contents[mtl_name] = {}
                 continue
 
             if mtl is None:
                 raise ValueError("mtl file doesn't start with newmtl stmt")
 
             type_map = line[0]
+
+            if mtl_name in self.mtl_images.keys():
+                line[1:] = self.mtl_images[mtl_name]
 
             try:
                 mtl[type_map] = list(map(float, line[1:]))
@@ -142,6 +150,9 @@ class Object3D:
                 mtl[type_map] = name
                 imagefile = os.path.join(dirname, name)
                 mtl[IMAGE_PREFIX + type_map] = self.read_image_file(imagefile)
+            except TypeError:
+                # Value is a color already in a tuple
+                mtl[type_map] = line[1:]
 
         return contents
 
@@ -230,6 +241,7 @@ class Object3D:
                 # use diffuse color, because this is the mostly used color
                 texid = GL.glGenTextures(1)
                 GL.glBindTexture(GL.GL_TEXTURE_2D, texid)
+                print(mtl['Kd'])
                 GL.glColor(gamma_correction(*mtl['Kd']))
 
             GL.glBegin(GL.GL_POLYGON)

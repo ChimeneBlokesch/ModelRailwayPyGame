@@ -12,10 +12,10 @@ class BasisObject:
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
 
     def create_object(self):
-        model = Object3D(self.folder, self.obj_name)
+        model = Object3D(self.folder, self.obj_name, self.mtl_images)
 
-        if self.mtl_images:
-            model.change_img(self.mtl_images, self.folder)
+        # if self.mtl_images:
+        #     model.change_img(self.mtl_images, self.folder)
 
         return model
 
