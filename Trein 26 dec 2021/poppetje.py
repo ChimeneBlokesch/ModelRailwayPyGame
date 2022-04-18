@@ -123,6 +123,8 @@ class PoppetjeObject:
         Colors should be given as the tuple (r, g, b) and not gamma corrected.
         """
         self.name = name
+        self.direction = 1
+        self.speed = 5
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.hat = HatHair(hat_hair, hat_hair_color, start_x,
                            start_y, start_z, rot_x, rot_y, rot_z)
@@ -145,7 +147,11 @@ class PoppetjeObject:
             o.render()
 
     def move_legs(self):
-        self.legs.l_leg.pos.rotate_delta(dx=1)
+        if self.legs.l_leg.pos.rx > 160 or self.legs.r_leg.pos.rx > 160:
+            self.direction *= -1
+
+        self.legs.l_leg.pos.rotate_delta(dx=self.direction * self.speed)
+        self.legs.r_leg.pos.rotate_delta(dx=-self.direction * self.speed)
 
 
 class HatHair(BasisObject):
