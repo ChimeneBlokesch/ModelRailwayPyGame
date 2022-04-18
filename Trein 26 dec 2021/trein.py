@@ -31,7 +31,7 @@ class Trein:
         model = Object3D(TREINEN_MAP, self.obj_name)
 
         if self.mtl_images:
-            model.change_img(self.mtl_images)
+            model.change_img(self.mtl_images, TREINEN_MAP)
 
         return model
 

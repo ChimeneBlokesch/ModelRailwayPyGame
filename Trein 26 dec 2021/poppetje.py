@@ -1,5 +1,6 @@
 import math
 import pygame
+from basis_object import BasisObject
 from objparser import Object3D
 
 
@@ -12,6 +13,9 @@ ROTATE_SPEED = 1.5
 JUMP_SPEED = 0.1
 GRAVITY = -0.01
 TERRAIN_HEIGHT = 0
+
+# TODO: put in constants.py
+POPPETJES2_MAP = "Poppetjes2/"
 
 pygame.init()
 
@@ -99,3 +103,48 @@ class Poppetje:
         if self.jump_level < 2:
             self.up_speed = JUMP_SPEED
             self.jump_level += 1
+
+
+class PoppetjeObject:
+    """
+    Keeps track of all models of a figure.
+    Eventually also able to move and rotate part of the models with this class.
+    """
+
+    # , trui, mouw, riem, broek, broek_midden, extra=[]
+    def __init__(self, name, hat_hair, hat_hair_color, face, start_x=0, start_y=0, start_z=0,
+                 rot_x=0, rot_y=0, rot_z=0):
+        self.name = name
+        self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
+        self.hat = HatHair(hat_hair, hat_hair_color, start_x,
+                           start_y, start_z, rot_x, rot_y, rot_z)
+        self.head = Head("head", face, start_x, start_y,
+                         start_z, rot_x, rot_y, rot_z)
+
+    def generate(self):
+        for o in [self.hat, self.head]:
+            o.generate()
+
+    def render(self):
+        for o in [self.hat, self.head]:
+            o.render()
+
+
+class HatHair(BasisObject):
+    def __init__(self, obj, color, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        # Color (r, g, b)
+        mtl_images = {"hathair": (False, color)}
+        super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
+                         start_z, rot_x, rot_y, rot_z, mtl_images)
+
+
+class Head(BasisObject):
+    def __init__(self, obj, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        self.face_name = face_name
+        mtl_images = {"face": (True, face_name + "_face" + "0")}
+        super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
+                         start_z, rot_x, rot_y, rot_z, mtl_images)
+
+    def change_face(self, num):
+        self.mtl_images = {"face": (True, self.face_name + num)}
+        self.object.change_img(self.mtl_images, POPPETJES2_MAP)

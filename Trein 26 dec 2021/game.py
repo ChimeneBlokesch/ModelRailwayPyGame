@@ -4,7 +4,7 @@ import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 from camera import CAMERA_FREE, CAMERA_POPPETJE, Camera
-from constants import angle_between_vectors, print_rails_info, show_coordinates
+from constants import angle_between_vectors, hex_to_rgb, print_rails_info, show_coordinates
 from grid import Grid
 from lijnen import create_line
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
@@ -36,19 +36,25 @@ GL.glShadeModel(GL.GL_SMOOTH)
 grid = Grid()
 camera = Camera()
 
-pepper = grid.add_poppetje("Pepper", "lego_pepper2", rot_x=90, rot_y=180)
+# pepper = grid.add_poppetje(
+#     "Pepper2", "lego_pepper_met_rugzak", rot_x=90, rot_y=180)
 
+pepper = grid.add_poppetje(
+    "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180)
+
+pop = grid.add_poppetje2(
+    "Pop", "hair_001", hex_to_rgb("49332A"), "POST", rot_x=90)
 # sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
 #                      start_x=0.5, start_y=1.5, rot_x=90)
 # sgm.change_speed(-0.05)
 
 icityvagon = grid.add_trein("f3", "icityvagon", TREIN_PASSAGIER, start_x=0.5,
                             start_y=-2.4, rot_x=90,
-                            mtl_images={'Material.006': 'icityvagon6'})
+                            mtl_images={'Material.006': (True, 'icityvagon6')})
 
 innercity = grid.add_trein("innercity", "innercity", TREIN_LOCOMOTIEF,
                            start_x=0.5, start_y=1.5, rot_x=90,
-                           mtl_images={'Material.004': 'innercity6'})
+                           mtl_images={'Material.004': (True, 'innercity6')})
 innercity.change_speed(-0.05)
 
 innercity.attach_trein(icityvagon)

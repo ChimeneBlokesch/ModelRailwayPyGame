@@ -72,3 +72,14 @@ def show_coordinates(tx, ty, tz, rx, ry, rz, ptx, pty, ptz, prx, pry, prz):
 
 def gamma_correction(r, g, b, gamma=0.45):
     return r ** gamma, g ** gamma, b ** gamma
+
+
+def hex_to_rgb(hex_str):
+    """
+    Converts a gamma corrected hexidecimal string to gamma corrected rgb.
+    """
+    r = (int(hex_str[:2], base=16) / 255)
+    g = (int(hex_str[2:4], base=16) / 255)
+    b = (int(hex_str[4:], base=16) / 255)
+
+    return r, g, b

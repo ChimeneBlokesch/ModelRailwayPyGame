@@ -22,13 +22,26 @@ class Object3D:
         self.obj_name = obj_name
         self.read_obj_file(folder + obj_name + ".obj")
 
-    def change_img(self, mtl_images):
+    def change_img(self, mtl_images, folder):
+        """
+        Changes the object by changing one or multiple materials.
+        mtl_images: Dictionary containing the material name as key and the tuple
+                    (is_image, new) as value, where new is the name of the color
+                    or image.
+        """
         for mtl_name in mtl_images.keys():
+            is_image, new = mtl_images[mtl_name]
+
+            if not is_image:
+                # Color
+                self.mtl[mtl_name]["Kd"] = new
+                continue
+
             # Set image.
-            filename = mtl_images[mtl_name] + ".png"
+            filename = new + ".png"
             self.mtl[mtl_name]["map_Kd"] = filename
             self.mtl[mtl_name]["map_d"] = filename
-            imagefile = os.path.join(TREINEN_MAP, filename)
+            imagefile = os.path.join(folder, filename)
             image = self.read_image_file(imagefile)
             self.mtl[mtl_name][IMAGE_PREFIX + "map_Kd"] = image
             self.mtl[mtl_name][IMAGE_PREFIX + "map_d"] = image

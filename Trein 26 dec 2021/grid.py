@@ -1,7 +1,7 @@
 from trein import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
 from rails import HOOGTE_RAILS, RAILS_BOCHT, Rails, Bocht, Recht, NEXT, PREV
 from ground import create_assenstelsel, create_grid, create_ground
-from poppetje import Poppetje
+from poppetje import Poppetje, PoppetjeObject
 
 
 class Grid:
@@ -50,6 +50,11 @@ class Grid:
 
     def add_poppetje(self, *args, **kwargs):
         new_pop = Poppetje(*args, **kwargs)
+        self.poppetjes.append(new_pop)
+        return new_pop
+
+    def add_poppetje2(self, *args, **kwargs):
+        new_pop = PoppetjeObject(*args, **kwargs)
         self.poppetjes.append(new_pop)
         return new_pop
 
