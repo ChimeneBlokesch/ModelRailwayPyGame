@@ -77,6 +77,9 @@ class Poppetje:
         if event.type not in [pygame.KEYDOWN, pygame.KEYUP]:
             return
 
+        if pygame.key.get_pressed()[pygame.K_LCTRL]:
+            return
+
         if event.key == pygame.K_UP:
             self.speed = -RUN_SPEED if event.type == pygame.KEYDOWN else 0
         elif event.key == pygame.K_DOWN:
