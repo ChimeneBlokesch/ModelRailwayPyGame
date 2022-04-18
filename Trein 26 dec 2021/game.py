@@ -43,8 +43,8 @@ pepper = grid.add_poppetje(
     "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180)
 
 pop = grid.add_poppetje2(
-    "Pop", "hair_001", hex_to_rgb(
-        "49332A"), "POST", hex_to_rgb("F00000"), "POST",
+    "Pop", "hair_001", hex_to_rgb("49332A"), "POST", hex_to_rgb("F00000"),
+    "POST", hex_to_rgb("FFFFFF"),
     rot_x=90)
 # sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
 #                      start_x=0.5, start_y=1.5, rot_x=90)

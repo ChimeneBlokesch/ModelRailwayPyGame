@@ -17,6 +17,9 @@ TERRAIN_HEIGHT = 0
 # TODO: put in constants.py
 POPPETJES2_MAP = "Poppetjes2/"
 
+HAND_COLOR = (0.991102, 0.708376, 0.000000)
+BB_HAND_COLOR = (0.3, 0.3, 0.3)  # TODO another color
+
 pygame.init()
 
 
@@ -112,23 +115,28 @@ class PoppetjeObject:
     """
 
     # , trui, mouw, riem, broek, broek_midden, extra=[]
-    def __init__(self, name, hat_hair, hat_hair_color, face, trui_color, trui_voor, start_x=0, start_y=0, start_z=0,
-                 rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, name, hat_hair, hat_hair_color, face, trui_color, trui_voor, mouw, start_x=0, start_y=0, start_z=0,
+                 rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
+        """
+        Colors should be given as the tuple (r, g, b) and not gamma corrected.
+        """
         self.name = name
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.hat = HatHair(hat_hair, hat_hair_color, start_x,
                            start_y, start_z, rot_x, rot_y, rot_z)
-        self.head = Head("head", face, start_x, start_y,
-                         start_z, rot_x, rot_y, rot_z)
-        self.trui = Trui("trui", trui_color, trui_voor, start_x,
+        self.head = Head(face, start_x, start_y,
+                         start_z, rot_x, rot_y, rot_z, is_brickbot=is_brickbot)
+        self.trui = Trui(trui_color, trui_voor, start_x,
                          start_y, start_z, rot_x, rot_y, rot_z)
+        self.arms = Arms(mouw, start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                         is_brickbot=is_brickbot)
 
     def generate(self):
-        for o in [self.hat, self.head, self.trui]:
+        for o in [self.hat, self.head, self.trui, self.arms]:
             o.generate()
 
     def render(self):
-        for o in [self.hat, self.head, self.trui]:
+        for o in [self.hat, self.head, self.trui, self.arms]:
             o.render()
 
 
@@ -145,10 +153,10 @@ class HatHair(BasisObject):
 
 
 class Head(BasisObject):
-    def __init__(self, obj, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
         self.face_name = face_name
         mtl_images = {"face": (True, face_name + "_face" + "0")}
-        super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
+        super().__init__("head", POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
     def change_emotion(self, num):
@@ -162,11 +170,11 @@ class Head(BasisObject):
 
 
 class Trui(BasisObject):
-    def __init__(self, obj, trui_color, trui_voor, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, trui_color, trui_voor, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
         self.trui_color = trui_color
         mtl_images = {"trui": (False, trui_color),
                       "trui_voor": (True, trui_voor + "_trui_voor")}
-        super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
+        super().__init__("trui", POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
     def change_trui_voor(self, trui_voor):
@@ -176,3 +184,49 @@ class Trui(BasisObject):
     def change_trui_color(self, color):
         mtl_images = {"trui": (False, color)}
         self.object.change_img(mtl_images, POPPETJES2_MAP)
+
+
+class Arms:
+    def __init__(self, mouw, start_x=0,
+                 start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
+                 is_brickbot=False):
+        self.l_arm = Arm(mouw, True,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
+        self.r_arm = Arm(mouw, False,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
+        self.l_hand = Hand(True,
+                           start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                           is_brickbot=is_brickbot)
+        self.r_hand = Hand(False,
+                           start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                           is_brickbot=is_brickbot)
+
+    def generate(self):
+        for o in [self.l_arm, self.r_arm, self.l_hand, self.r_hand]:
+            o.generate()
+
+    def render(self):
+        for o in [self.l_arm, self.r_arm, self.l_hand, self.r_hand]:
+            o.render()
+
+
+class Arm(BasisObject):
+    def __init__(self, mouw, is_left,
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        arm = "l" if is_left else "r"
+        mtl_images = {"mouw": (False, mouw)}
+        super().__init__(arm + "_arm", POPPETJES2_MAP, start_x,
+                         start_y, start_z, rot_x, rot_y, rot_z, mtl_images)
+
+
+class Hand(BasisObject):
+    def __init__(self, is_left,
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
+                 is_brickbot=False):
+        hand_color = HAND_COLOR if not is_brickbot else BB_HAND_COLOR
+        obj = "hand" if not is_brickbot else "BB_hand"
+        hand = "l" if is_left else "r"
+        mtl_images = {"hand": (False, hand_color)}
+        super().__init__(hand + "_" + obj, POPPETJES2_MAP,
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                         mtl_images)

@@ -76,7 +76,7 @@ def gamma_correction(r, g, b, gamma=0.45):
 
 def hex_to_rgb(hex_str):
     """
-    Converts a gamma corrected hexidecimal string to gamma corrected rgb.
+    Converts a gamma corrected hexidecimal string to not gamma corrected rgb.
     """
     r = (int(hex_str[:2], base=16) / 255) ** 2.22
     g = (int(hex_str[2:4], base=16) / 255) ** 2.22
