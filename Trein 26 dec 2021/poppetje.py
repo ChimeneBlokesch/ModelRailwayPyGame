@@ -140,13 +140,19 @@ class PoppetjeObject:
             o.generate()
 
     def render(self):
+        self.move_legs()
         for o in [self.hat, self.head, self.trui, self.arms, self.legs]:
             o.render()
+
+    def move_legs(self):
+        self.legs.l_leg.pos.rotate_delta(dx=1)
 
 
 class HatHair(BasisObject):
     def __init__(self, obj, color, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
         # Color (r, g, b)
+        start_y += 0.013754
+        start_z += 0.226  # 0.08  # offset
         mtl_images = {"hathair": color}
         super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
@@ -160,7 +166,8 @@ class Head(BasisObject):
     def __init__(self, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
         self.face_name = face_name
         mtl_images = {"face": ["face\\" + face_name + "_face" + "0" + ".png"]}
-        print(mtl_images)
+        start_y += 0.008933
+        start_z += 0.206643  # 0.1  # offset
         super().__init__("head", POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
@@ -179,6 +186,10 @@ class Trui(BasisObject):
         self.trui_color = trui_color
         mtl_images = {"trui": trui_color,
                       "trui_voor": ["trui_voor\\" + trui_voor + "_trui_voor.png"]}
+        # offset
+        start_x -= 0.006399
+        start_y -= 0.004816
+        start_z += 0.074161  # 0.08
         super().__init__("trui", POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
@@ -218,8 +229,16 @@ class Arms:
 class Arm(BasisObject):
     def __init__(self, mouw, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        # offset
+        start_x += -0.048647 if not is_left else 0.065608
+        # start_x += 0.0571275 * (2 * is_left - 1)
+        # start_y += 0.0087515
+        start_y += 0.00946 if not is_left else 0.008043
+        start_z += 0.123011 if not is_left else 0.105465
+        # start_z += 0.11424
         arm = "l" if is_left else "r"
         mtl_images = {"mouw": mouw}
+        # start_z += 0.04  # offset
         super().__init__(arm + "_arm", POPPETJES2_MAP, start_x,
                          start_y, start_z, rot_x, rot_y, rot_z, mtl_images)
 
@@ -228,6 +247,13 @@ class Hand(BasisObject):
     def __init__(self, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
                  is_brickbot=False):
+        # offset
+        start_x += -0.076369 if not is_left else 0.082919
+        start_y += 0.000755 if not is_left else -0.001302
+        start_z += 0.064231 if not is_left else 0.055258
+        # start_x += 0.079644 * (2 * is_left)
+        # start_y += 0.0020385
+        # start_z += 0.3084055
         hand_color = HAND_COLOR if not is_brickbot else BB_HAND_COLOR
         obj = "hand" if not is_brickbot else "BB_hand"
         hand = "l" if is_left else "r"
@@ -261,6 +287,11 @@ class Between(BasisObject):
     def __init__(self, riem, broek_midden, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
         mtl_images = {"riem": riem,
                       "broek_midden":  broek_midden}
+        # offset
+        start_x -= 0.000075
+        start_y += 0.006344
+        start_z += 0.015503  # 0.01
+
         super().__init__("between", POPPETJES2_MAP,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z,
                          mtl_images)
@@ -277,6 +308,11 @@ class Between(BasisObject):
 class Leg(BasisObject):
     def __init__(self, color, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        # offset
+        start_x += -0.007519 if not is_left else 0.007519
+        start_y += 0.006783 if not is_left else 0.006783
+        # start_x += 0.00751 * (2 * is_left - 1)
+        # start_y += 0.006783 * (2 * is_left - 1)
         hand = "l" if is_left else "r"
         mtl_images = {"broek": color}
         super().__init__(hand + "_leg", POPPETJES2_MAP,

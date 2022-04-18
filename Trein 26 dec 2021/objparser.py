@@ -241,7 +241,6 @@ class Object3D:
                 # use diffuse color, because this is the mostly used color
                 texid = GL.glGenTextures(1)
                 GL.glBindTexture(GL.GL_TEXTURE_2D, texid)
-                print(mtl['Kd'])
                 GL.glColor(gamma_correction(*mtl['Kd']))
 
             GL.glBegin(GL.GL_POLYGON)
