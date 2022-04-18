@@ -112,7 +112,7 @@ class PoppetjeObject:
     """
 
     # , trui, mouw, riem, broek, broek_midden, extra=[]
-    def __init__(self, name, hat_hair, hat_hair_color, face, start_x=0, start_y=0, start_z=0,
+    def __init__(self, name, hat_hair, hat_hair_color, face, trui_color, trui_voor, start_x=0, start_y=0, start_z=0,
                  rot_x=0, rot_y=0, rot_z=0):
         self.name = name
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
@@ -120,13 +120,15 @@ class PoppetjeObject:
                            start_y, start_z, rot_x, rot_y, rot_z)
         self.head = Head("head", face, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z)
+        self.trui = Trui("trui", trui_color, trui_voor, start_x,
+                         start_y, start_z, rot_x, rot_y, rot_z)
 
     def generate(self):
-        for o in [self.hat, self.head]:
+        for o in [self.hat, self.head, self.trui]:
             o.generate()
 
     def render(self):
-        for o in [self.hat, self.head]:
+        for o in [self.hat, self.head, self.trui]:
             o.render()
 
 
@@ -137,6 +139,10 @@ class HatHair(BasisObject):
         super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
+    def change_color(self, color):
+        mtl_images = {"hathair": (False, color)}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)
+
 
 class Head(BasisObject):
     def __init__(self, obj, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
@@ -145,6 +151,28 @@ class Head(BasisObject):
         super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
-    def change_face(self, num):
-        self.mtl_images = {"face": (True, self.face_name + num)}
-        self.object.change_img(self.mtl_images, POPPETJES2_MAP)
+    def change_emotion(self, num):
+        mtl_images = {"face": (True, self.face_name + str(num))}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)
+
+    def change_face(self, face_name, num=0):
+        self.face_name = face_name
+        mtl_images = {"face": (True, self.face_name + str(num))}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)
+
+
+class Trui(BasisObject):
+    def __init__(self, obj, trui_color, trui_voor, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        self.trui_color = trui_color
+        mtl_images = {"trui": (False, trui_color),
+                      "trui_voor": (True, trui_voor + "_trui_voor")}
+        super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
+                         start_z, rot_x, rot_y, rot_z, mtl_images)
+
+    def change_trui_voor(self, trui_voor):
+        mtl_images = {"trui": (True, trui_voor + "_trui_voor")}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)
+
+    def change_trui_color(self, color):
+        mtl_images = {"trui": (False, color)}
+        self.object.change_img(mtl_images, POPPETJES2_MAP)

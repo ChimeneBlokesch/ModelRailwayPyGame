@@ -78,8 +78,8 @@ def hex_to_rgb(hex_str):
     """
     Converts a gamma corrected hexidecimal string to gamma corrected rgb.
     """
-    r = (int(hex_str[:2], base=16) / 255)
-    g = (int(hex_str[2:4], base=16) / 255)
-    b = (int(hex_str[4:], base=16) / 255)
+    r = (int(hex_str[:2], base=16) / 255) ** 2.22
+    g = (int(hex_str[2:4], base=16) / 255) ** 2.22
+    b = (int(hex_str[4:], base=16) / 255) ** 2.22
 
     return r, g, b
