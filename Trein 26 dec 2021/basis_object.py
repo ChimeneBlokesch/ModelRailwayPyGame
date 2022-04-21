@@ -24,3 +24,9 @@ class BasisObject:
 
     def render(self):
         self.object.render(self.pos)
+
+    def move_delta(self, dx=0, dy=0, dz=0):
+        self.pos.move_delta(dx, dy, dz)
+
+    def rotate_delta(self, dx=0, dy=0, dz=0):
+        self.pos.rotate_delta(dx, dy, dz)

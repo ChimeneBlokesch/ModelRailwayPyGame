@@ -83,3 +83,17 @@ def hex_to_rgb(hex_str):
     b = (int(hex_str[4:], base=16) / 255) ** 2.22
 
     return r, g, b
+
+
+def e2h(x):
+    if len(x.shape) == 1:
+        return np.hstack((x, [1]))
+
+    return np.vstack((x, np.full(x.shape[1], 1)))
+
+
+def h2e(tx):
+    if len(tx.shape) == 1:
+        return tx[:-1] / tx[-1]
+
+    return tx[:-1, :] / tx[-1, :]

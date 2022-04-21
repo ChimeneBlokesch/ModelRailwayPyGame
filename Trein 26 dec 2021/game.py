@@ -40,13 +40,13 @@ camera = Camera()
 #     "Pepper2", "lego_pepper_met_rugzak", rot_x=90, rot_y=180)
 
 pepper = grid.add_poppetje(
-    "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180)
+    "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180, start_x=100)
 
 pop = grid.add_poppetje2(
     "Pop", "hair_001", hex_to_rgb("49332A"), "POST", hex_to_rgb("F00000"),
     "POST", hex_to_rgb("FFFFFF"),
     hex_to_rgb("009cff"), hex_to_rgb("009cff"), hex_to_rgb("009cff"),
-    rot_x=90, start_x=-1, start_y=-1)
+    rot_x=90)
 # sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
 #                      start_x=0.5, start_y=1.5, rot_x=90)
 # sgm.change_speed(-0.05)
@@ -193,10 +193,10 @@ while 1:
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
             # Switch to Pepper
-            pepper.is_player = True
-            camera.camera_to_poppetje(pepper)
+            pop.is_player = True
+            camera.camera_to_poppetje(pop)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
-            pepper.is_player = False
+            pop.is_player = False
             camera.camera_to_free()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_4:
             camera.camera_to_trein(virm1)
@@ -204,7 +204,7 @@ while 1:
             debug = not debug
 
         if camera.mode == CAMERA_POPPETJE:
-            pepper.handle_event(event)
+            pop.handle_event(event)
 
     keys = pygame.key.get_pressed()
     camera.render(keys)
@@ -228,7 +228,7 @@ while 1:
 
     GL.glTranslate(tx, ty, tz)
     if camera.mode == CAMERA_POPPETJE:
-        pepper.walk()
+        pop.walk()
 
     show_coordinates(tx, ty, tz, rx, ry, rz, *
                      (pepper.pos.get_pos()), *(pepper.pos.get_rotate()))
