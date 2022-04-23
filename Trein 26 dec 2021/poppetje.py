@@ -205,7 +205,7 @@ class PoppetjeObject:
     def render(self):
         self.move_legs()
 
-        for o in [self.arms]:  # self.objects:
+        for o in self.objects:
             o.render()
 
     def move_legs(self):
@@ -373,7 +373,7 @@ class Arms:
             o.generate()
 
     def render(self):
-        for o in [self.l_arm]:  # [self.l_arm, self.l_hand, self.r_hand]:
+        for o in [self.l_arm, self.r_arm, self.l_hand, self.r_hand]:
             o.render()
 
     def move_delta(self, dx=0, dy=0, dz=0):
@@ -389,44 +389,30 @@ class Arms:
         self.r_hand.rotate_delta(dx, dy, dz)
 
         if dy:  # Telkens 1.5
-            print("dy", dy)
-            print("self.mid", self.mid.get_pos(), self.mid.get_rotate())
-            print("l_arm", self.l_arm.pos.get_pos(),
-                  self.l_arm.pos.get_rotate())
             T = np.array(
                 [[1, 0, self.mid.x], [0, 1, self.mid.y], [0, 0, 1]])
-            print("T", T)
             phi = np.radians(dy)
 
-            # Werkt nog niet, maar sowieso is dit al een fout!
             cp = np.cos(-phi)
             sp = np.sin(-phi)
             R_inv = np.array([[cp, sp, 0], [-sp, cp, 0], [0, 0, 1]])
-            print("R_inv", R_inv)
             A = T @ R_inv @  np.linalg.inv(T)
-            print("A", A)
+
             new_x, new_y = h2e(
                 A @ e2h(np.array([self.l_arm.pos.x, self.l_arm.pos.y])))
-            radius = afstand(self.l_arm.pos.x, self.l_arm.pos.y,
-                             self.mid.x,  self.mid.y)
-            print("radius voor", radius)
-            # new_x = radius * math.cos(math.radians(self.l_arm.pos.ry))
-            # new_y = radius * math.sin(math.radians(self.l_arm.pos.ry))
-            print((self.l_arm.pos.x, self.l_arm.pos.y), "->", (new_x, new_y))
             self.l_arm.pos.move(x=new_x, y=new_y)
-            radius = afstand(self.l_arm.pos.x, self.l_arm.pos.y,
-                             self.mid.x,  self.mid.y)
-            print("radius na", radius)
-
-            # radius = afstand(self.r_arm.pos.x, self.r_arm.pos.y,
-            #                  self.pos.x,  self.pos.y)
-            # # new_x = radius * math.cos(math.radians(self.r_arm.pos.ry))
-            # # new_y = radius * math.sin(math.radians(self.r_arm.pos.ry))
-            # print(new_x, new_y)
 
             new_x, new_y = h2e(
                 A @ e2h(np.array([self.r_arm.pos.x, self.r_arm.pos.y])))
-            self.r_arm.pos.move(x=-new_x, y=new_y)
+            self.r_arm.pos.move(x=new_x, y=new_y)
+
+            new_x, new_y = h2e(
+                A @ e2h(np.array([self.l_hand.pos.x, self.l_hand.pos.y])))
+            self.l_hand.pos.move(x=new_x, y=new_y)
+
+            new_x, new_y = h2e(
+                A @ e2h(np.array([self.r_hand.pos.x, self.r_hand.pos.y])))
+            self.r_hand.pos.move(x=new_x, y=new_y)
 
 
 class Arm(BasisObject):
@@ -526,6 +512,28 @@ class Legs:
         self.r_leg.rotate_delta(dx, dy, dz)
         self.between.rotate_delta(dx, dy, dz)
         self.pos.rotate_delta(dx, dy, dz)
+
+        if dy:  # Telkens 1.5
+            T = np.array(
+                [[1, 0, self.mid.x], [0, 1, self.mid.y], [0, 0, 1]])
+            phi = np.radians(dy)
+
+            cp = np.cos(-phi)
+            sp = np.sin(-phi)
+            R_inv = np.array([[cp, sp, 0], [-sp, cp, 0], [0, 0, 1]])
+            A = T @ R_inv @  np.linalg.inv(T)
+
+            new_x, new_y = h2e(
+                A @ e2h(np.array([self.l_leg.pos.x, self.l_leg.pos.y])))
+            self.l_leg.pos.move(x=new_x, y=new_y)
+
+            new_x, new_y = h2e(
+                A @ e2h(np.array([self.r_leg.pos.x, self.r_leg.pos.y])))
+            self.r_leg.pos.move(x=new_x, y=new_y)
+
+            new_x, new_y = h2e(
+                A @ e2h(np.array([self.between.pos.x, self.between.pos.y])))
+            self.between.pos.move(x=new_x, y=new_y)
 
 
 class Between(BasisObject):
