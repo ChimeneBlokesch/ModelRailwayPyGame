@@ -25,6 +25,52 @@ POPPETJES2_MAP = "Poppetjes2/"
 HAND_COLOR = (0.991102, 0.708376, 0.000000)
 BB_HAND_COLOR = (0.3, 0.3, 0.3)  # TODO another color
 
+
+# Location of cursor in Blender, center of all objects
+OFFSET_X = -0.000067  # 0.000418  # 0.268967
+OFFSET_Y = 0.010316  # -0.002433  # 0.058058
+OFFSET_Z = 0.175308  # 0.094271  # 0.304925
+
+OFFSET_HATHAIR_X = 0
+OFFSET_HATHAIR_Y = 0.019717
+OFFSET_HATHAIR_Z = 0.304815
+
+OFFSET_HEAD_X = 0
+OFFSET_HEAD_Y = 0.013749
+OFFSET_HEAD_Z = 0.290154
+
+OFFSET_TRUI_X = -0.000595
+OFFSET_TRUI_Y = 0.016433
+OFFSET_TRUI_Z = 0.179605
+
+OFFSET_L_ARM_X = 0.048647
+OFFSET_L_ARM_Y = 0.00946
+OFFSET_L_ARM_Z = 0.206523
+
+OFFSET_L_HAND_X = 0.077613
+OFFSET_L_HAND_Y = 0.000961
+OFFSET_L_HAND_Z = 0.14352
+
+OFFSET_R_ARM_X = -0.048647
+OFFSET_R_ARM_Y = 0.00946
+OFFSET_R_ARM_Z = 0.206523
+
+OFFSET_R_HAND_X = -0.077613
+OFFSET_R_HAND_Y = 0.000961
+OFFSET_R_HAND_Z = 0.14352
+
+OFFSET_BETWEEN_X = -0.000075
+OFFSET_BETWEEN_Y = 0.010512
+OFFSET_BETWEEN_Z = 0.099015
+
+OFFSET_L_LEG_X = 0.007519
+OFFSET_L_LEG_Y = 0.010951
+OFFSET_L_LEG_Z = 0.089705
+
+OFFSET_R_LEG_X = -0.007519
+OFFSET_R_LEG_Y = 0.010951
+OFFSET_R_LEG_Z = 0.089705
+
 pygame.init()
 
 
@@ -136,16 +182,18 @@ class PoppetjeObject:
 
         self.is_player = False
         self.jump_level = 0  # 0: on ground, 1: small jump, 2: big jump
-        self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
-        self.hathair = HatHair(hat_hair, hat_hair_color, start_x,
+        self.pos = Position(start_x + OFFSET_X, start_y + OFFSET_Y,
+                            start_z + OFFSET_Z, rot_x, rot_y, rot_z)
+
+        self.hathair = HatHair(self.pos, hat_hair, hat_hair_color, start_x,
                                start_y, start_z, rot_x, rot_y, rot_z)
-        self.head = Head(face, start_x, start_y,
+        self.head = Head(self.pos, face, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, is_brickbot=is_brickbot)
         self.trui = Trui(self.pos, trui_color, trui_voor, start_x,
                          start_y, start_z, rot_x, rot_y, rot_z)
-        self.arms = Arms(mouw, start_x, start_y, start_z, rot_x, rot_y, rot_z,
+        self.arms = Arms(self.pos, mouw, start_x, start_y, start_z, rot_x, rot_y, rot_z,
                          is_brickbot=is_brickbot)
-        self.legs = Legs(riem, broek, broek_midden,
+        self.legs = Legs(self.pos, riem, broek, broek_midden,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.objects = [self.hathair, self.head,
                         self.trui, self.arms, self.legs]
@@ -157,7 +205,7 @@ class PoppetjeObject:
     def render(self):
         self.move_legs()
 
-        for o in self.objects:
+        for o in [self.arms]:  # self.objects:
             o.render()
 
     def move_legs(self):
@@ -232,11 +280,15 @@ class PoppetjeObject:
 
 
 class HatHair(BasisObject):
-    def __init__(self, obj, color, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, mid, obj, color, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        self.mid = mid
         # Color (r, g, b)
         # start_y += 0.013754
         # start_z += 0.226  # 0.08  # offset
-        start_z += 0.253014
+        # start_z += 0.253014
+        start_x += OFFSET_HATHAIR_X
+        start_y += OFFSET_HATHAIR_Y
+        start_z += OFFSET_HATHAIR_Z
         mtl_images = {"hathair": color}
         super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
@@ -247,12 +299,18 @@ class HatHair(BasisObject):
 
 
 class Head(BasisObject):
-    def __init__(self, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
+    def __init__(self, mid, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
+        self.mid = mid
         self.face_name = face_name
         mtl_images = {"face": ["face\\" + face_name + "_face" + "0" + ".png"]}
         # start_y += 0.008933
         # start_z += 0.206643  # 0.1  # offset
-        start_z += 0.206643
+
+        # start_z += 0.206643
+
+        start_x += OFFSET_HEAD_X
+        start_y += OFFSET_HEAD_Y
+        start_z += OFFSET_HEAD_Z
         super().__init__("head", POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
@@ -276,7 +334,12 @@ class Trui(BasisObject):
         # start_x += -0.000595
         # start_y += 0.011617
         # start_z += 0.096093
-        start_z += 0.096093
+
+        # start_z += 0.096093
+
+        start_x += OFFSET_TRUI_X
+        start_y += OFFSET_TRUI_Y
+        start_z += OFFSET_TRUI_Z
         super().__init__("trui", POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
@@ -288,42 +351,20 @@ class Trui(BasisObject):
         mtl_images = {"trui": color}
         self.object.change_img(mtl_images, POPPETJES2_MAP)
 
-    def rotate_delta(self, dx=0, dy=0, dz=0):
-        super().rotate_delta(dx, dy, dz)
-
-        if dy:
-            T = np.array(
-                [[1, 0, self.mid.x], [0, 1, self.mid.y], [0, 0, 1]])
-            print("T", T)
-            phi = dy
-
-            cp = np.cos(-phi)
-            sp = np.sin(-phi)
-            R_inv = np.array([[cp, -sp, 0], [sp, cp, 0], [0, 0, 1]]).T
-            print("R_inv", R_inv)
-            R = np.array([[cp, -sp, 0], [sp, cp, 0], [0, 0, 1]])
-            print("T @ R", T @ R)
-            print("R @ np.linalg.inv(T)", R @ np.linalg.inv(T))
-            A = T @ R_inv @  np.linalg.inv(T)
-            print("A", A)
-            new_x, new_y = h2e(
-                A @ e2h(np.array([self.pos.x, self.pos.y])))
-            self.pos.move(x=new_x, y=new_y)
-
 
 class Arms:
-    def __init__(self, mouw, start_x=0,
+    def __init__(self, mid, mouw, start_x=0,
                  start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
                  is_brickbot=False):
-        self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
-        self.l_arm = Arm(mouw, True,
+        self.mid = mid
+        self.l_arm = Arm(mid, mouw, True,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
-        self.r_arm = Arm(mouw, False,
+        self.r_arm = Arm(mid, mouw, False,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
-        self.l_hand = Hand(True,
+        self.l_hand = Hand(mid, True,
                            start_x, start_y, start_z, rot_x, rot_y, rot_z,
                            is_brickbot=is_brickbot)
-        self.r_hand = Hand(False,
+        self.r_hand = Hand(mid, False,
                            start_x, start_y, start_z, rot_x, rot_y, rot_z,
                            is_brickbot=is_brickbot)
 
@@ -332,18 +373,16 @@ class Arms:
             o.generate()
 
     def render(self):
-        for o in [self.l_arm, self.l_hand, self.r_hand]:
+        for o in [self.l_arm]:  # [self.l_arm, self.l_hand, self.r_hand]:
             o.render()
 
     def move_delta(self, dx=0, dy=0, dz=0):
-        self.pos.move_delta(dx, dy, dz)
         self.l_arm.move_delta(dx, dy, dz)
         self.r_arm.move_delta(dx, dy, dz)
         self.l_hand.move_delta(dx, dy, dz)
         self.r_hand.move_delta(dx, dy, dz)
 
     def rotate_delta(self, dx=0, dy=0, dz=0):
-        self.pos.rotate_delta(dx, dy, dz)
         self.l_arm.rotate_delta(dx, dy, dz)
         self.r_arm.rotate_delta(dx, dy, dz)
         self.l_hand.rotate_delta(dx, dy, dz)
@@ -351,35 +390,32 @@ class Arms:
 
         if dy:  # Telkens 1.5
             print("dy", dy)
-            print("self.pos", self.pos.get_pos(), self.pos.get_rotate())
+            print("self.mid", self.mid.get_pos(), self.mid.get_rotate())
             print("l_arm", self.l_arm.pos.get_pos(),
                   self.l_arm.pos.get_rotate())
             T = np.array(
-                [[1, 0, self.pos.x], [0, 1, self.pos.y], [0, 0, 1]])
+                [[1, 0, self.mid.x], [0, 1, self.mid.y], [0, 0, 1]])
             print("T", T)
-            print("T @ mid", T @ e2h(np.array([self.pos.x, self.pos.y])))
-            phi = dy
+            phi = np.radians(dy)
 
+            # Werkt nog niet, maar sowieso is dit al een fout!
             cp = np.cos(-phi)
             sp = np.sin(-phi)
-            R_inv = np.array([[cp, -sp, 0], [sp, cp, 0], [0, 0, 1]]).T
+            R_inv = np.array([[cp, sp, 0], [-sp, cp, 0], [0, 0, 1]])
             print("R_inv", R_inv)
-            R = np.array([[cp, -sp, 0], [sp, cp, 0], [0, 0, 1]])
-            print("T @ R", T @ R)
-            print("R @ np.linalg.inv(T)", R @ np.linalg.inv(T))
             A = T @ R_inv @  np.linalg.inv(T)
             print("A", A)
             new_x, new_y = h2e(
                 A @ e2h(np.array([self.l_arm.pos.x, self.l_arm.pos.y])))
             radius = afstand(self.l_arm.pos.x, self.l_arm.pos.y,
-                             self.pos.x,  self.pos.y)
+                             self.mid.x,  self.mid.y)
             print("radius voor", radius)
             # new_x = radius * math.cos(math.radians(self.l_arm.pos.ry))
             # new_y = radius * math.sin(math.radians(self.l_arm.pos.ry))
-            print(self.pos.x, self.pos.y, new_x, new_y)
-            self.l_arm.pos.move(x=-new_x, y=new_y)
+            print((self.l_arm.pos.x, self.l_arm.pos.y), "->", (new_x, new_y))
+            self.l_arm.pos.move(x=new_x, y=new_y)
             radius = afstand(self.l_arm.pos.x, self.l_arm.pos.y,
-                             self.pos.x,  self.pos.y)
+                             self.mid.x,  self.mid.y)
             print("radius na", radius)
 
             # radius = afstand(self.r_arm.pos.x, self.r_arm.pos.y,
@@ -394,7 +430,7 @@ class Arms:
 
 
 class Arm(BasisObject):
-    def __init__(self, mouw, is_left,
+    def __init__(self, mid, mouw, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
         # offset
         # start_x += -0.048647 if not is_left else 0.046275  # 0.065608
@@ -403,9 +439,18 @@ class Arm(BasisObject):
         # start_y += 0.00946 if not is_left else 0.014316  # 0.008043
         # start_z += 0.123011 if not is_left else 0.128958  # 0.105465
         # # start_z += 0.11424
+        self.mid = mid
+        # start_x += 0.046275 if is_left else -0.048647
+        # start_z += 0.128958 if is_left else 0.123011
 
-        start_x += 0.046275 if is_left else -0.048647
-        start_z += 0.128958 if is_left else 0.123011
+        if is_left:
+            start_x += OFFSET_L_ARM_X
+            start_y += OFFSET_L_ARM_Y
+            start_z += OFFSET_L_ARM_Z
+        else:
+            start_x += OFFSET_R_ARM_X
+            start_y += OFFSET_R_ARM_Y
+            start_z += OFFSET_R_ARM_Z
 
         arm = "l" if is_left else "r"
         mtl_images = {"mouw": mouw}
@@ -415,9 +460,10 @@ class Arm(BasisObject):
 
 
 class Hand(BasisObject):
-    def __init__(self, is_left,
+    def __init__(self, mid, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
                  is_brickbot=False):
+        self.mid = mid
         # offset
         # start_x += -0.076369 if not is_left else 0.082919
         # start_y += 0.000755 if not is_left else -0.001302
@@ -425,9 +471,20 @@ class Hand(BasisObject):
         # # start_x += 0.079644 * (2 * is_left)
         # # start_y += 0.0020385
         # # start_z += 0.3084055
-        start_x += 0.082919 if is_left else -0.076369
-        start_y += -0.014938 if is_left else -0.009387
-        start_z += 0.055258 if is_left else 0.064231
+
+        # start_x += 0.082919 if is_left else -0.076369
+        # start_y += -0.014938 if is_left else -0.009387
+        # start_z += 0.055258 if is_left else 0.064231
+
+        if is_left:
+            start_x += OFFSET_L_HAND_X
+            start_y += OFFSET_L_HAND_Y
+            start_z += OFFSET_L_HAND_Z
+        else:
+            start_x += OFFSET_R_HAND_X
+            start_y += OFFSET_R_HAND_Y
+            start_z += OFFSET_R_HAND_Z
+
         hand_color = HAND_COLOR if not is_brickbot else BB_HAND_COLOR
         obj = "hand" if not is_brickbot else "BB_hand"
         hand = "l" if is_left else "r"
@@ -438,15 +495,16 @@ class Hand(BasisObject):
 
 
 class Legs:
-    def __init__(self, riem, broek, broek_midden,
+    def __init__(self, mid, riem, broek, broek_midden,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        self.mid = mid
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
-        self.between = Between(riem, broek_midden,
+        self.between = Between(mid, riem, broek_midden,
                                start_x, start_y, start_z, rot_x, rot_y, rot_z)
-        self.l_leg = Leg(broek, True,
+        self.l_leg = Leg(mid, broek, True,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
 
-        self.r_leg = Leg(broek, False,
+        self.r_leg = Leg(mid, broek, False,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
 
     def generate(self):
@@ -471,14 +529,20 @@ class Legs:
 
 
 class Between(BasisObject):
-    def __init__(self, riem, broek_midden, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, mid, riem, broek_midden, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        self.mid = mid
         mtl_images = {"riem": riem,
                       "broek_midden":  broek_midden}
         # offset
         # start_x -= 0.000075
         # start_y += 0.006344
         # start_z += 0.015503  # 0.01
-        start_z += 0.015503
+
+        # start_z += 0.015503
+
+        start_x += OFFSET_BETWEEN_X
+        start_y += OFFSET_BETWEEN_Y
+        start_z += OFFSET_BETWEEN_Z
 
         super().__init__("between", POPPETJES2_MAP,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z,
@@ -494,14 +558,25 @@ class Between(BasisObject):
 
 
 class Leg(BasisObject):
-    def __init__(self, color, is_left,
+    def __init__(self, mid, color, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        self.mid = mid
         # offset
         # start_x += -0.007519 if not is_left else 0.007519
         # start_y += 0.006783 if not is_left else 0.006783
         # # start_x += 0.00751 * (2 * is_left - 1)
         # # start_y += 0.006783 * (2 * is_left - 1)
-        start_x += 0.007519 if is_left else -0.007519
+
+        # start_x += 0.007519 if is_left else -0.007519
+
+        if is_left:
+            start_x += OFFSET_L_LEG_X
+            start_y += OFFSET_L_LEG_Y
+            start_z += OFFSET_L_LEG_Z
+        else:
+            start_x += OFFSET_R_LEG_X
+            start_y += OFFSET_R_LEG_Y
+            start_z += OFFSET_R_LEG_Z
         hand = "l" if is_left else "r"
         mtl_images = {"broek": color}
         super().__init__(hand + "_leg", POPPETJES2_MAP,
