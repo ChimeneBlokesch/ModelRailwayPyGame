@@ -203,17 +203,81 @@ class PoppetjeObject:
             o.generate()
 
     def render(self):
-        self.move_legs()
+        # self.legs.l_leg.pos.rotate(x=40)
+        # self.move_legs()
+        self.test()
 
         for o in self.objects:
             o.render()
 
+    def test(self):
+        self.legs.l_leg.extra_rot += 1
+
     def move_legs(self):
+        print("legs rx", self.legs.l_leg.pos.get_rotate(), self.legs.r_leg.pos.rx)
         if self.legs.l_leg.pos.rx > 160 or self.legs.r_leg.pos.rx > 160:
             self.direction *= -1
 
-        self.legs.l_leg.pos.rotate_delta(dx=self.direction * self.speed)
-        self.legs.r_leg.pos.rotate_delta(dx=-self.direction * self.speed)
+        # T = np.array(
+        #     [[1, 0, self.legs.l_leg.pos.x], [0, 1, self.legs.l_leg.pos.y], [0, 0, 1]])
+
+        T = np.array(
+            [[1, 0, 0, self.pos.x], [0, 1, 0, self.pos.y], [0, 0, 1, self.pos.z], [0, 0, 0, 1]])
+        phi = np.radians(1)
+        print("phi", np.degrees(phi))
+
+        cp = np.cos(-phi)
+        sp = np.sin(-phi)
+        # R_inv = np.array([[1, 0, 0], [0, cp, sp], [0, -sp, cp]])
+
+        R_3d_x = np.array([[1, 0, 0, 0], [0, cp, -sp, 0],
+                          [0, sp, cp, 0], [0, 0, 0, 1]])
+        R = R_3d_x
+        A = T @ R @  np.linalg.inv(T)
+
+        new = h2e(A @ e2h(np.array(self.legs.l_leg.pos.get_pos())))
+
+        print("new", new)
+        return
+
+        # Rotating around local x-axis.
+        T = np.array(
+            [[1, 0, self.pos.x], [0, 1, self.pos.y], [0, 0, 1]])
+        T = np.array(
+            [[1, 0, self.legs.l_leg.pos.x], [0, 1, self.legs.l_leg.pos.y], [0, 0, 1]])
+        phi = np.radians(self.legs.l_leg.pos.ry)
+        print("phi", np.degrees(phi))
+
+        cp = np.cos(-phi)
+        sp = np.sin(-phi)
+        R_inv = np.array([[1, 0, 0], [0, cp, sp], [0, -sp, cp]])
+        A = T @ R_inv @  np.linalg.inv(T)
+        # A = R_inv
+
+        direction = A @ np.array(self.legs.l_leg.pos.get_pos())
+
+        direction_x, direction_y, direction_z = direction / \
+            np.linalg.norm(direction)
+        print("direction", direction_x, direction_y, direction_z)
+
+        dx = self.direction * self.speed * direction_x
+        dy = self.direction * self.speed * direction_y
+        dz = self.direction * self.speed * direction_z
+
+        self.legs.l_leg.pos.rotate_delta(dx=dx, dy=dy, dz=dz)
+        self.legs.r_leg.pos.rotate_delta(dx=-dx, dy=-dy, dz=-dz)
+
+        # print("mid.ry", self.pos.ry)
+        # speed_x = 0
+        # speed_x = np.cos(np.radians(self.pos.ry)) * self.speed
+        # speed_y = 0
+        # speed_y = np.sin(np.radians(self.pos.ry)) * self.speed
+        # dx = self.direction * speed_x
+        # dz = 0
+        # dz = self.direction * speed_y
+
+        # self.legs.l_leg.pos.rotate_delta(dx=dx)
+        # self.legs.r_leg.pos.rotate_delta(dx=-dx)
 
     def move_delta(self, dx=0, dy=0, dz=0):
         self.pos.move_delta(dx, dy, dz)
@@ -576,6 +640,8 @@ class Leg(BasisObject):
         # # start_y += 0.006783 * (2 * is_left - 1)
 
         # start_x += 0.007519 if is_left else -0.007519
+        self.old_pos = Position()
+        self.extra_rot = 0
 
         if is_left:
             start_x += OFFSET_L_LEG_X
@@ -586,6 +652,9 @@ class Leg(BasisObject):
             start_y += OFFSET_R_LEG_Y
             start_z += OFFSET_R_LEG_Z
         hand = "l" if is_left else "r"
+        if is_left:
+            print("color", color)
+            color = (0.6, 0, 0.6)
         mtl_images = {"broek": color}
         super().__init__(hand + "_leg", POPPETJES2_MAP,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z,
@@ -594,3 +663,8 @@ class Leg(BasisObject):
     def change_color(self, color):
         mtl_images = {"broek": color}
         self.object.change_img(mtl_images, POPPETJES2_MAP)
+
+    def render(self):
+        self.object.render(self.pos, old_pos=self.old_pos,
+                           extra_rot=self.extra_rot)
+        self.old_pos = self.pos

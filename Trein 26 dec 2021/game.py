@@ -231,7 +231,7 @@ while 1:
         pop.walk()
 
     show_coordinates(tx, ty, tz, rx, ry, rz, *
-                     (pepper.pos.get_pos()), *(pepper.pos.get_rotate()))
+                     (pop.pos.get_pos()), *(pop.pos.get_rotate()))
 
     for t in grid.locomotieven:
         create_line(t.pos.x, t.pos.y, 5,
@@ -243,9 +243,9 @@ while 1:
     [create_line(-x, -y, 3, -x, -y, -3, (100, 0, 100))
         for x, y, _ in points]
 
-    create_line(pop.pos.x, pop.pos.y, 5, pop.pos.x,
-                pop.pos.y, -5, (200, 0, 200))
-    create_line(pop.arms.l_arm.pos.x, pop.arms.l_arm.pos.y, 5, pop.arms.l_arm.pos.x,
-                pop.arms.l_arm.pos.y, -5, (250, 0, 250))
+    # create_line(pop.pos.x, pop.pos.y, 5, pop.pos.x,
+    #             pop.pos.y, -5, (200, 0, 200))
+    create_line(pop.legs.l_leg.pos.x, pop.legs.l_leg.pos.y, 5, pop.legs.l_leg.pos.x,
+                pop.legs.l_leg.pos.y, -5, (250, 0, 250))
     GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()
