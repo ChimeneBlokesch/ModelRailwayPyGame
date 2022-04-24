@@ -307,6 +307,22 @@ class HatHair(BasisObject):
         mtl_images = {"hathair": color}
         self.object.change_img(mtl_images, POPPETJES2_MAP)
 
+    def rotate_delta(self, dx=0, dy=0, dz=0):
+        super().rotate_delta(dx, dy, dz)
+
+        if dy:
+            T = np.array([[1, 0, self.mid.x], [0, 1, self.mid.y], [0, 0, 1]])
+            phi = np.radians(dy)
+
+            cp = np.cos(-phi)
+            sp = np.sin(-phi)
+            R_inv = np.array([[cp, sp, 0], [-sp, cp, 0], [0, 0, 1]])
+            A = T @ R_inv @  np.linalg.inv(T)
+
+            new_x, new_y = h2e(
+                A @ e2h(np.array([self.pos.x, self.pos.y])))
+            self.pos.move(x=new_x, y=new_y)
+
 
 class Head(BasisObject):
     def __init__(self, mid, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
@@ -398,7 +414,7 @@ class Arms:
         self.l_hand.rotate_delta(dx, dy, dz)
         self.r_hand.rotate_delta(dx, dy, dz)
 
-        if dy:  # Telkens 1.5
+        if dy:
             T = np.array(
                 [[1, 0, self.mid.x], [0, 1, self.mid.y], [0, 0, 1]])
             phi = np.radians(dy)
@@ -523,7 +539,7 @@ class Legs:
         self.between.rotate_delta(dx, dy, dz)
         self.pos.rotate_delta(dx, dy, dz)
 
-        if dy:  # Telkens 1.5
+        if dy:
             T = np.array(
                 [[1, 0, self.mid.x], [0, 1, self.mid.y], [0, 0, 1]])
             phi = np.radians(dy)
