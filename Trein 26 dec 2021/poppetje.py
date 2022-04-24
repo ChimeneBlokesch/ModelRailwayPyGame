@@ -204,8 +204,8 @@ class PoppetjeObject:
 
     def render(self):
         # self.legs.l_leg.pos.rotate(x=40)
-        # self.move_legs()
-        self.test()
+        self.move_legs()
+        # self.test()
 
         for o in self.objects:
             o.render()
@@ -214,10 +214,17 @@ class PoppetjeObject:
         self.legs.l_leg.extra_rot += 1
 
     def move_legs(self):
-        print("legs rx", self.legs.l_leg.pos.get_rotate(), self.legs.r_leg.pos.rx)
-        if self.legs.l_leg.pos.rx > 160 or self.legs.r_leg.pos.rx > 160:
+        if self.speed == 0:
+            self.legs.l_leg.extra_rot = 0
+            self.legs.r_leg.extra_rot = 0
+            return
+
+        if self.legs.l_leg.extra_rot > 50 or self.legs.r_leg.extra_rot > 50:
             self.direction *= -1
 
+        self.legs.l_leg.extra_rot += self.direction * self.speed
+        self.legs.r_leg.extra_rot += -self.direction * self.speed
+        return
         # T = np.array(
         #     [[1, 0, self.legs.l_leg.pos.x], [0, 1, self.legs.l_leg.pos.y], [0, 0, 1]])
 
@@ -263,9 +270,6 @@ class PoppetjeObject:
         dx = self.direction * self.speed * direction_x
         dy = self.direction * self.speed * direction_y
         dz = self.direction * self.speed * direction_z
-
-        self.legs.l_leg.pos.rotate_delta(dx=dx, dy=dy, dz=dz)
-        self.legs.r_leg.pos.rotate_delta(dx=-dx, dy=-dy, dz=-dz)
 
         # print("mid.ry", self.pos.ry)
         # speed_x = 0
@@ -633,14 +637,6 @@ class Leg(BasisObject):
     def __init__(self, mid, color, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
         self.mid = mid
-        # offset
-        # start_x += -0.007519 if not is_left else 0.007519
-        # start_y += 0.006783 if not is_left else 0.006783
-        # # start_x += 0.00751 * (2 * is_left - 1)
-        # # start_y += 0.006783 * (2 * is_left - 1)
-
-        # start_x += 0.007519 if is_left else -0.007519
-        self.old_pos = Position()
         self.extra_rot = 0
 
         if is_left:
@@ -665,6 +661,4 @@ class Leg(BasisObject):
         self.object.change_img(mtl_images, POPPETJES2_MAP)
 
     def render(self):
-        self.object.render(self.pos, old_pos=self.old_pos,
-                           extra_rot=self.extra_rot)
-        self.old_pos = self.pos
+        self.object.render(self.pos, extra_rot=self.extra_rot)

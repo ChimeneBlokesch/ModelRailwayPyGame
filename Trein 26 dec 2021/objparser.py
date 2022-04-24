@@ -260,10 +260,10 @@ class Object3D:
         GL.glEndList()
 
     def render(self, pos, flip=False,
-               scale_value=(1, 1, 1), old_pos=None, extra_rot=None):
+               scale_value=(1, 1, 1), extra_rot=None):
         GL.glPushMatrix()
 
-        if old_pos is None:
+        if extra_rot is None:
             # Global rotation
             GL.glTranslate(pos.x, pos.y, pos.z)
             GL.glRotate(pos.rx, 1, 0, 0)
@@ -271,34 +271,14 @@ class Object3D:
             GL.glRotate(pos.rz, 0, 0, 1)
         else:
             # Local rotation
-            if not pos.is_equal(old_pos):
-                print(pos.get_pos(), pos.get_rotate(),
-                      old_pos.get_pos(), old_pos.get_rotate())
-
-            # GL.glRotate(pos.rx, pos.x, pos.y, 0)
-            # GL.glRotate(pos.ry, 0, 1, 0)
-            # GL.glRotate(pos.rz, 0, 0, 1)
-            # GL.glTranslate(pos.x, pos.y, pos.z)
-
-            # GL.glTranslate(0, 0, 0)
-            # Rotation along local x-axis depends on ry
-            # Maybe rotate ry after rx
             x_axis = np.array([1, 0, 0])
             cp = np.cos(np.radians(pos.ry))
             sp = np.sin(np.radians(pos.ry))
-            rotation_x = np.array([[1, 0, 0], [0, cp, -sp], [0, sp, cp]])
+
             rotation_y = np.array([[cp, -sp, 0], [sp, cp, 0], [0, 0, 1]])
-            rotation_z = np.array([[cp, 0, sp], [0, 0, 0], [-sp,  0, cp]])
             x_axis = rotation_y @ x_axis
-            print("ry", pos.ry)
-            print("new x-axis", x_axis)
-            print("x", rotation_x @ x_axis)
-            print("y", rotation_y @ x_axis)
-            print("z", rotation_z @ x_axis)
 
             GL.glTranslate(pos.x, pos.y, pos.z)
-            # GL.glTranslate(old_pos.x, old_pos.y, old_pos.z)
-            # GL.glTranslate(-old_pos.x, -old_pos.y, -old_pos.z)
             GL.glRotate(extra_rot, *x_axis)
             GL.glRotate(pos.rx, 1, 0, 0)
             GL.glRotate(pos.ry, 0, 1, 0)
