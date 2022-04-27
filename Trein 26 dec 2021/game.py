@@ -52,6 +52,8 @@ pop = grid.add_poppetje2(
     hex_to_rgb("F00000"), "POST", hex_to_rgb("FFFFFF"),
     hex_to_rgb("009cff"), hex_to_rgb("009cff"), hex_to_rgb("009cff"),
     rot_x=90)
+
+current_pop = None
 # sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
 #                      start_x=0.5, start_y=1.5, rot_x=90)
 # sgm.change_speed(-0.05)
@@ -198,18 +200,25 @@ while 1:
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
             # Switch to Pepper
-            pop.is_player = True
-            camera.camera_to_poppetje(pop)
+            pepper.is_player = True
+            current_pop = pepper
+            camera.camera_to_poppetje(pepper)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
-            pop.is_player = False
+            current_pop.is_player = False
+            current_pop = None
             camera.camera_to_free()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_4:
             camera.camera_to_trein(virm1)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_3:
             debug = not debug
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_5:
+            # Switch to pop
+            pop.is_player = True
+            current_pop = pop
+            camera.camera_to_poppetje(pop)
 
         if camera.mode == CAMERA_POPPETJE:
-            pop.handle_event(event)
+            current_pop.handle_event(event)
 
     keys = pygame.key.get_pressed()
     camera.render(keys)
@@ -233,10 +242,20 @@ while 1:
 
     GL.glTranslate(tx, ty, tz)
     if camera.mode == CAMERA_POPPETJE:
-        pop.walk()
+        current_pop.walk()
 
+    # BEGIN DEBUG CODE
+    if not current_pop:
+        # Show coordinates of Pepper if no current figure.
+        temp = True
+        current_pop = pepper
     show_coordinates(tx, ty, tz, rx, ry, rz, *
-                     (pop.pos.get_pos()), *(pop.pos.get_rotate()))
+                     (current_pop.pos.get_pos()),
+                     *(current_pop.pos.get_rotate()))
+
+    if temp:
+        current_pop = None
+        temp = False
 
     for t in grid.locomotieven:
         create_line(t.pos.x, t.pos.y, 5,
@@ -250,7 +269,12 @@ while 1:
 
     # create_line(pop.pos.x, pop.pos.y, 5, pop.pos.x,
     #             pop.pos.y, -5, (200, 0, 200))
-    create_line(pop.legs.l_leg.pos.x, pop.legs.l_leg.pos.y, 5,
-                pop.legs.l_leg.pos.x,  pop.legs.l_leg.pos.y, -5, (250, 0, 250))
+    if current_pop:
+        create_line(current_pop.legs.l_leg.pos.x, current_pop.legs.l_leg.pos.y,
+                    5,
+                    current_pop.legs.l_leg.pos.x,  current_pop.legs.l_leg.pos.y,
+                    -5, (250, 0, 250))
+    # END DEBUG CODE
+
     GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()

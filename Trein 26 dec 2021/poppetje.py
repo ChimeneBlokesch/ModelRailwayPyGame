@@ -200,7 +200,8 @@ class PoppetjeObject:
                          rot_x, rot_y, rot_z,
                          figure=figure)
         self.legs = Legs(self.pos, riem, broek, broek_midden,
-                         start_x, start_y, start_z, rot_x, rot_y, rot_z, figure=figure)
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                         figure=figure)
         self.extra = [Extra(obj_name, color,
                             start_x, start_y, start_z, rot_x, rot_y, rot_z)
                       for obj_name, color in extra]
@@ -311,8 +312,8 @@ class HatHair(BasisObject):
             start_y += OFFSET_HATHAIR_Y
             start_z += OFFSET_HATHAIR_Z
         elif obj == "PEPP_hat":
-            start_x += 0.002953
-            start_y += 0.001769
+            start_x += 0.003953  # 0.002953
+            start_y += 0.002769  # 0.001769
             start_z += 0.314652
 
         mtl_images = {"hair": color}
