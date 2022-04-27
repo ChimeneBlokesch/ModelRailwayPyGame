@@ -54,6 +54,12 @@ class Grid:
         return new_pop
 
     def add_poppetje2(self, *args, **kwargs):
+        """
+        name, hat_hair, hat_hair_color, face, trui_color, trui_voor, mouw,
+        riem, broek, broek_midden,
+        start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
+        figure=None, extra=None
+        """
         new_pop = PoppetjeObject(*args, **kwargs)
         self.poppetjes.append(new_pop)
         return new_pop

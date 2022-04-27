@@ -6,6 +6,7 @@ from camera import CAMERA_POPPETJE, Camera
 from constants import hex_to_rgb,  show_coordinates
 from grid import Grid
 from lijnen import create_line
+from poppetje import FIGURE_PEPPER
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
 
 FULL_SCREEN = False
@@ -30,19 +31,25 @@ GL.glEnable(GL.GL_DEPTH_TEST)
 # most obj files expect to be smooth-shaded
 GL.glShadeModel(GL.GL_SMOOTH)
 
-
 grid = Grid()
 camera = Camera()
 
 # pepper = grid.add_poppetje(
 #     "Pepper2", "lego_pepper_met_rugzak", rot_x=90, rot_y=180)
 
-pepper = grid.add_poppetje(
-    "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180, start_x=100)
+# pepper = grid.add_poppetje(
+#     "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180, start_x=100)
+
+pepper = grid.add_poppetje2("Pepper", "PEPP_hat", "PEPP", False, "PEPP",
+                            hex_to_rgb("F00000"), "PEPP", hex_to_rgb("1632FF"),
+                            hex_to_rgb("F00000"),
+                            hex_to_rgb("1632FF"), hex_to_rgb("1632FF"),
+                            rot_x=90, figure=FIGURE_PEPPER,
+                            extra=[("PEPP_bag", [("logo", "PEPP_bag", False)])])
 
 pop = grid.add_poppetje2(
-    "Pop", "hair_001", hex_to_rgb("49332A"), "POST", hex_to_rgb("F00000"),
-    "POST", hex_to_rgb("FFFFFF"),
+    "Pop", "hair_001", hex_to_rgb("49332A"), True, "POST",
+    hex_to_rgb("F00000"), "POST", hex_to_rgb("FFFFFF"),
     hex_to_rgb("009cff"), hex_to_rgb("009cff"), hex_to_rgb("009cff"),
     rot_x=90)
 # sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,

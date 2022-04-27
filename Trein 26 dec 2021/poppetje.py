@@ -25,6 +25,9 @@ POPPETJES2_MAP = "Poppetjes2/"
 HAND_COLOR = (0.991102, 0.708376, 0.000000)
 BB_HAND_COLOR = (0.3, 0.3, 0.3)  # TODO another color
 
+FIGURE_PEPPER = 1
+FIGURE_BRICKBOT = 2
+
 
 # Location of cursor in Blender, center of all objects
 OFFSET_X = -0.000067
@@ -165,12 +168,15 @@ class PoppetjeObject:
     Eventually also able to move and rotate part of the models with this class.
     """
 
-    def __init__(self, name, hat_hair, hat_hair_color, face,
+    def __init__(self, name, hat_hair, hat_hair_color, is_hair, face,
                  trui_color, trui_voor, mouw, riem, broek, broek_midden,
                  start_x=0, start_y=0, start_z=0,
-                 rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
+                 rot_x=0, rot_y=0, rot_z=0, figure=None, extra=[]):
         """
         Colors should be given as the tuple (r, g, b) and not gamma corrected.
+
+        type_figure: choose from FIGURE_PEPPER, FIGURE_BRICKBOT or None.
+        extra: list of tuples (objname, mtl_images) for all extra objects.
         """
         self.name = name
         self.direction = 100
@@ -185,18 +191,24 @@ class PoppetjeObject:
                             start_z + OFFSET_Z, rot_x, rot_y, rot_z)
 
         self.hathair = HatHair(self.pos, hat_hair, hat_hair_color, start_x,
-                               start_y, start_z, rot_x, rot_y, rot_z)
+                               start_y, start_z, rot_x, rot_y, rot_z, is_hair)
         self.head = Head(self.pos, face, start_x, start_y,
-                         start_z, rot_x, rot_y, rot_z, is_brickbot=is_brickbot)
+                         start_z, rot_x, rot_y, rot_z, figure=figure)
         self.trui = Trui(self.pos, trui_color, trui_voor, start_x,
                          start_y, start_z, rot_x, rot_y, rot_z)
         self.arms = Arms(self.pos, mouw, start_x, start_y, start_z,
                          rot_x, rot_y, rot_z,
-                         is_brickbot=is_brickbot)
+                         figure=figure)
         self.legs = Legs(self.pos, riem, broek, broek_midden,
-                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z, figure=figure)
+        self.extra = [Extra(obj_name, color,
+                            start_x, start_y, start_z, rot_x, rot_y, rot_z)
+                      for obj_name, color in extra]
         self.objects = [self.hathair, self.head,
-                        self.trui, self.arms, self.legs]
+                        self.trui, self.arms, self.legs, *self.extra]
+
+        # Makes sure the figure is standing on the ground.
+        self.move_delta(dz=-self.legs.l_leg.pos.z)
 
     def generate(self):
         for o in self.objects:
@@ -291,13 +303,22 @@ class PoppetjeObject:
 
 class HatHair(BasisObject):
     def __init__(self, mid, obj, color, start_x=0, start_y=0, start_z=0,
-                 rot_x=0, rot_y=0, rot_z=0):
+                 rot_x=0, rot_y=0, rot_z=0, is_hair=True):
         self.mid = mid
         # Color (r, g, b)
-        start_x += OFFSET_HATHAIR_X
-        start_y += OFFSET_HATHAIR_Y
-        start_z += OFFSET_HATHAIR_Z
-        mtl_images = {"hathair": color}
+        if obj == "hair_001":
+            start_x += OFFSET_HATHAIR_X
+            start_y += OFFSET_HATHAIR_Y
+            start_z += OFFSET_HATHAIR_Z
+        elif obj == "PEPP_hat":
+            start_x += 0.002953
+            start_y += 0.001769
+            start_z += 0.314652
+
+        mtl_images = {"hair": color}
+
+        if not is_hair:
+            mtl_images = {"logo": [f"hat\\{color}_hat.png"]}
         super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
@@ -324,15 +345,28 @@ class HatHair(BasisObject):
 
 class Head(BasisObject):
     def __init__(self, mid, face_name, start_x=0, start_y=0, start_z=0,
-                 rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
+                 rot_x=0, rot_y=0, rot_z=0, figure=None):
         self.mid = mid
         self.face_name = face_name
         mtl_images = {"face": ["face\\" + face_name + "_face" + "0" + ".png"]}
 
-        start_x += OFFSET_HEAD_X
-        start_y += OFFSET_HEAD_Y
-        start_z += OFFSET_HEAD_Z
-        super().__init__("head", POPPETJES2_MAP, start_x, start_y,
+        if figure == FIGURE_PEPPER:
+            start_x += 0  # 0.003571
+            start_y += 0.015803   # 0.007767
+            start_z += 0.271807   # 0.270483
+        else:
+            start_x += OFFSET_HEAD_X
+            start_y += OFFSET_HEAD_Y
+            start_z += OFFSET_HEAD_Z
+        obj = ""
+
+        if figure == FIGURE_PEPPER:
+            obj += "PEPP_"
+        elif figure == FIGURE_BRICKBOT:
+            obj += "BB_"
+
+        obj += "head"
+        super().__init__(obj, POPPETJES2_MAP, start_x, start_y,
                          start_z, rot_x, rot_y, rot_z, mtl_images)
 
     def change_emotion(self, num):
@@ -371,7 +405,7 @@ class Trui(BasisObject):
 class Arms:
     def __init__(self, mid, mouw, start_x=0,
                  start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
-                 is_brickbot=False):
+                 figure=None):
         self.mid = mid
         self.l_arm = Arm(mid, mouw, True,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
@@ -379,10 +413,10 @@ class Arms:
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.l_hand = Hand(mid, True,
                            start_x, start_y, start_z, rot_x, rot_y, rot_z,
-                           is_brickbot=is_brickbot)
+                           figure=figure)
         self.r_hand = Hand(mid, False,
                            start_x, start_y, start_z, rot_x, rot_y, rot_z,
-                           is_brickbot=is_brickbot)
+                           figure=figure)
 
     def generate(self):
         for o in [self.l_arm, self.r_arm, self.l_hand, self.r_hand]:
@@ -455,7 +489,7 @@ class Arm(BasisObject):
 class Hand(BasisObject):
     def __init__(self, mid, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
-                 is_brickbot=False):
+                 figure=None):
         self.mid = mid
 
         if is_left:
@@ -467,27 +501,36 @@ class Hand(BasisObject):
             start_y += OFFSET_R_HAND_Y
             start_z += OFFSET_R_HAND_Z
 
-        hand_color = HAND_COLOR if not is_brickbot else BB_HAND_COLOR
-        obj = "hand" if not is_brickbot else "BB_hand"
+        hand_color = HAND_COLOR if figure != FIGURE_BRICKBOT else BB_HAND_COLOR
+        obj = ""
+
+        if figure == FIGURE_BRICKBOT:
+            obj += "BB_"
+
         hand = "l" if is_left else "r"
+        obj += hand + "_hand"
+
         mtl_images = {"hand": hand_color}
-        super().__init__(hand + "_" + obj, POPPETJES2_MAP,
+        super().__init__(obj, POPPETJES2_MAP,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z,
                          mtl_images)
 
 
 class Legs:
     def __init__(self, mid, riem, broek, broek_midden,
-                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
+                 figure=None):
         self.mid = mid
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.between = Between(mid, riem, broek_midden,
                                start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.l_leg = Leg(mid, broek, True,
-                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                         figure == FIGURE_PEPPER)
 
         self.r_leg = Leg(mid, broek, False,
-                         start_x, start_y, start_z, rot_x, rot_y, rot_z)
+                         start_x, start_y, start_z, rot_x, rot_y, rot_z,
+                         figure == FIGURE_PEPPER)
 
     def generate(self):
         for o in [self.between, self.l_leg, self.r_leg]:
@@ -557,7 +600,8 @@ class Between(BasisObject):
 
 class Leg(BasisObject):
     def __init__(self, mid, color, is_left,
-                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
+                 is_pepper=False):
         self.mid = mid
         self.extra_rot = 0
 
@@ -569,9 +613,18 @@ class Leg(BasisObject):
             start_x += OFFSET_R_LEG_X
             start_y += OFFSET_R_LEG_Y
             start_z += OFFSET_R_LEG_Z
-        hand = "l" if is_left else "r"
-        mtl_images = {"broek": color}
-        super().__init__(hand + "_leg", POPPETJES2_MAP,
+
+        obj = "PEPP_" if is_pepper else ""
+        obj += "l" if is_left else "r"
+
+        if is_pepper:
+            mtl_images = {"broek_voor": ["broek\\PEPP_broek_voor.png"],
+                          "broek_achter": ["broek\\PEPP_broek_achter.png"],
+                          "zakken": ["broek\\PEPP_zakken.png"],
+                          "schoenen": ["broek\\PEPP_shoes.png"]}
+        else:
+            mtl_images = {"broek": color}
+        super().__init__(obj + "_leg", POPPETJES2_MAP,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z,
                          mtl_images)
 
@@ -581,3 +634,29 @@ class Leg(BasisObject):
 
     def render(self):
         self.object.render(self.pos, extra_rot=self.extra_rot)
+
+
+class Extra(BasisObject):
+    def __init__(self, obj_name, mtl,
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+        """
+        mtl: [(mtl_name, color, is_color)]
+        """
+        mtl_images = {}
+
+        for mtl_name, color, is_color in mtl:
+            if is_color:
+                mtl_images[mtl_name] = color
+                continue
+
+            # Filename
+            mtl_images[mtl_name] = [mtl_name + "\\" + color + ".png"]
+
+        super().__init__(obj_name, POPPETJES2_MAP, start_x,
+                         start_y, start_z, rot_x, rot_y, rot_z,
+                         mtl_images=mtl_images)
+
+        # # Bag
+        # start_x += 0.002587
+        # start_y += 0.050345
+        # start_z += 0.205916
