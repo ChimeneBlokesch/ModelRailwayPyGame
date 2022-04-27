@@ -5,7 +5,7 @@ from basis_object import BasisObject
 from objparser import Object3D
 
 
-from constants import POPPETJES_MAP, SPEEDUP_BOCHT, TREINEN_MAP, afstand, e2h, h2e
+from constants import POPPETJES_MAP, e2h, h2e
 from position import Position
 
 RUN_SPEED = 0.1
@@ -27,9 +27,9 @@ BB_HAND_COLOR = (0.3, 0.3, 0.3)  # TODO another color
 
 
 # Location of cursor in Blender, center of all objects
-OFFSET_X = -0.000067  # 0.000418  # 0.268967
-OFFSET_Y = 0.010316  # -0.002433  # 0.058058
-OFFSET_Z = 0.175308  # 0.094271  # 0.304925
+OFFSET_X = -0.000067
+OFFSET_Y = 0.010316
+OFFSET_Z = 0.175308
 
 OFFSET_HATHAIR_X = 0
 OFFSET_HATHAIR_Y = 0.019717
@@ -165,7 +165,6 @@ class PoppetjeObject:
     Eventually also able to move and rotate part of the models with this class.
     """
 
-    # , trui, mouw, riem, broek, broek_midden, extra=[]
     def __init__(self, name, hat_hair, hat_hair_color, face,
                  trui_color, trui_voor, mouw, riem, broek, broek_midden,
                  start_x=0, start_y=0, start_z=0,
@@ -175,7 +174,7 @@ class PoppetjeObject:
         """
         self.name = name
         self.direction = 100
-        self.speed = 0  # 5
+        self.speed = 0
         self.start_angle = 0
         self.turn_speed = 0
         self.up_speed = 0
@@ -191,7 +190,8 @@ class PoppetjeObject:
                          start_z, rot_x, rot_y, rot_z, is_brickbot=is_brickbot)
         self.trui = Trui(self.pos, trui_color, trui_voor, start_x,
                          start_y, start_z, rot_x, rot_y, rot_z)
-        self.arms = Arms(self.pos, mouw, start_x, start_y, start_z, rot_x, rot_y, rot_z,
+        self.arms = Arms(self.pos, mouw, start_x, start_y, start_z,
+                         rot_x, rot_y, rot_z,
                          is_brickbot=is_brickbot)
         self.legs = Legs(self.pos, riem, broek, broek_midden,
                          start_x, start_y, start_z, rot_x, rot_y, rot_z)
@@ -290,12 +290,10 @@ class PoppetjeObject:
 
 
 class HatHair(BasisObject):
-    def __init__(self, mid, obj, color, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, mid, obj, color, start_x=0, start_y=0, start_z=0,
+                 rot_x=0, rot_y=0, rot_z=0):
         self.mid = mid
         # Color (r, g, b)
-        # start_y += 0.013754
-        # start_z += 0.226  # 0.08  # offset
-        # start_z += 0.253014
         start_x += OFFSET_HATHAIR_X
         start_y += OFFSET_HATHAIR_Y
         start_z += OFFSET_HATHAIR_Z
@@ -325,14 +323,11 @@ class HatHair(BasisObject):
 
 
 class Head(BasisObject):
-    def __init__(self, mid, face_name, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
+    def __init__(self, mid, face_name, start_x=0, start_y=0, start_z=0,
+                 rot_x=0, rot_y=0, rot_z=0, is_brickbot=False):
         self.mid = mid
         self.face_name = face_name
         mtl_images = {"face": ["face\\" + face_name + "_face" + "0" + ".png"]}
-        # start_y += 0.008933
-        # start_z += 0.206643  # 0.1  # offset
-
-        # start_z += 0.206643
 
         start_x += OFFSET_HEAD_X
         start_y += OFFSET_HEAD_Y
@@ -351,17 +346,12 @@ class Head(BasisObject):
 
 
 class Trui(BasisObject):
-    def __init__(self, mid, trui_color, trui_voor, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, mid, trui_color, trui_voor,
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
         self.mid = mid
         self.trui_color = trui_color
         mtl_images = {"trui": trui_color,
-                      "trui_voor": ["trui_voor\\" + trui_voor + "_trui_voor.png"]}
-        # offset
-        # start_x += -0.000595
-        # start_y += 0.011617
-        # start_z += 0.096093
-
-        # start_z += 0.096093
+                      "trui_voor": [f"trui_voor\\{trui_voor}_trui_voor.png"]}
 
         start_x += OFFSET_TRUI_X
         start_y += OFFSET_TRUI_Y
@@ -444,16 +434,7 @@ class Arms:
 class Arm(BasisObject):
     def __init__(self, mid, mouw, is_left,
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
-        # offset
-        # start_x += -0.048647 if not is_left else 0.046275  # 0.065608
-        # # start_x += 0.0571275 * (2 * is_left - 1)
-        # # start_y += 0.0087515
-        # start_y += 0.00946 if not is_left else 0.014316  # 0.008043
-        # start_z += 0.123011 if not is_left else 0.128958  # 0.105465
-        # # start_z += 0.11424
         self.mid = mid
-        # start_x += 0.046275 if is_left else -0.048647
-        # start_z += 0.128958 if is_left else 0.123011
 
         if is_left:
             start_x += OFFSET_L_ARM_X
@@ -466,7 +447,7 @@ class Arm(BasisObject):
 
         arm = "l" if is_left else "r"
         mtl_images = {"mouw": mouw}
-        # start_z += 0.04  # offset
+
         super().__init__(arm + "_arm", POPPETJES2_MAP, start_x,
                          start_y, start_z, rot_x, rot_y, rot_z, mtl_images)
 
@@ -476,17 +457,6 @@ class Hand(BasisObject):
                  start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
                  is_brickbot=False):
         self.mid = mid
-        # offset
-        # start_x += -0.076369 if not is_left else 0.082919
-        # start_y += 0.000755 if not is_left else -0.001302
-        # start_z += 0.064231 if not is_left else 0.055258
-        # # start_x += 0.079644 * (2 * is_left)
-        # # start_y += 0.0020385
-        # # start_z += 0.3084055
-
-        # start_x += 0.082919 if is_left else -0.076369
-        # start_y += -0.014938 if is_left else -0.009387
-        # start_z += 0.055258 if is_left else 0.064231
 
         if is_left:
             start_x += OFFSET_L_HAND_X
@@ -563,17 +533,11 @@ class Legs:
 
 
 class Between(BasisObject):
-    def __init__(self, mid, riem, broek_midden, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
+    def __init__(self, mid, riem, broek_midden,
+                 start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0):
         self.mid = mid
         mtl_images = {"riem": riem,
                       "broek_midden":  broek_midden}
-        # offset
-        # start_x -= 0.000075
-        # start_y += 0.006344
-        # start_z += 0.015503  # 0.01
-
-        # start_z += 0.015503
-
         start_x += OFFSET_BETWEEN_X
         start_y += OFFSET_BETWEEN_Y
         start_z += OFFSET_BETWEEN_Z

@@ -1,6 +1,6 @@
 from trein import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
-from rails import HOOGTE_RAILS, RAILS_BOCHT, Rails, Bocht, Recht, NEXT, PREV
-from ground import create_assenstelsel, create_grid, create_ground
+from rails import Rails, Bocht, Recht
+from ground import create_ground
 from poppetje import Poppetje, PoppetjeObject
 
 

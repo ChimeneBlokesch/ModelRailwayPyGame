@@ -4,7 +4,7 @@ import pygame
 import OpenGL.GL as GL
 import sqlite3
 
-from constants import TREINEN_MAP, gamma_correction
+from constants import gamma_correction
 
 
 IMAGE_PREFIX = "image_"
@@ -26,9 +26,9 @@ class Object3D:
     def change_img(self, mtl_images, folder):
         """
         Changes the object by changing one or multiple materials.
-        mtl_images: Dictionary containing the material name as key and the tuple
-                    (is_image, new) as value, where new is the name of the color
-                    or image.
+        mtl_images: Dictionary containing the material name as key and the
+                    tuple (is_image, new) as value, where new is the name of
+                    the color or image.
         """
         for mtl_name in mtl_images.keys():
             is_image, new = mtl_images[mtl_name]
@@ -95,7 +95,8 @@ class Object3D:
                     self.mtl = self.read_mtl_file(
                         os.path.join(dirname, line[1]))
 
-                    if not self.obj_name.startswith('bocht') and not self.obj_name.startswith('recht'):
+                    if not self.obj_name.startswith('bocht') and \
+                            not self.obj_name.startswith('recht'):
                         self.update_db()
                     continue
 

@@ -2,7 +2,6 @@ from objparser import Object3D
 
 from constants import RAILS_MAP
 from position import Position
-import numpy as np
 
 RAILS_RECHT = 0
 RAILS_BOCHT = 1
@@ -155,7 +154,8 @@ class Bocht(Rails):
         self.own_next_prev = next_prev
         self.pos.move(self.start_x, self.start_y, self.start_z)
 
-        return Object3D(RAILS_MAP, RAILS_OBJ_NAME(RAILS_BOCHT, self.angle), swap_yz=True)
+        return Object3D(RAILS_MAP,
+                        RAILS_OBJ_NAME(RAILS_BOCHT, self.angle), swap_yz=True)
 
     def flip(self):
         self.is_flipped = True

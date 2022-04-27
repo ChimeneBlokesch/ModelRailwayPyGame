@@ -1,9 +1,5 @@
-import numpy as np
 import pygame
 import math
-import OpenGL.GL as GL
-import OpenGL.GLU as GLU
-from constants import print_rails_info, show_coordinates
 from position import Position
 
 MOVE_STEP = 0.05

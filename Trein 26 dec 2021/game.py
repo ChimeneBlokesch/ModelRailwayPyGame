@@ -1,14 +1,12 @@
 import sys
-import numpy as np
 import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
-from camera import CAMERA_FREE, CAMERA_POPPETJE, Camera
-from constants import angle_between_vectors, hex_to_rgb, print_rails_info, show_coordinates
+from camera import CAMERA_POPPETJE, Camera
+from constants import hex_to_rgb,  show_coordinates
 from grid import Grid
 from lijnen import create_line
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
-import math
 
 FULL_SCREEN = False
 
@@ -245,7 +243,7 @@ while 1:
 
     # create_line(pop.pos.x, pop.pos.y, 5, pop.pos.x,
     #             pop.pos.y, -5, (200, 0, 200))
-    create_line(pop.legs.l_leg.pos.x, pop.legs.l_leg.pos.y, 5, pop.legs.l_leg.pos.x,
-                pop.legs.l_leg.pos.y, -5, (250, 0, 250))
+    create_line(pop.legs.l_leg.pos.x, pop.legs.l_leg.pos.y, 5,
+                pop.legs.l_leg.pos.x,  pop.legs.l_leg.pos.y, -5, (250, 0, 250))
     GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()

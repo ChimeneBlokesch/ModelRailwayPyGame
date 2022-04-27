@@ -3,7 +3,8 @@ from position import Position
 
 
 class BasisObject:
-    def __init__(self, obj_name, folder, start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0, mtl_images={}):
+    def __init__(self, obj_name, folder, start_x=0, start_y=0, start_z=0,
+                 rot_x=0, rot_y=0, rot_z=0, mtl_images={}):
         self.obj_name = obj_name
         self.folder = folder
         self.mtl_images = mtl_images

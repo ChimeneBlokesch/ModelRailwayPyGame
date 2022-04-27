@@ -95,7 +95,6 @@ class Trein:
         # Depending on rails.angle the train rotates
         if self.rails.type == RAILS_RECHT:
             # 0 of 180
-            TEMP_SCALE = 100
 
             # Direction is -1 or 1, depending on it goes right/up or left/down.
             direction = ((self.rails.go_left_down-1) **
