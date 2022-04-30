@@ -14,20 +14,38 @@
 
 
 GLFWwindow* window;
+bool is_running = false;
 
 
 static PyObject *method_loop_begin(PyObject *self) {
+    if (!is_running) {
+        return Py_BuildValue("i", 0);
+    }
+
     // Clear the screen. It's not mentioned before Tutorial 02, but it can cause flickering, so it's there nonetheless.
     glClear( GL_COLOR_BUFFER_BIT );
-    Py_RETURN_NONE;
+
+    if (!(glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS &&
+        glfwWindowShouldClose(window) == 0)) {
+           is_running = false;
+       }
+
+    return Py_BuildValue("i", 1);
 }
 
 static PyObject *method_loop_draw(PyObject *self) {
+    if (!is_running) {
+        Py_RETURN_NONE;
+    }
     // Draw nothing, see you in tutorial 2 !
     Py_RETURN_NONE;
 }
 
 static PyObject *method_loop_end(PyObject *self) {
+    if (!is_running) {
+        Py_RETURN_NONE;
+    }
+
     // Swap buffers
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -69,6 +87,7 @@ static PyObject *method_init(PyObject *self) {
 
     // Ensure we can capture the escape key being pressed below
     glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+    is_running = true;
     Py_RETURN_NONE;
 }
 
