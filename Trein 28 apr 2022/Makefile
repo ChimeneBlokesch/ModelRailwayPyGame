@@ -1,6 +1,8 @@
 game:
-	 g++ -o game `pkg-config --cflags glfw3 gl glew` game.c `pkg-config --static --libs glfw3 gl glew`
+	CC=g++ python3 setup.py install --user
 
 run:
+	rm -r build
 	$(MAKE) game
-	./game
+	python3 start.py
+
