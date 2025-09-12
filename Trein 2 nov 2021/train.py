@@ -1,7 +1,7 @@
 from __future__ import annotations
 import pygame
 
-from database_trains import Trains
+from database_trains import TrainFormat
 
 WIDTH = 100
 
@@ -9,7 +9,7 @@ LENGTH = 20
 
 
 class Train:
-    def __init__(self, trains_db: Trains, start_x: int, start_y: int,
+    def __init__(self, properties: TrainFormat, start_x: int, start_y: int,
                  angle: int, filename: str):
         self.x = start_x
         self.y = start_y
@@ -17,7 +17,7 @@ class Train:
         self.speed = 0
         self.max_speed = 10
         self.filename = filename
-        self.properties = trains_db.get_train(filename)
+        self.properties = properties
 
         self.train_before = None
         self.train_after = None

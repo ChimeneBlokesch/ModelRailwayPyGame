@@ -15,7 +15,7 @@ class TrainFormat:
         self.type = type
 
 
-class Trains:
+class Database:
     def __init__(self):
         self.trains: list[TrainFormat] = self.read_file()
 
@@ -33,12 +33,13 @@ class Trains:
                     continue
 
                 data.append(TrainFormat(line[0], int(line[1]), int(line[2]),
-                                        line[3] == "True", line[4] == "False",
-                                        line[5]))
+                                        line[3].lower() == "true",
+                                        line[4].lower() == "false",
+                                        line[5].lower()))
 
         return data
 
-    def get_train(self, filename) -> TrainFormat | None:
+    def get_train(self, filename: str) -> TrainFormat | None:
         trains = [t for t in self.trains if t.filename == filename]
 
         if not len(trains):
@@ -49,4 +50,4 @@ class Trains:
 
 # Only for testing:
 if __name__ == "__main__":
-    db = Trains()
+    db = Database()

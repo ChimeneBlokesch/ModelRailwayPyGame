@@ -5,7 +5,7 @@ import pygame
 
 from commands import Commands
 from grid import Grid
-from database_trains import Trains
+from database_trains import Database
 from rails import RailsType
 
 if __name__ == "__main__":
@@ -21,7 +21,7 @@ if __name__ == "__main__":
     loop = True
     command_field = Commands(screen)
     command_field.draw()
-    trains_db = Trains()
+    trains_db = Database()
     grid = Grid(screen, (0, command_field.field.size[1]), trains_db)
 
     # Initialize the grid with a train on an oval rails

@@ -16,6 +16,7 @@ class Switch:
         direction = 1
 
         if direction == "u" or direction == "l":
+            # Up or left
             direction = -1
 
         self.rules[train_id] = direction

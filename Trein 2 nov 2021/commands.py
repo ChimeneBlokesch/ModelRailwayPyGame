@@ -78,7 +78,10 @@ class Commands:
             pygame.quit()
             return False
         elif command[0] == "add" and command[1] in ["straight", "curve"]:
-            output, succes = self.add_rails(command[1], command[2:])
+            text2type = {"straight": RailsType.STRAIGHT,
+                         "curve": RailsType.CURVE}
+            rails_type = text2type[command[1]]
+            output, succes = self.add_rails(rails_type, command[2:])
 
         if succes:
             self.old_commands.append(self.command)
@@ -107,17 +110,10 @@ class Commands:
         except IndexError:
             return "Not the right amount of arguments.", False
 
-    def add_rails(self, type_rails, command):
-        if type_rails == "straight":
-            type_rails = RailsType.STRAIGHT
-        elif type_rails == "curve":
-            type_rails = RailsType.CURVE
-        else:
-            return
-
+    def add_rails(self, rails_type: RailsType, command):
         try:
             command = [int(c) for c in command]
-            self.grid.add_rails(type_rails, *command)
+            self.grid.add_rails(rails_type, *command)
             return "Added rail", True
         except ValueError:
             return "The arguments of this command are invalid.", False
