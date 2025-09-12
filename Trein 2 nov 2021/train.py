@@ -15,7 +15,7 @@ class Train:
         self.speed = 0
         self.max_speed = 10
         self.filename = filename
-        self.properties = self.grid.treinen_db.get_trein(filename)
+        self.properties = self.grid.trains_db.get_train(filename)
         self.trein_ervoor = None
         self.trein_erachter = None
 

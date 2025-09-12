@@ -1,5 +1,5 @@
 import pygame
-from database_treinen import PATH
+from database_trains import PATH
 from rails import RailsType
 
 pygame.init()

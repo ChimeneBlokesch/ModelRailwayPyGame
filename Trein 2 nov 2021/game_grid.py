@@ -1,6 +1,7 @@
+import pygame
+
 from rails import Rails, RailsType
 from train import Train
-import pygame
 
 GREEN = (0, 255, 0)
 
@@ -9,12 +10,12 @@ FONT = pygame.font.Font(None, 15)
 
 
 class Grid:
-    def __init__(self, screen: pygame.Surface, pos, treinen_db):
+    def __init__(self, screen: pygame.Surface, pos, trains_db):
         self.screen = screen
         self.grid = pygame.Surface(self.screen.get_size())
-        self.trains = []
+        self.trains: list[Train] = []
         self.rails = []
-        self.treinen_db = treinen_db
+        self.trains_db = trains_db
         self.pos = pos
         self.wissels = []
 
