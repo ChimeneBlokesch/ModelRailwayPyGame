@@ -1,8 +1,8 @@
 import pygame
 from enum import Enum
 
-from rails_curve import Bocht
-from rails_straight import Recht
+from rails_curve import Curve
+from rails_straight import Straight
 
 
 class RailsType(Enum):
@@ -22,9 +22,9 @@ class Rails:
 
     def new_rails(self, x1, y1, x2, y2):
         if self.type_rails == RailsType.STRAIGHT:
-            return Recht(x1, y1, x2, y2)
+            return Straight(x1, y1, x2, y2)
 
-        return Bocht(x1, y1, x2, y2)
+        return Curve(x1, y1, x2, y2)
 
     def draw(self):
         self.rails.draw()

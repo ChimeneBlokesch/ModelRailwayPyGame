@@ -10,7 +10,7 @@ pygame.init()
 FONT = pygame.font.Font(None, 15)
 
 
-class Bocht:
+class Curve:
     def __init__(self, xh, yh, xv, yv,
                  background_color=COLOR_BACKGROUND,
                  rails_color=COLOR_RAILS,
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     #           (0, 125, 0), (0, 0, 125)]
 
     for p1, p2 in points:
-        r = Bocht(*p1, *p2)
+        r = Curve(*p1, *p2)
         r.middelpunten()
         rs.append(r)
 

@@ -7,7 +7,7 @@ COLOR_BETWEEN_RAILS = (0, 0, 0, 255)
 COLOR_BACKGROUND = (200, 200, 200, 15)
 
 
-class Recht:
+class Straight:
     def __init__(self, x1, y1, x2, y2,
                  background_color=COLOR_BACKGROUND,
                  rails_color=COLOR_RAILS,
@@ -99,13 +99,13 @@ class Recht:
 
 # Only for testing
 if __name__ == "__main__":
-    r1 = Recht(10, 90, 40, 10)
-    r2 = Recht(10, 10, 40, 90)
-    r3 = Recht(40, 10, 10, 90)
-    r4 = Recht(40, 90, 10, 10)
-    r5 = Recht(30, 20, 70, 80)
-    r6 = Recht(30, 30, 80, 30)
-    r7 = Recht(30, 80, 30, 30)
+    r1 = Straight(10, 90, 40, 10)
+    r2 = Straight(10, 10, 40, 90)
+    r3 = Straight(40, 10, 10, 90)
+    r4 = Straight(40, 90, 10, 10)
+    r5 = Straight(30, 20, 70, 80)
+    r6 = Straight(30, 30, 80, 30)
+    r7 = Straight(30, 80, 30, 30)
     r = [r1]
     loop = True
 
