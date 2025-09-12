@@ -1,4 +1,4 @@
-class Wissel:
+class Switch:
     def __init__(self, x, y, direction, speeds):
         self.x = x
         self.y = y
