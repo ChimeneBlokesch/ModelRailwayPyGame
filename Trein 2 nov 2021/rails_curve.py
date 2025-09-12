@@ -20,11 +20,11 @@ class Curve:
         self.xv = xv
         self.yv = yv
         self.n = 10
-        self.middelpunt, self.straal_h, self.straal_v = self.middelpunten()
-        self.x = self.middelpunt[0] - self.straal_h - self.n
-        self.y = self.middelpunt[1] - self.straal_v - self.n
-        self.width = 2 * self.straal_h + 2 * self.n
-        self.height = 2 * self.straal_v + 2 * self.n
+        self.center, self.radius_h, self.radius_v = self.get_oval()
+        self.x = self.center[0] - self.radius_h - self.n
+        self.y = self.center[1] - self.radius_v - self.n
+        self.width = 2 * self.radius_h + 2 * self.n
+        self.height = 2 * self.radius_v + 2 * self.n
         self.surface = pygame.Surface((self.width, self.height),
                                       pygame.SRCALPHA)
 
@@ -38,15 +38,15 @@ class Curve:
         angle1, angle2 = self.get_start_stop_angles(h_degrees,
                                                     v_degrees)
         self.draw_background(angle1, angle2)
-        self.draw_omtrek_rails(angle1, angle2)
+        self.draw_contour_rails(angle1, angle2)
         self.draw_lines_between_rails(angle1, angle2)
 
-    def middelpunten(self):
-        middelpunt1 = (self.xh, self.yv)
-        straal_x = abs(self.xh - self.xv)
-        straal_y = abs(self.yh - self.yv)
+    def get_oval(self):
+        center = (self.xh, self.yv)
+        radius_x = abs(self.xh - self.xv)
+        radius_y = abs(self.yh - self.yv)
 
-        return middelpunt1, straal_x, straal_y
+        return center, radius_x, radius_y
 
     def get_start_stop_angles(self, h_degrees, v_degrees):
         if h_degrees == v_degrees:
@@ -72,42 +72,42 @@ class Curve:
         return start_angle, stop_angle
 
     def point_degree(self, x, y):
-        if y == self.middelpunt[1] + self.straal_v:
+        if y == self.center[1] + self.radius_v:
             # bottom
             return 90
-        elif y == self.middelpunt[1] - self.straal_v:
+        elif y == self.center[1] - self.radius_v:
             # top
             return 270
-        elif x == self.middelpunt[0] - self.straal_h:
+        elif x == self.center[0] - self.radius_h:
             # left
             return 180
 
         # right
         return 0
 
-    def draw_omtrek_rails(self, start_angle, stop_angle):
+    def draw_contour_rails(self, start_angle, stop_angle):
         for i in [self.n, -self.n]:
-            rect = [self.middelpunt[0] - self.straal_h - i - self.x,
-                    self.middelpunt[1] - self.straal_v - i - self.y,
-                    2 * self.straal_h + 2 * i,
-                    2 * self.straal_v + 2 * i]
+            rect = [self.center[0] - self.radius_h - i - self.x,
+                    self.center[1] - self.radius_v - i - self.y,
+                    2 * self.radius_h + 2 * i,
+                    2 * self.radius_v + 2 * i]
 
             pygame.draw.arc(self.surface, COLOR_BETWEEN_RAILS, rect,
                             math.radians(start_angle),
                             math.radians(stop_angle))
 
     def draw_lines_between_rails(self, start_angle, stop_angle):
-        mid_x, mid_y = self.middelpunt
+        mid_x, mid_y = self.center
         alpha = 90 / 4
 
         if start_angle > stop_angle:
             stop_angle += 360
 
         degree = start_angle
-        x1 = mid_x + (self.straal_h + self.n) * math.cos(math.radians(degree))
-        y1 = mid_y - (self.straal_v + self.n) * math.sin(math.radians(degree))
-        x2 = mid_x + (self.straal_h - self.n) * math.cos(math.radians(degree))
-        y2 = mid_y - (self.straal_v - self.n) * math.sin(math.radians(degree))
+        x1 = mid_x + (self.radius_h + self.n) * math.cos(math.radians(degree))
+        y1 = mid_y - (self.radius_v + self.n) * math.sin(math.radians(degree))
+        x2 = mid_x + (self.radius_h - self.n) * math.cos(math.radians(degree))
+        y2 = mid_y - (self.radius_v - self.n) * math.sin(math.radians(degree))
 
         while degree <= stop_angle:
             pygame.draw.line(self.surface, COLOR_RAILS,
@@ -117,19 +117,19 @@ class Curve:
             degree += alpha
             cos = math.cos(math.radians(degree))
             sin = math.sin(math.radians(degree))
-            x1 = mid_x + (self.straal_h + self.n) * cos
-            y1 = mid_y - (self.straal_v + self.n) * sin
-            x2 = mid_x + (self.straal_h - self.n) * cos
-            y2 = mid_y - (self.straal_v - self.n) * sin
+            x1 = mid_x + (self.radius_h + self.n) * cos
+            y1 = mid_y - (self.radius_v + self.n) * sin
+            x2 = mid_x + (self.radius_h - self.n) * cos
+            y2 = mid_y - (self.radius_v - self.n) * sin
 
     def draw_background(self, start_angle, stop_angle):
         if start_angle > stop_angle:
             stop_angle += 360
 
-        rect = [self.middelpunt[0] - self.straal_h - self.n - self.x,
-                self.middelpunt[1] - self.straal_v - self.n - self.y,
-                2 * self.straal_h + 2 * self.n,
-                2 * self.straal_v + 2 * self.n]
+        rect = [self.center[0] - self.radius_h - self.n - self.x,
+                self.center[1] - self.radius_v - self.n - self.y,
+                2 * self.radius_h + 2 * self.n,
+                2 * self.radius_v + 2 * self.n]
         pygame.draw.arc(self.surface, COLOR_BACKGROUND, rect,
                         math.radians(start_angle), math.radians(stop_angle),
                         width=2 * self.n)
@@ -166,7 +166,7 @@ if __name__ == "__main__":
 
     for p1, p2 in points:
         r = Curve(*p1, *p2)
-        r.middelpunten()
+        r.get_oval()
         rs.append(r)
 
     while loop:

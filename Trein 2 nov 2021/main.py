@@ -4,7 +4,7 @@
 import pygame
 
 from commands import Commands
-from game_grid import Grid
+from grid import Grid
 from database_trains import Trains
 from rails import RailsType
 

@@ -1,6 +1,8 @@
 import pygame
+
 from database_trains import PATH
 from rails import RailsType
+from grid import Grid
 
 pygame.init()
 FONT = pygame.font.Font(None, 30)
@@ -17,7 +19,7 @@ class Commands:
         self.field = pygame.Rect(0, 0, self.height, self.width)
         self.command = ""
         self.active = False
-        self.grid = None
+        self.grid: Grid = None
         self.old_commands = []
         self.draw()
 
@@ -75,7 +77,7 @@ class Commands:
         elif command == ["quit"]:
             pygame.quit()
             return False
-        elif command[0] == "add" and command[1] in ["recht", "bocht"]:
+        elif command[0] == "add" and command[1] in ["straight", "curve"]:
             output, succes = self.add_rails(command[1], command[2:])
 
         if succes:
@@ -106,9 +108,9 @@ class Commands:
             return "Not the right amount of arguments.", False
 
     def add_rails(self, type_rails, command):
-        if type_rails == "recht":
+        if type_rails == "straight":
             type_rails = RailsType.STRAIGHT
-        elif type_rails == "bocht":
+        elif type_rails == "curve":
             type_rails = RailsType.CURVE
         else:
             return

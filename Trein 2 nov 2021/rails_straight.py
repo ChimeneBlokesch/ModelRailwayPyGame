@@ -44,8 +44,8 @@ class Straight:
     def get_vector_n(self):
         points = []
         line = (self.x2 - self.x1, self.y2 - self.y1)
-        lengte_lijn = self.length_vector(*line)
-        vector_l = tuple(x / lengte_lijn for x in line)
+        length_line = self.length_vector(*line)
+        vector_l = tuple(x / length_line for x in line)
         n = (self.n * -vector_l[1], self.n * vector_l[0])
         points.append((self.x1 + n[0], self.y1 + n[1]))
         points.append((self.x2 + n[0], self.y2 + n[1]))
@@ -58,11 +58,11 @@ class Straight:
         return p[0] - self.x, p[1] - self.y
 
     def arc_between_vectors(self, v1, v2):
-        teller = np.dot(v1, v2)
+        numerator = np.dot(v1, v2)
         length1 = math.sqrt(v1[0] ** 2 + v1[1] ** 2)
         length2 = math.sqrt(v2[0] ** 2 + v2[1] ** 2)
-        noemer = length1 * length2
-        return math.degrees(math.acos(teller / noemer))
+        denominator = length1 * length2
+        return math.degrees(math.acos(numerator / denominator))
 
     def draw(self):
         pygame.draw.line(self.surface, (255, 0, 255),

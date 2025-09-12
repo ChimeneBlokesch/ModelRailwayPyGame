@@ -1,4 +1,7 @@
+from __future__ import annotations
 import pygame
+
+from database_trains import Trains
 
 WIDTH = 100
 
@@ -6,22 +9,20 @@ LENGTH = 20
 
 
 class Train:
-    def __init__(self, grid, start_x: int, start_y: int,
+    def __init__(self, trains_db: Trains, start_x: int, start_y: int,
                  angle: int, filename: str):
-        self.grid = grid
         self.x = start_x
         self.y = start_y
         self.angle = angle
         self.speed = 0
         self.max_speed = 10
         self.filename = filename
-        self.properties = self.grid.trains_db.get_train(filename)
-        self.trein_ervoor = None
-        self.trein_erachter = None
+        self.properties = trains_db.get_train(filename)
 
-    def draw(self):
-        # pygame.draw.rect(self.screen, self.color, (self.x, self.y, -40, -10),
-        #                  width=10)
+        self.train_before = None
+        self.train_after = None
+
+    def draw(self, screen: pygame.Surface):
         try:
             train = pygame.image.load(self.filename)
         except FileNotFoundError:
@@ -31,16 +32,16 @@ class Train:
         height = size[1] * WIDTH / size[0]
         train = pygame.transform.smoothscale(train, (WIDTH, height))
         train = pygame.transform.rotate(train, self.angle)
-        self.grid.grid.blit(train, (self.x, self.y - 0.5 * height))
+        screen.blit(train, (self.x, self.y - 0.5 * height))
 
-    def koppel_voor(self, trein_ervoor):
-        self.trein_ervoor = trein_ervoor
+    def attach_front(self, train: Train):
+        self.train_before = train
 
-    def ontkoppel_voor(self):
-        self.trein_ervoor = None
+    def detach_front(self):
+        self.train_before = None
 
-    def koppel_achter(self, trein_erachter):
-        self.trein_erachter = trein_erachter
+    def attach_back(self, train: Train):
+        self.train_after = train
 
-    def ontkoppel_achter(self):
-        self.trein_erachter = None
+    def detach_back(self):
+        self.train_after = None

@@ -15,8 +15,7 @@ FONT = pygame.font.Font(None, 15)
 
 
 class Rails:
-    def __init__(self, grid, type_rails, x1, y1, x2, y2):
-        self.grid = grid
+    def __init__(self, type_rails, x1, y1, x2, y2):
         self.type_rails = type_rails
         self.rails = self.new_rails(x1, y1, x2, y2)
 
@@ -26,9 +25,9 @@ class Rails:
 
         return Curve(x1, y1, x2, y2)
 
-    def draw(self):
+    def draw(self, grid):
         self.rails.draw()
-        self.grid.blit(self.rails.surface, (self.rails.x, self.rails.y))
+        grid.blit(self.rails.surface, (self.rails.x, self.rails.y))
 
 
 # Only used for testing:

@@ -2,9 +2,22 @@ FILENAME = "database_trains.txt"
 PATH = "trains/"
 
 
+class TrainFormat:
+    def __init__(self, name: str, max_speed: int, acceleration: int,
+                 second_class: bool, first_class: bool, type: str):
+        self.filename = PATH + name
+        self.max_speed = max_speed
+        self.acceleration = acceleration
+        self.is_second_class = second_class
+        self.is_first_class = first_class
+
+        # Sprinter (sp) or Intercity (ic)
+        self.type = type
+
+
 class Trains:
     def __init__(self):
-        self.trains = self.read_file()
+        self.trains: list[TrainFormat] = self.read_file()
 
     def read_file(self):
         data = []
@@ -25,26 +38,13 @@ class Trains:
 
         return data
 
-    def get_train(self, filename):
+    def get_train(self, filename) -> TrainFormat | None:
         trains = [t for t in self.trains if t.filename == filename]
 
         if not len(trains):
             return None
 
         return trains[0]
-
-
-class TrainFormat:
-    def __init__(self, name: str, max_speed: int, acceleration: int,
-                 second_class: bool, first_class: bool, type: str):
-        self.filename = PATH + name
-        self.max_speed = max_speed
-        self.acceleration = acceleration
-        self.is_second_class = second_class
-        self.is_first_class = first_class
-
-        # Sprinter (sp) or Intercity (ic)
-        self.type = type
 
 
 # Only for testing:
