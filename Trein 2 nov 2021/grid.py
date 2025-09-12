@@ -41,28 +41,5 @@ class Grid:
         self.trains.append(train)
 
     def add_rails(self, type_rails: RailsType, x1, y1, x2, y2):
-        # x1, y1, x2, y2 = self.check_overlapping(type_rails, x1, y1, x2, y2)
         rails = Rails(self.grid, type_rails, x1, y1, x2, y2)
-        # rails.draw()
         self.rails.append(rails)
-
-    def check_overlapping(self, type_rails, x1, y1, x2, y2):
-        points = self.get_points_of_rails(type_rails, x1, y1, x2, y2)
-
-        if type_rails == RailsType.STRAIGHT:
-            for r in self.rails:
-                r_points = self.points(r.x1, r.y1, r.x2, r.y2)
-
-                if r.type == RailsType.STRAIGHT and ...:
-                    raise NotImplementedError()
-
-    def get_points_of_rails(self, type_rails, x1, y1, x2, y2):
-        raise NotImplementedError()
-
-        if type_rails == RailsType.STRAIGHT:
-            ...
-
-        # BOCHT
-
-    def add_wissel(self):
-        raise NotImplementedError()
