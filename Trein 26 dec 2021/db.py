@@ -2,56 +2,54 @@
 import sqlite3
 import os
 
-conn = sqlite3.connect("treinen.db")
+if __name__ == "__main__":
+    conn = sqlite3.connect("trains.db")
 
-cursor = conn.cursor()
-# cursor.execute("SELECT name FROM type;")
-# print(f"Table Name : {cursor.fetchall()}")
-cursor.execute("""CREATE TABLE IF NOT EXISTS plaatjes (
-                                        id integer PRIMARY KEY,
-                                        name text NOT NULL
-                                    ); """)
+    cursor = conn.cursor()
 
-# path = 'C:\\Users\\31683\\Documents\\Treinen\\Trein 26 dec 2021\\plaatjes'
-for folder in ['plaatjes', 'treinen']:
-    path = 'C:\\Users\\31683\\Documents\\Treinen\\Trein 26 dec 2021\\' + folder
-    for root, dirs, files in os.walk(path):
-        for f in files:
-            if f.endswith('.png'):
-                try:
-                    cursor.execute(
-                        """INSERT INTO plaatjes(name) VALUES(?)""", (f,))
-                except sqlite3.IntegrityError:
-                    continue
-cursor.execute("""CREATE TABLE IF NOT EXISTS type (
-                                        id integer PRIMARY KEY,
-                                        name text NOT NULL UNIQUE
-                                    ); """)
+    cursor.execute("""CREATE TABLE IF NOT EXISTS images (
+                                            id integer PRIMARY KEY,
+                                            name text NOT NULL
+                                        ); """)
 
-for x in ["passagier", "goederen", "locomotief", "poppetje"]:
-    try:
-        cursor.execute("""INSERT INTO type(name) VALUES(?)""", (x,))
-    except sqlite3.IntegrityError:
-        ...
+    for folder in ['images', 'trains']:
+        for root, dirs, files in os.walk(folder):
+            for f in files:
+                if f.endswith('.png'):
+                    try:
+                        cursor.execute(
+                            """INSERT INTO images(name) VALUES(?)""", (f,))
+                    except sqlite3.IntegrityError:
+                        continue
+    cursor.execute("""CREATE TABLE IF NOT EXISTS type (
+                                            id integer PRIMARY KEY,
+                                            name text NOT NULL UNIQUE
+                                        ); """)
 
-cursor.execute("""CREATE TABLE IF NOT EXISTS soort (
-                                        id integer PRIMARY KEY,
-                                        name text NOT NULL UNIQUE,
-                                        type_id int,
-                                        FOREIGN KEY(type_id) REFERENCES type(id)
-                                    ); """)
+    for x in ["passenger", "freight", "engine", "character"]:
+        try:
+            cursor.execute("""INSERT INTO type(name) VALUES(?)""", (x,))
+        except sqlite3.IntegrityError:
+            ...
 
-cursor.execute("""CREATE TABLE IF NOT EXISTS materialen (
-                                        id integer PRIMARY KEY,
-                                        name text NOT NULL,
-                                        img int,
-                                        trein int,
-                                        FOREIGN KEY(img) REFERENCES plaatjes(id),
-                                        FOREIGN KEY(trein) REFERENCES soort(id)
-                                        UNIQUE(name, img, trein)
-                                    ); """)
+    cursor.execute("""CREATE TABLE IF NOT EXISTS modelType (
+                                            id integer PRIMARY KEY,
+                                            name text NOT NULL UNIQUE,
+                                            type_id int,
+                                            FOREIGN KEY(type_id) REFERENCES type(id)
+                                        ); """)
 
-cursor.execute("SELECT name FROM plaatjes;")
-print(f"Table Name : {cursor.fetchall()}")
-conn.commit()
-conn.close()
+    cursor.execute("""CREATE TABLE IF NOT EXISTS materials (
+                                            id integer PRIMARY KEY,
+                                            name text NOT NULL,
+                                            img int,
+                                            trein int,
+                                            FOREIGN KEY(img) REFERENCES images(id),
+                                            FOREIGN KEY(trein) REFERENCES modelType(id)
+                                            UNIQUE(name, img, trein)
+                                        ); """)
+
+    cursor.execute("SELECT name FROM images;")
+    print(f"Table Name : {cursor.fetchall()}")
+    conn.commit()
+    conn.close()
