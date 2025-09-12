@@ -1,4 +1,4 @@
-from rails import Rails, RECHT, BOCHT
+from rails import Rails, RailsType
 from train import Train
 import pygame
 
@@ -39,7 +39,7 @@ class Grid:
         train = Train(self, start_x, start_y, angle, filename)
         self.trains.append(train)
 
-    def add_rails(self, type_rails, x1, y1, x2, y2):
+    def add_rails(self, type_rails: RailsType, x1, y1, x2, y2):
         # x1, y1, x2, y2 = self.check_overlapping(type_rails, x1, y1, x2, y2)
         rails = Rails(self.grid, type_rails, x1, y1, x2, y2)
         # rails.draw()
@@ -48,18 +48,20 @@ class Grid:
     def check_overlapping(self, type_rails, x1, y1, x2, y2):
         points = self.get_points_of_rails(type_rails, x1, y1, x2, y2)
 
-        if type_rails == RECHT:
+        if type_rails == RailsType.STRAIGHT:
             for r in self.rails:
                 r_points = self.points(r.x1, r.y1, r.x2, r.y2)
-                if r.type == RECHT and ...:
-                    ...
+
+                if r.type == RailsType.STRAIGHT and ...:
+                    raise NotImplementedError()
 
     def get_points_of_rails(self, type_rails, x1, y1, x2, y2):
-        if type_rails == RECHT:
-            ...
+        raise NotImplementedError()
 
+        if type_rails == RailsType.STRAIGHT:
+            ...
 
         # BOCHT
 
     def add_wissel(self):
-        ...
+        raise NotImplementedError()

@@ -1,10 +1,14 @@
 import pygame
+from enum import Enum
 
-from bocht import Bocht
-from recht import Recht
+from rails_curve import Bocht
+from rails_straight import Recht
 
-BOCHT = 0
-RECHT = 1
+
+class RailsType(Enum):
+    STRAIGHT = 0
+    CURVE = 1
+
 
 pygame.init()
 FONT = pygame.font.Font(None, 15)
@@ -17,7 +21,7 @@ class Rails:
         self.rails = self.new_rails(x1, y1, x2, y2)
 
     def new_rails(self, x1, y1, x2, y2):
-        if self.type_rails == RECHT:
+        if self.type_rails == RailsType.STRAIGHT:
             return Recht(x1, y1, x2, y2)
 
         return Bocht(x1, y1, x2, y2)
@@ -57,7 +61,7 @@ if __name__ == "__main__":
     #           (0, 125, 0), (0, 0, 125)]
 
     for p1, p2 in points:
-        r = Rails(screen, RECHT, *p1, *p2)
+        r = Rails(screen, RailsType.STRAIGHT, *p1, *p2)
         rs.append(r)
 
     while loop:

@@ -6,7 +6,7 @@ import pygame
 from commands import Commands
 from game_grid import Grid
 from database_treinen import Treinen
-
+from rails import RailsType
 
 if __name__ == "__main__":
     pygame.init()
@@ -26,12 +26,12 @@ if __name__ == "__main__":
 
     # Initialize the grid with a train on an oval rails
     grid.add_train(250, 50, 0, "trains/custom_side.png")
-    grid.add_rails(0, 150, 50, 100, 100)
-    grid.add_rails(1, 150, 50, 750, 50)
-    grid.add_rails(0, 150, 150, 100, 100)
-    grid.add_rails(1, 150, 150, 750, 150)
-    grid.add_rails(0, 750, 50, 800, 100)
-    grid.add_rails(0, 750, 150, 800, 100)
+    grid.add_rails(RailsType.CURVE, 150, 50, 100, 100)
+    grid.add_rails(RailsType.STRAIGHT, 150, 50, 750, 50)
+    grid.add_rails(RailsType.CURVE, 150, 150, 100, 100)
+    grid.add_rails(RailsType.STRAIGHT, 150, 150, 750, 150)
+    grid.add_rails(RailsType.CURVE, 750, 50, 800, 100)
+    grid.add_rails(RailsType.CURVE, 750, 150, 800, 100)
 
     command_field.grid = grid
 

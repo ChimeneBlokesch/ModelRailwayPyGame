@@ -1,6 +1,6 @@
 import pygame
 from database_treinen import PATH
-from rails import RECHT, BOCHT
+from rails import RailsType
 
 pygame.init()
 FONT = pygame.font.Font(None, 30)
@@ -107,9 +107,9 @@ class Commands:
 
     def add_rails(self, type_rails, command):
         if type_rails == "recht":
-            type_rails = RECHT
+            type_rails = RailsType.STRAIGHT
         elif type_rails == "bocht":
-            type_rails = BOCHT
+            type_rails = RailsType.CURVE
         else:
             return
 
