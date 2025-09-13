@@ -2,6 +2,8 @@
 import sqlite3
 import os
 
+from constants import CHARACTER_FOLDER
+
 if __name__ == "__main__":
     conn = sqlite3.connect("trains.db")
 
@@ -12,15 +14,19 @@ if __name__ == "__main__":
                                             name text NOT NULL
                                         ); """)
 
-    for folder in ['images', 'trains']:
+    # Find the images
+    for folder in ['images', 'trains', CHARACTER_FOLDER]:
         for root, dirs, files in os.walk(folder):
             for f in files:
-                if f.endswith('.png'):
-                    try:
-                        cursor.execute(
-                            """INSERT INTO images(name) VALUES(?)""", (f,))
-                    except sqlite3.IntegrityError:
-                        continue
+                if not f.endswith('.png'):
+                    continue
+
+                try:
+                    cursor.execute(
+                        """INSERT INTO images(name) VALUES(?)""", (f,))
+                except sqlite3.IntegrityError:
+                    continue
+
     cursor.execute("""CREATE TABLE IF NOT EXISTS type (
                                             id integer PRIMARY KEY,
                                             name text NOT NULL UNIQUE
