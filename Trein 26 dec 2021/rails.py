@@ -32,12 +32,12 @@ def RAILS_IMG_PATH(type_rails):
 
 
 def RAILS_OBJ_NAME(type_rails, angle=None):
-    num = 3
-    name = "recht_" + str(num)
 
-    if type_rails == RAILS_BOCHT:
-        num = 6
-        name = "bocht_" + str(angle) + "_" + str(num)
+    mapping = {RAILS_RECHT: "straight", RAILS_BOCHT: "curve"}
+    name = f"rails_{mapping[type_rails]}"
+
+    if angle is not None:
+        name += "_" + str(angle)
 
     return name
 
