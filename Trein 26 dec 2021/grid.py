@@ -1,7 +1,6 @@
 from train import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
 from rails import Rails, Bocht, Recht
 from ground import create_ground
-from poppetje import Poppetje, PoppetjeObject
 from character_model import CharacterModel
 
 
@@ -11,7 +10,7 @@ class Grid:
         self.locomotieven = []
         self.goederen = []
         self.passagiers = []
-        self.poppetjes = []
+        self.characters: list[CharacterModel] = []
 
     def generate(self):
         for rails in self.rails:
@@ -25,7 +24,7 @@ class Grid:
         for trein in self.goederen:
             trein.generate()
 
-        for pop in self.poppetjes:
+        for pop in self.characters:
             pop.generate()
 
     def render(self):
@@ -46,27 +45,11 @@ class Grid:
         for trein in self.goederen:
             trein.render()
 
-        for pop in self.poppetjes:
+        for pop in self.characters:
             pop.render()
 
-    def add_poppetje(self, *args, **kwargs):
-        new_pop = Poppetje(*args, **kwargs)
-        self.poppetjes.append(new_pop)
-        return new_pop
-
-    def add_poppetje2(self, *args, **kwargs):
-        """
-        name, hat_hair, hat_hair_color, face, trui_color, trui_voor, mouw,
-        riem, broek, broek_midden,
-        start_x=0, start_y=0, start_z=0, rot_x=0, rot_y=0, rot_z=0,
-        figure=None, extra=None
-        """
-        new_pop = PoppetjeObject(*args, **kwargs)
-        self.poppetjes.append(new_pop)
-        return new_pop
-
     def add_character(self, character: CharacterModel):
-        self.poppetjes.append(character)
+        self.characters.append(character)
 
     def add_train(self, train: Trein):
         type2arr = {TREIN_LOCOMOTIEF: self.locomotieven,
