@@ -2,7 +2,6 @@ import os
 import numpy as np
 import pygame
 import OpenGL.GL as GL
-import sqlite3
 
 from constants import gamma_correction
 
@@ -46,46 +45,6 @@ class Object3D:
             image = self.read_image_file(imagefile)
             self.mtl[mtl_name][IMAGE_PREFIX + "map_Kd"] = image
             self.mtl[mtl_name][IMAGE_PREFIX + "map_d"] = image
-
-    def update_db(self):
-        conn = sqlite3.connect("trains.db")
-        cursor = conn.cursor()
-        try:
-            cursor.execute(
-                """INSERT INTO modelType VALUES(null, ?, 3)""", (self.obj_name,))
-        except sqlite3.IntegrityError:
-            ...
-
-        for m in self.mtl:
-            if "map_Kd" not in self.mtl[m]:
-                continue
-
-            img_file = self.mtl[m]["map_Kd"].split("\\")[-1]
-
-            cursor.execute("""SELECT id from modelType where name = ?""",
-                           (self.obj_name,))
-
-            train = cursor.fetchall()[0][0]
-
-            cursor.execute("""SELECT id from images where name = ?""",
-                           (img_file,))
-
-            result = cursor.fetchall()
-            if len(result) == 0:
-                # No images
-                continue
-
-            img = result[0][0]
-
-            try:
-                cursor.execute("""
-                    INSERT INTO materials(name, img, train) VALUES(?,?,?)""",
-                               (m, img, train))
-            except sqlite3.IntegrityError:
-                ...
-
-        conn.commit()
-        conn.close()
 
     def read_obj_file(self, filename):
         material = None
