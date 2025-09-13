@@ -1,11 +1,13 @@
+import os
+
 FILENAME = "database_trains.txt"
-PATH = "trains/"
+PATH = os.path.join("sprites", "trains")
 
 
 class TrainFormat:
     def __init__(self, name: str, max_speed: int, acceleration: int,
                  second_class: bool, first_class: bool, type: str):
-        self.filename = PATH + name
+        self.filename = os.path.join(PATH, name)
         self.max_speed = max_speed
         self.acceleration = acceleration
         self.is_second_class = second_class
