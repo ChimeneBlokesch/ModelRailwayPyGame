@@ -26,8 +26,7 @@ if __name__ == "__main__":
     grid = Grid(screen, (0, command_field.field.size[1]), trains_db)
 
     # Initialize the grid with a train on an oval rails
-    grid.add_train(250, 50, 0,
-                   os.path.join("sprites", "trains", "custom_side.png"))
+    grid.add_train(250, 50, 0, "engine")
     grid.add_rails(RailsType.CURVE, 150, 50, 100, 100)
     grid.add_rails(RailsType.STRAIGHT, 150, 50, 750, 50)
     grid.add_rails(RailsType.CURVE, 150, 150, 100, 100)
@@ -35,8 +34,7 @@ if __name__ == "__main__":
     grid.add_rails(RailsType.CURVE, 750, 50, 800, 100)
     grid.add_rails(RailsType.CURVE, 750, 150, 800, 100)
 
-    grid.add_train(200, 150, 0,
-                   os.path.join("sprites", "trains", "custom_front.png"))
+    grid.add_train(200, 150, 0, "passenger_car")
 
     command_field.grid = grid
 

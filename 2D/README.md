@@ -9,9 +9,9 @@ The command line is shown at the top of the window.
 The available commands have the following format. The variables are described as `<variable_name>`.
 - `add straight <x1> <y1> <x2> <y2>`
 - `add curve <x1> <y1> <x2> <y2>`
-- `add train <x> <y> <angle> <filename>`
+- `add train <x> <y> <angle> <name>`
 
-The filenames in [sprites/trains](sprites/trains/) are the possible values for `<filename>`.
+The folder names in [sprites/trains](sprites/trains/) are the possible values for `<name>`.
 
 <img src="images/0_init.png" alt="Start application" width="500"/>
 <br>

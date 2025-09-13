@@ -5,16 +5,25 @@ PATH = os.path.join("sprites", "trains")
 
 
 class TrainFormat:
-    def __init__(self, name: str, max_speed: int, acceleration: int,
-                 second_class: bool, first_class: bool, type: str):
-        self.filename = os.path.join(PATH, name)
+    def __init__(self, name: str, amount_imgs: int, img_ext: int,
+                 max_speed: int, acceleration: int):
+        self.folder = name
+        self.amount_imgs = amount_imgs
+        self.img_ext = img_ext
         self.max_speed = max_speed
         self.acceleration = acceleration
-        self.is_second_class = second_class
-        self.is_first_class = first_class
 
-        # Sprinter (sp) or Intercity (ic)
-        self.type = type
+    @property
+    def degrees_step(self):
+        """
+        For each image in the folder, its next image is the rotated version
+        of the current one. The difference in degrees is returned.
+        """
+        return 360 / self.amount_imgs
+
+    def get_sprite_file_path(self, degrees: float):
+        idx = int(degrees / self.degrees_step)
+        return os.path.join(PATH, self.folder, str(idx) + self.img_ext)
 
 
 class Database:
@@ -31,23 +40,28 @@ class Database:
 
                 line = line.split()
 
-                if len(line) != 6:
-                    continue
+                i = 0
+                name = line[i]
+                i += 1
+                amount_imgs = int(line[i])
+                i += 1
+                img_ext = line[i]
+                i += 1
+                max_speed = int(line[i])
+                i += 1
+                acceleration = int(line[i])
 
-                data.append(TrainFormat(line[0], int(line[1]), int(line[2]),
-                                        line[3].lower() == "true",
-                                        line[4].lower() == "false",
-                                        line[5].lower()))
+                data.append(TrainFormat(name,
+                                        amount_imgs,
+                                        img_ext,
+                                        max_speed,
+                                        acceleration))
 
         return data
 
     def get_train(self, filename: str) -> TrainFormat | None:
-        trains = [t for t in self.trains if t.filename == filename]
-
-        if not len(trains):
-            return None
-
-        return trains[0]
+        trains = (t for t in self.trains if t.folder == filename)
+        return next(trains, None)
 
 
 # Only for testing:
