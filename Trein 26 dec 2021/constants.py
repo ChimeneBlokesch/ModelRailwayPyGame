@@ -6,9 +6,10 @@ import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 pygame.init()
 
-TREINEN_MAP = "treinen/"
+TREINEN_MAP = "trains/"
 RAILS_MAP = "rails/"
 POPPETJES_MAP = "poppetjes/"
+CHARACTER_FOLDER = "character/"
 
 BREEDTE_RAILS = 5
 
@@ -33,16 +34,13 @@ def angle_between(p1, p2):
 
 
 def angle_between_vectors(v1, v2):
-    teller = np.dot(v1, v2)
-    noemer = np.linalg.norm(v1) * np.linalg.norm(v2)
+    numerator = np.dot(v1, v2)
+    denominator = np.linalg.norm(v1) * np.linalg.norm(v2)
 
-    if noemer == 0 or teller == 0 or np.allclose([noemer], [teller]):
+    if denominator == 0 or numerator == 0 or np.allclose([denominator], [numerator]):
         return 0
 
-    print("teller", teller)
-    print("noemer", noemer)
-
-    return math.degrees(math.acos(teller/noemer))
+    return math.degrees(math.acos(numerator/denominator))
 
 
 def angle_vector(x, y):
@@ -74,10 +72,11 @@ def gamma_correction(r, g, b, gamma=0.45):
     return r ** gamma, g ** gamma, b ** gamma
 
 
-def hex_to_rgb(hex_str):
+def hex_to_rgb(hex_str: str):
     """
-    Converts a gamma corrected hexidecimal string to not gamma corrected rgb.
+    Converts a gamma corrected hexadecimal string to not gamma corrected rgb.
     """
+    hex_str = hex_str.replace("#", "")
     r = (int(hex_str[:2], base=16) / 255) ** 2.22
     g = (int(hex_str[2:4], base=16) / 255) ** 2.22
     b = (int(hex_str[4:], base=16) / 255) ** 2.22
@@ -85,14 +84,20 @@ def hex_to_rgb(hex_str):
     return r, g, b
 
 
-def e2h(x):
+def e2h(x: np.ndarray):
+    """
+    Euclidean to homogenous coordinates
+    """
     if len(x.shape) == 1:
         return np.hstack((x, [1]))
 
     return np.vstack((x, np.full(x.shape[1], 1)))
 
 
-def h2e(tx):
+def h2e(tx: np.ndarray):
+    """
+    Homogenous coordinates to Euclidean
+    """
     if len(tx.shape) == 1:
         return tx[:-1] / tx[-1]
 
