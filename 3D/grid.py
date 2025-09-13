@@ -25,8 +25,8 @@ class Grid:
         for train in self.freight_cars:
             train.generate()
 
-        for pop in self.characters:
-            pop.generate()
+        for character in self.characters:
+            character.generate()
 
     def render(self):
         # create_grid_lines()
@@ -45,8 +45,8 @@ class Grid:
         for train in self.freight_cars:
             train.render()
 
-        for pop in self.characters:
-            pop.render()
+        for character in self.characters:
+            character.render()
 
     def add_character(self, character: CharacterModel):
         self.characters.append(character)

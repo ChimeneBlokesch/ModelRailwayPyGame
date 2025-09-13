@@ -5,7 +5,7 @@ import OpenGL.GLU as GLU
 from typing import List
 
 
-from camera import CAMERA_POPPETJE, Camera
+from camera import CAMERA_CHARACTER, Camera
 from constants import hex_to_rgb
 from grid import Grid
 from train import Train, TRAIN_ENGINE, TRAIN_PASSENGER
@@ -67,7 +67,7 @@ character = CharacterModel("Player",
 
 grid.add_character(character)
 
-current_pop = character
+current_character = character
 
 scale_factor = -14.171
 scale_factor_curve = 4
@@ -244,14 +244,14 @@ while 1:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
-            current_pop.is_player = False
-            current_pop = None
+            current_character.is_player = False
+            current_character = None
             camera.camera_to_free()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
             # Switch to character view
             character.is_player = True
-            current_pop = character
-            camera.camera_to_poppetje(current_pop)
+            current_character = character
+            camera.camera_to_character(current_character)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_3:
             debug = not debug
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_4:
@@ -259,8 +259,8 @@ while 1:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_5:
             camera.camera_to_train(engine1)
 
-        if camera.mode == CAMERA_POPPETJE:
-            current_pop.handle_event(event)
+        if camera.mode == CAMERA_CHARACTER:
+            current_character.handle_event(event)
 
     keys = pygame.key.get_pressed()
     camera.render(keys)
@@ -284,8 +284,8 @@ while 1:
 
     GL.glTranslate(tx, ty, tz)
 
-    if camera.mode == CAMERA_POPPETJE:
-        current_pop.walk()
+    if camera.mode == CAMERA_CHARACTER:
+        current_character.walk()
 
     GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()

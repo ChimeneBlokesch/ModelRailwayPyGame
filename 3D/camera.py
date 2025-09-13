@@ -1,12 +1,14 @@
 import pygame
 import math
+
 from position import Position
+from character_model import CharacterModel
 
 MOVE_STEP = 0.05
 ROTATE_STEP = 1
 
 CAMERA_FREE = 0
-CAMERA_POPPETJE = 1
+CAMERA_CHARACTER = 1
 CAMERA_TRAIN = 2
 
 
@@ -16,7 +18,7 @@ class Camera:
         self.scale = 0
         self.mode = CAMERA_FREE
 
-        # Poppetje mode
+        # Character mode
         self.distance_from_player = -2
         self.pitch = 45
         self.angle = 0
@@ -68,7 +70,7 @@ class Camera:
 
         return (tx, ty, tz), (rx, ry, rz)
 
-    def poppetje_camera(self, keys):
+    def character_camera(self, keys):
         SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
         # zoom
         zoomlevel = SPEEDUP_STEP * (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
@@ -106,14 +108,14 @@ class Camera:
             print("Camera", *self.pos.get_pos(), *self.pos.get_rotate())
 
     def render(self, keys):
-        if self.mode == CAMERA_POPPETJE or self.mode == CAMERA_TRAIN:
-            return self.poppetje_camera(keys)
+        if self.mode == CAMERA_CHARACTER or self.mode == CAMERA_TRAIN:
+            return self.character_camera(keys)
 
         return self.free_camera(keys)
 
-    def camera_to_poppetje(self, pop):
-        self.mode = CAMERA_POPPETJE
-        self.object = pop
+    def camera_to_character(self, character: CharacterModel):
+        self.mode = CAMERA_CHARACTER
+        self.object = character
 
     def camera_to_train(self, train):
         self.mode = CAMERA_TRAIN
