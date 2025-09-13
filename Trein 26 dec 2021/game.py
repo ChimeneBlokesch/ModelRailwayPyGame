@@ -2,12 +2,17 @@ import sys
 import pygame
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
+from typing import List
+
+
 from camera import CAMERA_POPPETJE, Camera
-from constants import hex_to_rgb,  show_coordinates
+from constants import hex_to_rgb
 from grid import Grid
-from lijnen import create_line
-from poppetje import FIGURE_PEPPER
 from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
+from position import Position
+from character_model import CharacterModel, Hair, Head, Shirt, Arms, Legs
+from trein import Trein
+from rails import Recht, Bocht
 
 FULL_SCREEN = False
 
@@ -40,91 +45,98 @@ camera = Camera()
 # pepper = grid.add_poppetje(
 #     "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180, start_x=100)
 
-pepper = grid.add_poppetje2("Pepper", "PEPP_hat", "PEPP", False, "PEPP",
-                            hex_to_rgb("F00000"), "PEPP", hex_to_rgb("1632FF"),
-                            hex_to_rgb("F00000"),
-                            hex_to_rgb("1632FF"), hex_to_rgb("1632FF"),
-                            rot_x=90, figure=FIGURE_PEPPER,
-                            extra=[("PEPP_bag", [("logo", "PEPP_bag", False)])])
+pos = Position(rx=90)
 
-pop = grid.add_poppetje2(
-    "Pop", "hair_001", hex_to_rgb("49332A"), True, "POST",
-    hex_to_rgb("F00000"), "POST", hex_to_rgb("FFFFFF"),
-    hex_to_rgb("009cff"), hex_to_rgb("009cff"), hex_to_rgb("009cff"),
-    rot_x=90)
+hair_color = hex_to_rgb("#E7CD3D")
+skin_color = hex_to_rgb("#E7B5A3")
+shirt_color = hex_to_rgb("#E7358D")
+sleeve_color = hex_to_rgb("#E7358D")
+pants_color = hex_to_rgb("#E782AA")
+shoes_color = hex_to_rgb("#0C0C0C")
 
-current_pop = None
-# sgm = grid.add_trein("sgm", "sgm", TREIN_LOCOMOTIEF,
-#                      start_x=0.5, start_y=1.5, rot_x=90)
-# sgm.change_speed(-0.05)
+hair = Hair(pos, hair_color, start_z=1.8125)
 
-icityvagon = grid.add_trein("f3", "icityvagon", TREIN_PASSAGIER, start_x=0.5,
-                            start_y=-2.4, rot_x=90,
-                            mtl_images={'Material.006': (True, 'icityvagon6')})
+head = Head(pos, skin_color, start_z=1.1875)
 
-innercity = grid.add_trein("innercity", "innercity", TREIN_LOCOMOTIEF,
-                           start_x=0.5, start_y=1.5, rot_x=90,
-                           mtl_images={'Material.004': (True, 'innercity6')})
-innercity.change_speed(-0.05)
+shirt = Shirt(pos, shirt_color, pants_color, start_z=0.75)
 
-innercity.attach_trein(icityvagon)
+arms = Arms(pos, skin_color, sleeve_color, start_z=1.1875)
 
-# Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-virm1 = grid.add_trein("VIRM3_1", "VIRM3", TREIN_LOCOMOTIEF,
-                       start_x=0.5, start_y=2, start_z=0.4, rot_x=90)
-virm1.change_speed(0.05)
+legs = Legs(pos, pants_color, shoes_color, start_z=0.75)
 
-loco1 = grid.add_trein("Loco1", "lego_loco_kop", TREIN_LOCOMOTIEF,
-                       start_x=0.5, start_y=2, start_z=0.3, rot_x=90)
-loco1.change_speed(0.1)
+character = CharacterModel("Player",
+                           hair,
+                           head,
+                           shirt,
+                           arms,
+                           legs)
+
+grid.add_character(character)
+
+current_pop = character
+
+
+# # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
+# virm1 = grid.add_trein("VIRM3_1", "VIRM3", TREIN_LOCOMOTIEF,
+#                        start_x=0.5, start_y=2, start_z=0.4, rot_x=90)
+# virm1.change_speed(0.05)
+
+# loco1 = grid.add_trein("Loco1", "lego_loco_kop", TREIN_LOCOMOTIEF,
+#                        start_x=0.5, start_y=2, start_z=0.3, rot_x=90)
+# loco1.change_speed(0.1)
+
+scale_factor = -14.171
+scale_factor_curve = 4
+
+straight_rails_length = 10
 
 rails1 = grid.add_bocht("rails1", 45, rotation=0)
-rails1.move(x=-4.5, y=-7)
+rails1.move(x=-4.5 * scale_factor_curve, y=-7 * scale_factor_curve)
 
 rails2 = grid.add_bocht("rails2", 45, rotation=45)
-rails2.move(x=0.5, y=-2)
+rails2.move(x=0.5 * scale_factor_curve, y=-2 * scale_factor_curve)
 
 rails3 = grid.add_recht("rails3", is_horizontal=False, go_left_down=True)
-rails3.move(x=0.5)
+rails3.move(x=0.5 * scale_factor)
 
 rails4 = grid.add_recht("rails4", is_horizontal=False, go_left_down=True)
-rails4.move(x=0.5, y=4)
+rails4.move(x=0.5 * scale_factor, y=4 * scale_factor)
 
 rails5 = grid.add_bocht("rails5", 45, rotation=90)
-rails5.move(x=0.5, y=6)
+rails5.move(x=0.5 * scale_factor_curve, y=6 * scale_factor_curve)
 
 rails6 = grid.add_bocht("rails6", 45, rotation=135)
-rails6.move(x=-4.5, y=11)
+rails6.move(x=-4.5 * scale_factor_curve, y=11 * scale_factor_curve)
 
 rails13 = grid.add_recht("rails13", go_left_down=False)
-rails13.move(x=-6.5, y=11)
+rails13.move(x=-6.5 * scale_factor, y=11 * scale_factor)
 
 rails14 = grid.add_recht("rails14", go_left_down=False)
-rails14.move(x=-10.5, y=11)
+rails14.move(x=-10.5 * scale_factor, y=11 * scale_factor)
 
 rails7 = grid.add_bocht("rails7", 45, rotation=180)
-rails7.move(x=-12.5, y=11)
+rails7.move(x=-12.5 * scale_factor_curve, y=11 * scale_factor_curve)
 
 rails8 = grid.add_bocht("rails8", 45, rotation=225)
-rails8.move(x=-17.5, y=6)
+rails8.move(x=-17.5 * scale_factor_curve, y=6 * scale_factor_curve)
 
 rails9 = grid.add_recht("rails9", is_horizontal=False)
-rails9.move(x=-17.5, y=4)
+rails9.move(x=-17.5 * scale_factor, y=4 * scale_factor)
 
 rails10 = grid.add_recht("rails10", is_horizontal=False)
-rails10.move(x=-17.5, y=0)
+rails10.move(x=-17.5 * scale_factor, y=0)
 
 rails11 = grid.add_bocht("rails11", 45, rotation=270)
-rails11.move(x=-17.5, y=-2)
+rails11.move(x=-17.5 * scale_factor_curve, y=-2 * scale_factor_curve)
 
 rails12 = grid.add_bocht("rails12", 45, rotation=315)
-rails12.move(x=-12.5, y=-7)
+rails12.move(x=-12.5 * scale_factor_curve, y=-7 * scale_factor_curve)
 
 rails15 = grid.add_recht("rails15", go_left_down=True)
-rails15.move(x=-10.5, y=-7)
+rails15.move(x=-10.5 * scale_factor, y=-7 * scale_factor)
 
 rails16 = grid.add_recht("rails16", go_left_down=True)
-rails16.move(x=-6.5, y=-7)
+rails16.move(x=-6.5 * scale_factor, y=-7 * scale_factor)
 
 
 grid.connect_45_bochten(rails12, rails11)
@@ -144,34 +156,83 @@ grid.connect_rails(rails1, rails16)
 grid.connect_rails(rails16, rails15)
 grid.connect_rails(rails15, rails12)
 
-# for r in grid.rails:
-#     print_rails_info(r)
 
-loco2 = grid.add_trein("Loco2", "lego_loco_kop", TREIN_LOCOMOTIEF,
-                       start_x=2, start_y=2, start_z=0.3, rot_x=90)
-loco2.change_speed(-0.05)
+TRAIN_LENGTH = 12
 
-rails_1 = grid.add_recht("rails_1",
-                         is_horizontal=False, go_left_down=True)
-rails_1.move(2, 6)
+x = 5
+y = 5
 
-rails_2 = grid.add_recht("rails_2",
-                         is_horizontal=False, go_left_down=True)
-rails_2.move(2, 2)
+engine0 = Trein("Engine", "engine", TREIN_LOCOMOTIEF,
+                start_x=x, start_y=y, rot_x=90)
 
-rails_3 = grid.add_recht("rails_3",
-                         is_horizontal=False, go_left_down=True)
-rails_3.move(2, -2)
+grid.add_train(engine0)
 
-grid.connect_rails(rails_1, rails_2)
-grid.connect_rails(rails_2, rails_3)
+y += TRAIN_LENGTH
 
-loco2.rails = rails_2
-loco1.rails = rails3
-virm1.rails = rails3
-innercity.rails = rails4
-icityvagon.rails = rails3
-# sgm.rails = rails4
+wagon0 = Trein("PassengerCar", "passenger_car", TREIN_PASSAGIER,
+               start_x=x, start_y=y, rot_x=90)
+
+grid.add_train(wagon0)
+
+engine0.change_speed(-0.05)
+engine0.attach_trein(wagon0)
+
+engine0.rails = rails3
+wagon0.rails = rails3
+
+
+rails_back_forth: List[Recht | Bocht] = []
+num_rails = 10
+x = 10
+cur_y = -straight_rails_length * num_rails / 2
+
+for i in range(num_rails):
+    rails = grid.add_recht(f"rails_{i}",
+                           is_horizontal=False, go_left_down=True)
+    rails.move(x=x, y=cur_y)
+    cur_y += straight_rails_length
+
+    if len(rails_back_forth) > 0:
+        grid.connect_rails(rails_back_forth[-1], rails)
+
+    rails_back_forth.append(rails)
+
+cur_rails_idx = 2
+y = rails_back_forth[cur_rails_idx].pos.y
+
+engine1 = Trein("Engine1", "engine", TREIN_LOCOMOTIEF,
+                start_x=x, start_y=y, rot_x=90)
+
+engine1.rails = rails_back_forth[cur_rails_idx]
+
+
+cur_rails_idx += 1
+y += TRAIN_LENGTH
+
+wagon1 = Trein("PassengerCar1", "passenger_car", TREIN_PASSAGIER,
+               start_x=x, start_y=y, rot_x=90)
+
+
+wagon1.rails = rails_back_forth[cur_rails_idx]
+
+
+cur_rails_idx += 1
+y += TRAIN_LENGTH
+
+engine2 = Trein("Engine2", "engine", TREIN_PASSAGIER,
+                start_x=x, start_y=y, rot_x=90, rot_y=180)
+
+cur_rails_idx += 1
+engine2.rails = rails_back_forth[cur_rails_idx]
+
+
+grid.add_train(engine1)
+grid.add_train(wagon1)
+grid.add_train(engine2)
+
+engine1.change_speed(0.05)
+engine1.attach_trein(wagon1)
+wagon1.attach_trein(engine2)
 
 grid.generate()
 clock = pygame.time.Clock()
@@ -198,24 +259,21 @@ while 1:
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
-            # Switch to Pepper
-            pepper.is_player = True
-            current_pop = pepper
-            camera.camera_to_poppetje(pepper)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
             current_pop.is_player = False
             current_pop = None
             camera.camera_to_free()
-        elif event.type == pygame.KEYDOWN and event.key == pygame.K_4:
-            camera.camera_to_trein(virm1)
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
+            # Switch to character view
+            character.is_player = True
+            current_pop = character
+            camera.camera_to_poppetje(current_pop)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_3:
             debug = not debug
+        elif event.type == pygame.KEYDOWN and event.key == pygame.K_4:
+            camera.camera_to_trein(engine0)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_5:
-            # Switch to pop
-            pop.is_player = True
-            current_pop = pop
-            camera.camera_to_poppetje(pop)
+            camera.camera_to_trein(engine1)
 
         if camera.mode == CAMERA_POPPETJE:
             current_pop.handle_event(event)
@@ -241,40 +299,41 @@ while 1:
     GL.glRotate(rz, 0, 0, 1)
 
     GL.glTranslate(tx, ty, tz)
+
     if camera.mode == CAMERA_POPPETJE:
         current_pop.walk()
 
-    # BEGIN DEBUG CODE
-    if not current_pop:
-        # Show coordinates of Pepper if no current figure.
-        temp = True
-        current_pop = pepper
-    show_coordinates(tx, ty, tz, rx, ry, rz, *
-                     (current_pop.pos.get_pos()),
-                     *(current_pop.pos.get_rotate()))
+    # # BEGIN DEBUG CODE
+    # if not current_pop:
+    #     # Show coordinates of Pepper if no current figure.
+    #     temp = True
+    #     current_pop = character
+    # show_coordinates(tx, ty, tz, rx, ry, rz, *
+    #                  (current_pop.pos.get_pos()),
+    #                  *(current_pop.pos.get_rotate()))
 
-    if temp:
-        current_pop = None
-        temp = False
+    # if temp:
+    #     current_pop = None
+    #     temp = False
 
-    for t in grid.locomotieven:
-        create_line(t.pos.x, t.pos.y, 5,
-                    t.pos.x, t.pos.y, -5, (0.6, 0.6, 0.8))
+    # for t in grid.locomotieven:
+    #     create_line(t.pos.x, t.pos.y, 5,
+    #                 t.pos.x, t.pos.y, -5, (0.6, 0.6, 0.8))
 
-    if debug:
-        points.append(camera.pos.get_pos())
+    # if debug:
+    #     points.append(camera.pos.get_pos())
 
-    [create_line(-x, -y, 3, -x, -y, -3, (100, 0, 100))
-        for x, y, _ in points]
+    # [create_line(-x, -y, 3, -x, -y, -3, (100, 0, 100))
+    #     for x, y, _ in points]
 
-    # create_line(pop.pos.x, pop.pos.y, 5, pop.pos.x,
-    #             pop.pos.y, -5, (200, 0, 200))
-    if current_pop:
-        create_line(current_pop.legs.l_leg.pos.x, current_pop.legs.l_leg.pos.y,
-                    5,
-                    current_pop.legs.l_leg.pos.x,  current_pop.legs.l_leg.pos.y,
-                    -5, (250, 0, 250))
-    # END DEBUG CODE
+    # # create_line(pop.pos.x, pop.pos.y, 5, pop.pos.x,
+    # #             pop.pos.y, -5, (200, 0, 200))
+    # if current_pop:
+    #     create_line(current_pop.legs.l_leg.pos.x, current_pop.legs.l_leg.pos.y,
+    #                 5,
+    #                 current_pop.legs.l_leg.pos.x,  current_pop.legs.l_leg.pos.y,
+    #                 -5, (250, 0, 250))
+    # # END DEBUG CODE
 
     GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()
