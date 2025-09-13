@@ -2,6 +2,7 @@ from trein import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
 from rails import Rails, Bocht, Recht
 from ground import create_ground
 from poppetje import Poppetje, PoppetjeObject
+from character_model import CharacterModel
 
 
 class Grid:
@@ -63,6 +64,16 @@ class Grid:
         new_pop = PoppetjeObject(*args, **kwargs)
         self.poppetjes.append(new_pop)
         return new_pop
+
+    def add_character(self, character: CharacterModel):
+        self.poppetjes.append(character)
+
+    def add_train(self, train: Trein):
+        type2arr = {TREIN_LOCOMOTIEF: self.locomotieven,
+                    TREIN_PASSAGIER: self.passagiers,
+                    TREIN_GOEDEREN: self.goederen}
+        arr = type2arr[train.type]
+        arr.append(train)
 
     def add_trein(self, *args, **kwargs):
         new_trein = Trein(*args, **kwargs)
