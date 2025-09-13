@@ -65,7 +65,7 @@ class Object3D:
             cursor.execute("""SELECT id from modelType where name = ?""",
                            (self.obj_name,))
 
-            trein = cursor.fetchall()[0][0]
+            train = cursor.fetchall()[0][0]
 
             cursor.execute("""SELECT id from images where name = ?""",
                            (img_file,))
@@ -79,8 +79,8 @@ class Object3D:
 
             try:
                 cursor.execute("""
-                    INSERT INTO materials(name, img, trein) VALUES(?,?,?)""",
-                               (m, img, trein))
+                    INSERT INTO materials(name, img, train) VALUES(?,?,?)""",
+                               (m, img, train))
             except sqlite3.IntegrityError:
                 ...
 

@@ -6,7 +6,7 @@ import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 pygame.init()
 
-TREINEN_MAP = "trains/"
+TRAINS_FOLDER = "trains/"
 RAILS_MAP = "rails/"
 POPPETJES_MAP = "poppetjes/"
 CHARACTER_FOLDER = "character/"

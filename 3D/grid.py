@@ -1,4 +1,6 @@
-from train import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
+from typing import List
+
+from train import TRAIN_GOEDEREN, TRAIN_LOCOMOTIEF, TRAIN_PASSAGIER, Train
 from rails import Rails, Curve, Straight
 from ground import create_ground
 from character_model import CharacterModel
@@ -6,23 +8,22 @@ from character_model import CharacterModel
 
 class Grid:
     def __init__(self):
-        self.rails = []
-        self.locomotieven = []
-        self.goederen = []
-        self.passagiers = []
+        self.rails: List[Rails] = []
+        self.engines: List[Train] = []
+        self.goederen: List[Train] = []
+        self.passagiers: List[Train] = []
         self.characters: list[CharacterModel] = []
 
     def generate(self):
         for rails in self.rails:
             rails.generate()
 
-        # for trein in self.treinen:
-        for trein in self.locomotieven:
-            trein.generate()
-        for trein in self.passagiers:
-            trein.generate()
-        for trein in self.goederen:
-            trein.generate()
+        for train in self.engines:
+            train.generate()
+        for train in self.passagiers:
+            train.generate()
+        for train in self.goederen:
+            train.generate()
 
         for pop in self.characters:
             pop.generate()
@@ -35,15 +36,14 @@ class Grid:
         for rails in self.rails:
             rails.render()
 
-        # for trein in self.treinen:
-        for trein in self.locomotieven:
-            trein.render()
+        for train in self.engines:
+            train.render()
 
-        for trein in self.passagiers:
-            trein.render()
+        for train in self.passagiers:
+            train.render()
 
-        for trein in self.goederen:
-            trein.render()
+        for train in self.goederen:
+            train.render()
 
         for pop in self.characters:
             pop.render()
@@ -51,25 +51,12 @@ class Grid:
     def add_character(self, character: CharacterModel):
         self.characters.append(character)
 
-    def add_train(self, train: Trein):
-        type2arr = {TREIN_LOCOMOTIEF: self.locomotieven,
-                    TREIN_PASSAGIER: self.passagiers,
-                    TREIN_GOEDEREN: self.goederen}
+    def add_train(self, train: Train):
+        type2arr = {TRAIN_LOCOMOTIEF: self.engines,
+                    TRAIN_PASSAGIER: self.passagiers,
+                    TRAIN_GOEDEREN: self.goederen}
         arr = type2arr[train.type]
         arr.append(train)
-
-    def add_trein(self, *args, **kwargs):
-        new_trein = Trein(*args, **kwargs)
-
-        type_trein = new_trein.type
-        if type_trein == TREIN_LOCOMOTIEF:
-            self.locomotieven.append(new_trein)
-        elif type_trein == TREIN_PASSAGIER:
-            self.passagiers.append(new_trein)
-        elif type_trein == TREIN_GOEDEREN:
-            self.goederen.append(new_trein)
-
-        return new_trein
 
     def add_rails(self, *args, **kwargs):
         new_rails = Rails(*args, **kwargs)
@@ -87,14 +74,14 @@ class Grid:
         return new_rails
 
     def rijden(self):
-        for trein in self.locomotieven:
-            trein.rijden()
+        for train in self.engines:
+            train.rijden()
 
-        for trein in self.passagiers:
-            trein.rijden()
+        for train in self.passagiers:
+            train.rijden()
 
-        for trein in self.goederen:
-            trein.rijden()
+        for train in self.goederen:
+            train.rijden()
 
         self.render()
 

@@ -7,7 +7,7 @@ ROTATE_STEP = 1
 
 CAMERA_FREE = 0
 CAMERA_POPPETJE = 1
-CAMERA_TREIN = 2
+CAMERA_TRAIN = 2
 
 
 class Camera:
@@ -106,10 +106,7 @@ class Camera:
             print("Camera", *self.pos.get_pos(), *self.pos.get_rotate())
 
     def render(self, keys):
-        # TODO When playing as Pepper, rotate around pepper.pos, by using
-        # sinus and cosinus to have new x and y.
-
-        if self.mode == CAMERA_POPPETJE or self.mode == CAMERA_TREIN:
+        if self.mode == CAMERA_POPPETJE or self.mode == CAMERA_TRAIN:
             return self.poppetje_camera(keys)
 
         return self.free_camera(keys)
@@ -118,9 +115,9 @@ class Camera:
         self.mode = CAMERA_POPPETJE
         self.object = pop
 
-    def camera_to_trein(self, trein):
-        self.mode = CAMERA_TREIN
-        self.object = trein
+    def camera_to_train(self, train):
+        self.mode = CAMERA_TRAIN
+        self.object = train
 
     def camera_to_free(self):
         self.mode = CAMERA_FREE

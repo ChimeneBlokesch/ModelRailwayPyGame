@@ -18,7 +18,6 @@ class Grid:
         self.rails = []
         self.trains_db = trains_db
         self.pos = pos
-        self.wissels = []
 
     def draw(self):
         self.screen.blit(self.screen_grid, self.pos)

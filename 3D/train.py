@@ -3,16 +3,16 @@ from rails import RAILS_CURVE, RAILS_STRAIGHT
 import math
 from objparser import Object3D
 
-from constants import SPEEDUP_CURVE, TREINEN_MAP, afstand
+from constants import SPEEDUP_CURVE, TRAINS_FOLDER, afstand
 
 # These indices correspond with the primary keys of the 'type' table.
-TREIN_PASSAGIER = 0
-TREIN_GOEDEREN = 1
-TREIN_LOCOMOTIEF = 2
+TRAIN_PASSAGIER = 0
+TRAIN_GOEDEREN = 1
+TRAIN_LOCOMOTIEF = 2
 
 
-class Trein:
-    def __init__(self, name, obj_name, type_trein, start_x=0, start_y=0,
+class Train:
+    def __init__(self, name, obj_name, type_train, start_x=0, start_y=0,
                  start_z=0, rot_x=0, rot_y=0, rot_z=0, mtl_images=None):
         self.name = name
         self.obj_name = obj_name
@@ -22,16 +22,16 @@ class Trein:
         self.speed = 0
         self.pos = Position(start_x, start_y, start_z, rot_x, rot_y, rot_z)
         self.rails = None
-        self.trein_next = None
+        self.train_next = None
 
         # Locomotief, passagier, goederen
-        self.type = type_trein
+        self.type = type_train
 
     def create_object(self):
-        model = Object3D(TREINEN_MAP, self.obj_name)
+        model = Object3D(TRAINS_FOLDER, self.obj_name)
 
         if self.mtl_images:
-            model.change_img(self.mtl_images, TREINEN_MAP)
+            model.change_img(self.mtl_images, TRAINS_FOLDER)
 
         return model
 
@@ -54,7 +54,7 @@ class Trein:
             return
 
         # TODO:
-        # Als er een trein meerdere wagons heeft, deze wagons snelheid
+        # Als er een train meerdere wagons heeft, deze wagons snelheid
         # van locomotief geven. Hiervoor is grid nodig om
         # locomotieven eerst te berekenen.
 
@@ -143,16 +143,16 @@ class Trein:
                           y=round(height * math.sin(rotation) + pos_y, 2))
 
         # Change speed of train behind it
-        # if self.trein_next:
-        #     self.trein_next.change_speed(-self.speed)
+        # if self.train_next:
+        #     self.train_next.change_speed(-self.speed)
 
     def change_speed(self, speed):
         self.speed = -speed
 
-    def attach_trein(self, trein=None):
-        # Also possible to deattach trein
-        self.trein_next = trein
+    def attach_train(self, train=None):
+        # Also possible to deattach train
+        self.train_next = train
 
         # Change speed to own speed
-        if trein:
-            self.trein_next.change_speed(-self.speed)
+        if train:
+            self.train_next.change_speed(-self.speed)

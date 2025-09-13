@@ -8,7 +8,7 @@ from typing import List
 from camera import CAMERA_POPPETJE, Camera
 from constants import hex_to_rgb
 from grid import Grid
-from train import Trein, TREIN_LOCOMOTIEF, TREIN_PASSAGIER
+from train import Train, TRAIN_LOCOMOTIEF, TRAIN_PASSAGIER
 from position import Position
 from character_model import CharacterModel, Hair, Head, Shirt, Arms, Legs
 from rails import Straight, Curve
@@ -146,20 +146,20 @@ TRAIN_LENGTH = 12
 x = 5
 y = 5
 
-engine0 = Trein("Engine", "engine", TREIN_LOCOMOTIEF,
+engine0 = Train("Engine", "engine", TRAIN_LOCOMOTIEF,
                 start_x=x, start_y=y, rot_x=90)
 
 grid.add_train(engine0)
 
 y += TRAIN_LENGTH
 
-wagon0 = Trein("PassengerCar", "passenger_car", TREIN_PASSAGIER,
+wagon0 = Train("PassengerCar", "passenger_car", TRAIN_PASSAGIER,
                start_x=x, start_y=y, rot_x=90)
 
 grid.add_train(wagon0)
 
 engine0.change_speed(-0.05)
-engine0.attach_trein(wagon0)
+engine0.attach_train(wagon0)
 
 engine0.rails = rails3
 wagon0.rails = rails3
@@ -184,7 +184,7 @@ for i in range(num_rails):
 cur_rails_idx = 2
 y = rails_back_forth[cur_rails_idx].pos.y
 
-engine1 = Trein("Engine1", "engine", TREIN_LOCOMOTIEF,
+engine1 = Train("Engine1", "engine", TRAIN_LOCOMOTIEF,
                 start_x=x, start_y=y, rot_x=90)
 
 engine1.rails = rails_back_forth[cur_rails_idx]
@@ -193,7 +193,7 @@ engine1.rails = rails_back_forth[cur_rails_idx]
 cur_rails_idx += 1
 y += TRAIN_LENGTH
 
-wagon1 = Trein("PassengerCar1", "passenger_car", TREIN_PASSAGIER,
+wagon1 = Train("PassengerCar1", "passenger_car", TRAIN_PASSAGIER,
                start_x=x, start_y=y, rot_x=90)
 
 
@@ -203,7 +203,7 @@ wagon1.rails = rails_back_forth[cur_rails_idx]
 cur_rails_idx += 1
 y += TRAIN_LENGTH
 
-engine2 = Trein("Engine2", "engine", TREIN_PASSAGIER,
+engine2 = Train("Engine2", "engine", TRAIN_PASSAGIER,
                 start_x=x, start_y=y, rot_x=90, rot_y=180)
 
 cur_rails_idx += 1
@@ -215,8 +215,8 @@ grid.add_train(wagon1)
 grid.add_train(engine2)
 
 engine1.change_speed(0.05)
-engine1.attach_trein(wagon1)
-wagon1.attach_trein(engine2)
+engine1.attach_train(wagon1)
+wagon1.attach_train(engine2)
 
 grid.generate()
 clock = pygame.time.Clock()
@@ -255,9 +255,9 @@ while 1:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_3:
             debug = not debug
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_4:
-            camera.camera_to_trein(engine0)
+            camera.camera_to_train(engine0)
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_5:
-            camera.camera_to_trein(engine1)
+            camera.camera_to_train(engine1)
 
         if camera.mode == CAMERA_POPPETJE:
             current_pop.handle_event(event)

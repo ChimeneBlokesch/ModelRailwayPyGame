@@ -49,10 +49,10 @@ if __name__ == "__main__":
                                             id integer PRIMARY KEY,
                                             name text NOT NULL,
                                             img int,
-                                            trein int,
+                                            train int,
                                             FOREIGN KEY(img) REFERENCES images(id),
-                                            FOREIGN KEY(trein) REFERENCES modelType(id)
-                                            UNIQUE(name, img, trein)
+                                            FOREIGN KEY(train) REFERENCES modelType(id)
+                                            UNIQUE(name, img, train)
                                         ); """)
 
     cursor.execute("SELECT name FROM images;")
