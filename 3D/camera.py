@@ -65,14 +65,14 @@ class Camera:
         self.pos.rotate_delta(rx, ry, rz)
 
         self.scale += SPEEDUP_STEP * \
-            (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
+            (keys[pygame.K_x] - keys[pygame.K_z]) * 0.05
 
         return (tx, ty, tz), (rx, ry, rz)
 
     def character_camera(self, keys):
         SPEEDUP_STEP = 1 + 2 * keys[pygame.K_RSHIFT]
         # zoom
-        zoomlevel = SPEEDUP_STEP * (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
+        zoomlevel = SPEEDUP_STEP * (keys[pygame.K_x] - keys[pygame.K_z]) * 0.05
         self.distance_from_player -= zoomlevel
 
         # pitch
