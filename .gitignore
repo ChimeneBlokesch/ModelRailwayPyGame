@@ -1,8 +1,4 @@
 *.pyc
-*.mtl
-*.obj
-*.png
 *.blend
 *.blend1
-*.txt
 *.json
