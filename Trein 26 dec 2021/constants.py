@@ -18,7 +18,7 @@ HEIGHT_GRID = 25
 LENGTE_VAKJE = 2
 
 # Factor to multiply with the train's speed used in curves.
-SPEEDUP_BOCHT = 10
+SPEEDUP_CURVE = 10
 
 
 FONT = pygame.font.Font(None, 60)

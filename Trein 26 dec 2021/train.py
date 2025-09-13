@@ -1,9 +1,9 @@
 from position import Position
-from rails import RAILS_BOCHT, RAILS_RECHT
+from rails import RAILS_CURVE, RAILS_STRAIGHT
 import math
 from objparser import Object3D
 
-from constants import SPEEDUP_BOCHT, TREINEN_MAP, afstand
+from constants import SPEEDUP_CURVE, TREINEN_MAP, afstand
 
 # These indices correspond with the primary keys of the 'type' table.
 TREIN_PASSAGIER = 0
@@ -64,8 +64,8 @@ class Trein:
             if not self.rails.next:
                 # End of rail, go in opposite direction.
                 self.change_speed(self.speed)
-            elif self.rails.type == RAILS_BOCHT and \
-                    self.rails.next.type == RAILS_BOCHT and \
+            elif self.rails.type == RAILS_CURVE and \
+                    self.rails.next.type == RAILS_CURVE and \
                     self.rails.own_next_prev != self.rails.next.own_next_prev:
                 # These two rails belong to each other so the other rails can
                 # be ignored.
@@ -80,8 +80,8 @@ class Trein:
             if not self.rails.prev:
                 # End of rail, go in opposite direction.
                 self.change_speed(self.speed)
-            elif self.rails.type == RAILS_BOCHT and \
-                    self.rails.prev.type == RAILS_BOCHT and \
+            elif self.rails.type == RAILS_CURVE and \
+                    self.rails.prev.type == RAILS_CURVE and \
                     self.rails.own_next_prev != self.rails.prev.own_next_prev:
                 # These two rails belong to each other so the other rails can
                 # be ignored.
@@ -93,7 +93,7 @@ class Trein:
                 self.rails = self.rails.prev
 
         # Depending on rails.angle the train rotates
-        if self.rails.type == RAILS_RECHT:
+        if self.rails.type == RAILS_STRAIGHT:
             # 0 of 180
 
             # Direction is -1 or 1, depending on it goes right/up or left/down.
@@ -110,8 +110,8 @@ class Trein:
                 # Vertical
                 self.pos.move_delta(dy=direction)
 
-        elif self.rails.type == RAILS_BOCHT:
-            rotation = self.pos.ry + SPEEDUP_BOCHT * self.speed
+        elif self.rails.type == RAILS_CURVE:
+            rotation = self.pos.ry + SPEEDUP_CURVE * self.speed
             self.pos.rotate(y=rotation)
 
             width = abs(

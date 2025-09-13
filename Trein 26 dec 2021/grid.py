@@ -1,5 +1,5 @@
 from train import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
-from rails import Rails, Bocht, Recht
+from rails import Rails, Curve, Straight
 from ground import create_ground
 from character_model import CharacterModel
 
@@ -76,13 +76,13 @@ class Grid:
         self.rails.append(new_rails)
         return new_rails
 
-    def add_bocht(self, *args, **kwargs):
-        new_rails = Bocht(*args, **kwargs)
+    def add_curve(self, *args, **kwargs):
+        new_rails = Curve(*args, **kwargs)
         self.rails.append(new_rails)
         return new_rails
 
-    def add_recht(self, *args, **kwargs):
-        new_rails = Recht(*args, **kwargs)
+    def add_straight(self, *args, **kwargs):
+        new_rails = Straight(*args, **kwargs)
         self.rails.append(new_rails)
         return new_rails
 
@@ -98,7 +98,7 @@ class Grid:
 
         self.render()
 
-    def connect_45_bochten(self, rails_prev, rails_next):
+    def connect_45_curves(self, rails_prev, rails_next):
         rails_prev.set_next(rails_next)
         rails_next.set_prev(rails_prev)
 

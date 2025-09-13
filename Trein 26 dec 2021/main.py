@@ -11,7 +11,7 @@ from grid import Grid
 from train import Trein, TREIN_LOCOMOTIEF, TREIN_PASSAGIER
 from position import Position
 from character_model import CharacterModel, Hair, Head, Shirt, Arms, Legs
-from rails import Recht, Bocht
+from rails import Straight, Curve
 
 FULL_SCREEN = False
 
@@ -74,68 +74,68 @@ scale_factor_curve = 4
 
 straight_rails_length = 10
 
-rails1 = grid.add_bocht("rails1", 45, rotation=0)
+rails1 = grid.add_curve("rails1", 45, rotation=0)
 rails1.move(x=-4.5 * scale_factor_curve, y=-7 * scale_factor_curve)
 
-rails2 = grid.add_bocht("rails2", 45, rotation=45)
+rails2 = grid.add_curve("rails2", 45, rotation=45)
 rails2.move(x=0.5 * scale_factor_curve, y=-2 * scale_factor_curve)
 
-rails3 = grid.add_recht("rails3", is_horizontal=False, go_left_down=True)
+rails3 = grid.add_straight("rails3", is_horizontal=False, go_left_down=True)
 rails3.move(x=0.5 * scale_factor)
 
-rails4 = grid.add_recht("rails4", is_horizontal=False, go_left_down=True)
+rails4 = grid.add_straight("rails4", is_horizontal=False, go_left_down=True)
 rails4.move(x=0.5 * scale_factor, y=4 * scale_factor)
 
-rails5 = grid.add_bocht("rails5", 45, rotation=90)
+rails5 = grid.add_curve("rails5", 45, rotation=90)
 rails5.move(x=0.5 * scale_factor_curve, y=6 * scale_factor_curve)
 
-rails6 = grid.add_bocht("rails6", 45, rotation=135)
+rails6 = grid.add_curve("rails6", 45, rotation=135)
 rails6.move(x=-4.5 * scale_factor_curve, y=11 * scale_factor_curve)
 
-rails13 = grid.add_recht("rails13", go_left_down=False)
+rails13 = grid.add_straight("rails13", go_left_down=False)
 rails13.move(x=-6.5 * scale_factor, y=11 * scale_factor)
 
-rails14 = grid.add_recht("rails14", go_left_down=False)
+rails14 = grid.add_straight("rails14", go_left_down=False)
 rails14.move(x=-10.5 * scale_factor, y=11 * scale_factor)
 
-rails7 = grid.add_bocht("rails7", 45, rotation=180)
+rails7 = grid.add_curve("rails7", 45, rotation=180)
 rails7.move(x=-12.5 * scale_factor_curve, y=11 * scale_factor_curve)
 
-rails8 = grid.add_bocht("rails8", 45, rotation=225)
+rails8 = grid.add_curve("rails8", 45, rotation=225)
 rails8.move(x=-17.5 * scale_factor_curve, y=6 * scale_factor_curve)
 
-rails9 = grid.add_recht("rails9", is_horizontal=False)
+rails9 = grid.add_straight("rails9", is_horizontal=False)
 rails9.move(x=-17.5 * scale_factor, y=4 * scale_factor)
 
-rails10 = grid.add_recht("rails10", is_horizontal=False)
+rails10 = grid.add_straight("rails10", is_horizontal=False)
 rails10.move(x=-17.5 * scale_factor, y=0)
 
-rails11 = grid.add_bocht("rails11", 45, rotation=270)
+rails11 = grid.add_curve("rails11", 45, rotation=270)
 rails11.move(x=-17.5 * scale_factor_curve, y=-2 * scale_factor_curve)
 
-rails12 = grid.add_bocht("rails12", 45, rotation=315)
+rails12 = grid.add_curve("rails12", 45, rotation=315)
 rails12.move(x=-12.5 * scale_factor_curve, y=-7 * scale_factor_curve)
 
-rails15 = grid.add_recht("rails15", go_left_down=True)
+rails15 = grid.add_straight("rails15", go_left_down=True)
 rails15.move(x=-10.5 * scale_factor, y=-7 * scale_factor)
 
-rails16 = grid.add_recht("rails16", go_left_down=True)
+rails16 = grid.add_straight("rails16", go_left_down=True)
 rails16.move(x=-6.5 * scale_factor, y=-7 * scale_factor)
 
 
-grid.connect_45_bochten(rails12, rails11)
+grid.connect_45_curves(rails12, rails11)
 grid.connect_rails(rails11, rails10)
 grid.connect_rails(rails10, rails9)
 grid.connect_rails(rails9, rails8)
-grid.connect_45_bochten(rails8, rails7)
+grid.connect_45_curves(rails8, rails7)
 grid.connect_rails(rails7, rails14)
 grid.connect_rails(rails14, rails13)
 grid.connect_rails(rails13, rails6)
-grid.connect_45_bochten(rails6, rails5)
+grid.connect_45_curves(rails6, rails5)
 grid.connect_rails(rails5, rails4)
 grid.connect_rails(rails4, rails3)
 grid.connect_rails(rails3, rails2)
-grid.connect_45_bochten(rails2, rails1)
+grid.connect_45_curves(rails2, rails1)
 grid.connect_rails(rails1, rails16)
 grid.connect_rails(rails16, rails15)
 grid.connect_rails(rails15, rails12)
@@ -165,14 +165,14 @@ engine0.rails = rails3
 wagon0.rails = rails3
 
 
-rails_back_forth: List[Recht | Bocht] = []
+rails_back_forth: List[Straight | Curve] = []
 num_rails = 10
 x = 10
 cur_y = -straight_rails_length * num_rails / 2
 
 for i in range(num_rails):
-    rails = grid.add_recht(f"rails_{i}",
-                           is_horizontal=False, go_left_down=True)
+    rails = grid.add_straight(f"rails_{i}",
+                              is_horizontal=False, go_left_down=True)
     rails.move(x=x, y=cur_y)
     cur_y += straight_rails_length
 

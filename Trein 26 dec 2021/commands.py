@@ -1,7 +1,7 @@
 import pygame
 from constants import TREINEN_MAP
 from grid import Grid
-from rails import RAILS_RECHT, RAILS_BOCHT
+from rails import RAILS_STRAIGHT, RAILS_CURVE
 
 pygame.init()
 FONT = pygame.font.Font(None, 30)
@@ -106,9 +106,9 @@ class Commands:
 
     def add_rails(self, type_rails, command):
         if type_rails == "recht":
-            type_rails = RAILS_RECHT
+            type_rails = RAILS_STRAIGHT
         elif type_rails == "bocht":
-            type_rails = RAILS_BOCHT
+            type_rails = RAILS_CURVE
         else:
             return
 
