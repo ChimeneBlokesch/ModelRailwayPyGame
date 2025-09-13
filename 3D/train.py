@@ -3,7 +3,7 @@ from rails import RAILS_CURVE, RAILS_STRAIGHT
 import math
 from objparser import Object3D
 
-from constants import SPEEDUP_CURVE, TRAINS_FOLDER, afstand
+from constants import SPEEDUP_CURVE, TRAINS_FOLDER, distance
 
 # These indices correspond with the primary keys of the 'type' table.
 TRAIN_PASSENGER = 0
@@ -46,8 +46,8 @@ class Train:
             return
 
         # TODO: change to begin-/endpoint
-        if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
-                                      pos.get_x_y()) < abs(self.speed):
+        if self.speed < 0 and distance(*self.rails.ref_punt_next, *self.
+                                       pos.get_x_y()) < abs(self.speed):
             if not self.rails.next:
                 # End of rail, go in opposite direction.
                 self.change_speed(self.speed)
@@ -62,8 +62,8 @@ class Train:
                     self.rails = self.rails.next.next
             else:
                 self.rails = self.rails.next
-        elif self.speed > 0 and afstand(*self.rails.ref_punt_prev, *self.
-                                        pos.get_x_y()) < abs(self.speed):
+        elif self.speed > 0 and distance(*self.rails.ref_punt_prev, *self.
+                                         pos.get_x_y()) < abs(self.speed):
             if not self.rails.prev:
                 # End of rail, go in opposite direction.
                 self.change_speed(self.speed)

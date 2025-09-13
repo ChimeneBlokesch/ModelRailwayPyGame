@@ -43,7 +43,7 @@ def angle_vector(x, y):
     return math.degrees(np.arctan2(x, y))
 
 
-def afstand(x1, y1, x2, y2):
+def distance(x1, y1, x2, y2):
     return math.sqrt((x1 - x2)**2 + (y1-y2)**2)
 
 

@@ -64,7 +64,6 @@ class Camera:
         self.pos.move_delta(tx, ty, tz)
         self.pos.rotate_delta(rx, ry, rz)
 
-        # TODO: kijken of move en rotate afhangen van scale
         self.scale += SPEEDUP_STEP * \
             (keys[pygame.K_z] - keys[pygame.K_x]) * 0.05
 
