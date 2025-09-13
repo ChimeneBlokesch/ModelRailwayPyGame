@@ -1,6 +1,6 @@
 from OpenGL import GL
 
-from constants import HEIGHT_GRID, LENGTE_VAKJE, WIDTH_GRID
+from constants import HEIGHT_GRID, LENGTH_CELL, WIDTH_GRID
 from helper import BLUE, PURPLE, RED, create_line
 
 
@@ -32,7 +32,7 @@ def create_ground():
 def create_grid():
     min_length = min(WIDTH_GRID, HEIGHT_GRID)
 
-    for i in range(0, min_length, LENGTE_VAKJE):
+    for i in range(0, min_length, LENGTH_CELL):
         # Vertical
         create_line(i,  HEIGHT_GRID, 0, i,  -HEIGHT_GRID, 0, PURPLE)
         create_line(-i, HEIGHT_GRID, 0, -i,  -HEIGHT_GRID, 0, PURPLE)
@@ -44,15 +44,15 @@ def create_grid():
     if WIDTH_GRID == HEIGHT_GRID:
         return
 
-    end = min_length - min_length % LENGTE_VAKJE
+    end = min_length - min_length % LENGTH_CELL
 
     if WIDTH_GRID > HEIGHT_GRID:
-        for i in range(end, WIDTH_GRID, LENGTE_VAKJE):
+        for i in range(end, WIDTH_GRID, LENGTH_CELL):
             # Vertical
             create_line(i,  HEIGHT_GRID, 0, i,  -HEIGHT_GRID, 0, PURPLE)
             create_line(-i, HEIGHT_GRID, 0, -i,  -HEIGHT_GRID, 0, PURPLE)
     elif HEIGHT_GRID < WIDTH_GRID:
-        for i in range(WIDTH_GRID, HEIGHT_GRID, LENGTE_VAKJE):
+        for i in range(WIDTH_GRID, HEIGHT_GRID, LENGTH_CELL):
             # Horizontal
             create_line(WIDTH_GRID,  i, 0, -WIDTH_GRID,  i, 0, PURPLE)
             create_line(WIDTH_GRID,  -i, 0,  -WIDTH_GRID, -i,  0, PURPLE)

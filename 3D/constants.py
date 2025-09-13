@@ -1,21 +1,17 @@
 import numpy as np
 import math
-from collections import namedtuple
 import pygame
 import OpenGL.GL as GL
-import OpenGL.GLU as GLU
+
 pygame.init()
 
 TRAINS_FOLDER = "trains/"
 RAILS_MAP = "rails/"
-POPPETJES_MAP = "poppetjes/"
 CHARACTER_FOLDER = "character/"
-
-BREEDTE_RAILS = 5
 
 WIDTH_GRID = 30
 HEIGHT_GRID = 25
-LENGTE_VAKJE = 2
+LENGTH_CELL = 2
 
 # Factor to multiply with the train's speed used in curves.
 SPEEDUP_CURVE = 10
