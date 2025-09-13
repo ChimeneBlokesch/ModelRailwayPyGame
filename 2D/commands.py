@@ -1,4 +1,5 @@
 import pygame
+import os
 
 from database_trains import PATH
 from rails import RailsType
@@ -98,7 +99,7 @@ class Commands:
             x = int(args[0])
             y = int(args[1])
             angle = int(args[2])
-            name = PATH + args[3] + ".png"
+            name = os.path.join(PATH, args[3] + ".png")
             self.grid.add_train(x, y, angle, name)
             return "Added train", True
         except ValueError:

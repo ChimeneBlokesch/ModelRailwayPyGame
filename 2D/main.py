@@ -35,6 +35,9 @@ if __name__ == "__main__":
     grid.add_rails(RailsType.CURVE, 750, 50, 800, 100)
     grid.add_rails(RailsType.CURVE, 750, 150, 800, 100)
 
+    grid.add_train(200, 150, 0,
+                   os.path.join("sprites", "trains", "custom_front.png"))
+
     command_field.grid = grid
 
     # Keeps the game running
