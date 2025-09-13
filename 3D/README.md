@@ -4,8 +4,10 @@ In the 3D-setting, two trains are added in the scene. One train is riding along 
 
 ## How to Start
 
-1. Install the packages using pip ([requirements.txt](../requirements.txt)) or conda ([environment.yml](../environment.yml)).
-2. Run `python main.py` in the terminal. Add the `--full_screen` flag to enable the full screen mode with resolution 1920 x 1080.
+1. Clone this repository.
+2. Install the packages using pip ([requirements.txt](../requirements.txt)) or conda ([environment.yml](../environment.yml)).
+3. Change the directory to the 3D folder.
+4. Run `python main.py` in the terminal. Add the `--full_screen` flag to enable the full screen mode with resolution 1920 x 1080.
 
 
 ## Controls
