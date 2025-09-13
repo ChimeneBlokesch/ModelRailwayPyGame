@@ -1,4 +1,4 @@
-from trein import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
+from train import TREIN_GOEDEREN, TREIN_LOCOMOTIEF, TREIN_PASSAGIER, Trein
 from rails import Rails, Bocht, Recht
 from ground import create_ground
 from poppetje import Poppetje, PoppetjeObject

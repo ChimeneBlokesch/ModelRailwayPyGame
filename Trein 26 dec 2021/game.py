@@ -8,10 +8,9 @@ from typing import List
 from camera import CAMERA_POPPETJE, Camera
 from constants import hex_to_rgb
 from grid import Grid
-from trein import TREIN_LOCOMOTIEF, TREIN_PASSAGIER
+from train import Trein, TREIN_LOCOMOTIEF, TREIN_PASSAGIER
 from position import Position
 from character_model import CharacterModel, Hair, Head, Shirt, Arms, Legs
-from trein import Trein
 from rails import Recht, Bocht
 
 FULL_SCREEN = False
@@ -33,17 +32,12 @@ else:
 
 GL.glEnable(GL.GL_COLOR_MATERIAL)
 GL.glEnable(GL.GL_DEPTH_TEST)
+
 # most obj files expect to be smooth-shaded
 GL.glShadeModel(GL.GL_SMOOTH)
 
 grid = Grid()
 camera = Camera()
-
-# pepper = grid.add_poppetje(
-#     "Pepper2", "lego_pepper_met_rugzak", rot_x=90, rot_y=180)
-
-# pepper = grid.add_poppetje(
-#     "Pepper", "lego_island2_Pepper_figure", rot_x=90, rot_y=2180, start_x=100)
 
 pos = Position(rx=90)
 
@@ -74,16 +68,6 @@ character = CharacterModel("Player",
 grid.add_character(character)
 
 current_pop = character
-
-
-# # Referentie punt voor deze rijdende trein is (0.5,y=-2.5)
-# virm1 = grid.add_trein("VIRM3_1", "VIRM3", TREIN_LOCOMOTIEF,
-#                        start_x=0.5, start_y=2, start_z=0.4, rot_x=90)
-# virm1.change_speed(0.05)
-
-# loco1 = grid.add_trein("Loco1", "lego_loco_kop", TREIN_LOCOMOTIEF,
-#                        start_x=0.5, start_y=2, start_z=0.3, rot_x=90)
-# loco1.change_speed(0.1)
 
 scale_factor = -14.171
 scale_factor_curve = 4
@@ -302,38 +286,6 @@ while 1:
 
     if camera.mode == CAMERA_POPPETJE:
         current_pop.walk()
-
-    # # BEGIN DEBUG CODE
-    # if not current_pop:
-    #     # Show coordinates of Pepper if no current figure.
-    #     temp = True
-    #     current_pop = character
-    # show_coordinates(tx, ty, tz, rx, ry, rz, *
-    #                  (current_pop.pos.get_pos()),
-    #                  *(current_pop.pos.get_rotate()))
-
-    # if temp:
-    #     current_pop = None
-    #     temp = False
-
-    # for t in grid.locomotieven:
-    #     create_line(t.pos.x, t.pos.y, 5,
-    #                 t.pos.x, t.pos.y, -5, (0.6, 0.6, 0.8))
-
-    # if debug:
-    #     points.append(camera.pos.get_pos())
-
-    # [create_line(-x, -y, 3, -x, -y, -3, (100, 0, 100))
-    #     for x, y, _ in points]
-
-    # # create_line(pop.pos.x, pop.pos.y, 5, pop.pos.x,
-    # #             pop.pos.y, -5, (200, 0, 200))
-    # if current_pop:
-    #     create_line(current_pop.legs.l_leg.pos.x, current_pop.legs.l_leg.pos.y,
-    #                 5,
-    #                 current_pop.legs.l_leg.pos.x,  current_pop.legs.l_leg.pos.y,
-    #                 -5, (250, 0, 250))
-    # # END DEBUG CODE
 
     GL.glScale(*[1 + camera.scale] * 3)
     pygame.display.flip()
