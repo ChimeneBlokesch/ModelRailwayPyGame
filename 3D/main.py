@@ -8,7 +8,7 @@ from typing import List
 from camera import CAMERA_POPPETJE, Camera
 from constants import hex_to_rgb
 from grid import Grid
-from train import Train, TRAIN_LOCOMOTIEF, TRAIN_PASSAGIER
+from train import Train, TRAIN_ENGINE, TRAIN_PASSENGER
 from position import Position
 from character_model import CharacterModel, Hair, Head, Shirt, Arms, Legs
 from rails import Straight, Curve
@@ -146,14 +146,14 @@ TRAIN_LENGTH = 12
 x = 5
 y = 5
 
-engine0 = Train("Engine", "engine", TRAIN_LOCOMOTIEF,
+engine0 = Train("Engine", "engine", TRAIN_ENGINE,
                 start_x=x, start_y=y, rot_x=90)
 
 grid.add_train(engine0)
 
 y += TRAIN_LENGTH
 
-wagon0 = Train("PassengerCar", "passenger_car", TRAIN_PASSAGIER,
+wagon0 = Train("PassengerCar", "passenger_car", TRAIN_PASSENGER,
                start_x=x, start_y=y, rot_x=90)
 
 grid.add_train(wagon0)
@@ -184,7 +184,7 @@ for i in range(num_rails):
 cur_rails_idx = 2
 y = rails_back_forth[cur_rails_idx].pos.y
 
-engine1 = Train("Engine1", "engine", TRAIN_LOCOMOTIEF,
+engine1 = Train("Engine1", "engine", TRAIN_ENGINE,
                 start_x=x, start_y=y, rot_x=90)
 
 engine1.rails = rails_back_forth[cur_rails_idx]
@@ -193,7 +193,7 @@ engine1.rails = rails_back_forth[cur_rails_idx]
 cur_rails_idx += 1
 y += TRAIN_LENGTH
 
-wagon1 = Train("PassengerCar1", "passenger_car", TRAIN_PASSAGIER,
+wagon1 = Train("PassengerCar1", "passenger_car", TRAIN_PASSENGER,
                start_x=x, start_y=y, rot_x=90)
 
 
@@ -203,7 +203,7 @@ wagon1.rails = rails_back_forth[cur_rails_idx]
 cur_rails_idx += 1
 y += TRAIN_LENGTH
 
-engine2 = Train("Engine2", "engine", TRAIN_PASSAGIER,
+engine2 = Train("Engine2", "engine", TRAIN_PASSENGER,
                 start_x=x, start_y=y, rot_x=90, rot_y=180)
 
 cur_rails_idx += 1
@@ -273,7 +273,7 @@ while 1:
 
     # Remove everything from screen (i.e. displays all white)
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-    grid.rijden()
+    grid.drive()
 
     # Reset all graphic/shape's position
     GL.glLoadIdentity()

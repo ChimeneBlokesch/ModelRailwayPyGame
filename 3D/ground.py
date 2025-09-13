@@ -1,7 +1,7 @@
 from OpenGL import GL
 
 from constants import HEIGHT_GRID, LENGTE_VAKJE, WIDTH_GRID
-from lijnen import BLUE, PURPLE, RED, create_line
+from helper import BLUE, PURPLE, RED, create_line
 
 
 GREEN = (0.027, 0.529, 0.027)
@@ -58,7 +58,7 @@ def create_grid():
             create_line(WIDTH_GRID,  -i, 0,  -WIDTH_GRID, -i,  0, PURPLE)
 
 
-def create_assenstelsel():
+def create_grid_lines():
     create_line(-100, 0, 0, 100, 0, 0, RED)
     create_line(0, -100, 0, 0, 100, 0, BLUE)
     create_line(0, 0, -100, 0, 0, 100, GREEN)

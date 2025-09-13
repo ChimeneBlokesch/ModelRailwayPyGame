@@ -6,9 +6,9 @@ from objparser import Object3D
 from constants import SPEEDUP_CURVE, TRAINS_FOLDER, afstand
 
 # These indices correspond with the primary keys of the 'type' table.
-TRAIN_PASSAGIER = 0
-TRAIN_GOEDEREN = 1
-TRAIN_LOCOMOTIEF = 2
+TRAIN_PASSENGER = 0
+TRAIN_FREIGHT = 1
+TRAIN_ENGINE = 2
 
 
 class Train:
@@ -24,7 +24,7 @@ class Train:
         self.rails = None
         self.train_next = None
 
-        # Locomotief, passagier, goederen
+        # Engine, passenger or freight
         self.type = type_train
 
     def create_object(self):
@@ -39,24 +39,11 @@ class Train:
         self.object.generate()
 
     def render(self):
-        if self.name.startswith("VIRM"):
-            self.object.render(self.pos, scale_value=(2, 0.7, 0.7))
-            return
-
-        if self.name.startswith("Loco"):
-            self.object.render(self.pos, scale_value=(2, 1, 1.5))
-            return
-
         self.object.render(self.pos)
 
-    def rijden(self):
+    def drive(self):
         if self.rails is None:
             return
-
-        # TODO:
-        # Als er een train meerdere wagons heeft, deze wagons snelheid
-        # van locomotief geven. Hiervoor is grid nodig om
-        # locomotieven eerst te berekenen.
 
         # TODO: change to begin-/endpoint
         if self.speed < 0 and afstand(*self.rails.ref_punt_next, *self.
