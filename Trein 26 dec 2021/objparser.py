@@ -48,11 +48,11 @@ class Object3D:
             self.mtl[mtl_name][IMAGE_PREFIX + "map_d"] = image
 
     def update_db(self):
-        conn = sqlite3.connect("treinen.db")
+        conn = sqlite3.connect("trains.db")
         cursor = conn.cursor()
         try:
             cursor.execute(
-                """INSERT INTO soort VALUES(null, ?, 3)""", (self.obj_name,))
+                """INSERT INTO modelType VALUES(null, ?, 3)""", (self.obj_name,))
         except sqlite3.IntegrityError:
             ...
 
@@ -62,16 +62,24 @@ class Object3D:
 
             img_file = self.mtl[m]["map_Kd"].split("\\")[-1]
 
-            cursor.execute("""SELECT id from soort where name = ?""",
+            cursor.execute("""SELECT id from modelType where name = ?""",
                            (self.obj_name,))
+
             trein = cursor.fetchall()[0][0]
-            cursor.execute("""SELECT id from plaatjes where name = ?""",
+
+            cursor.execute("""SELECT id from images where name = ?""",
                            (img_file,))
-            img = cursor.fetchall()[0][0]
+
+            result = cursor.fetchall()
+            if len(result) == 0:
+                # No images
+                continue
+
+            img = result[0][0]
 
             try:
                 cursor.execute("""
-                    INSERT INTO materialen(name, img, trein) VALUES(?,?,?)""",
+                    INSERT INTO materials(name, img, trein) VALUES(?,?,?)""",
                                (m, img, trein))
             except sqlite3.IntegrityError:
                 ...
@@ -94,11 +102,6 @@ class Object3D:
                 if line[0] == "mtllib":
                     self.mtl = self.read_mtl_file(
                         os.path.join(dirname, line[1]))
-
-                    if not self.obj_name.startswith('bocht') and \
-                            not self.obj_name.startswith('recht'):
-                        self.update_db()
-                    continue
 
                 if line[0] in ["v", "vn"]:
                     self.add_vector(line[0], line[1:4])
@@ -172,14 +175,13 @@ class Object3D:
         # Make our new texture ID the current 2D texture
         GL.glBindTexture(GL.GL_TEXTURE_2D, texid)
 
-        # Deze zorgt ervoor dat het plaatje weergegeven wordt.
+        # Makes sure the image is shown
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER,
                            GL.GL_LINEAR)
 
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER,
                            GL.GL_LINEAR)
 
-        # Deze ook nodig om plaatje te weergeven, als combi
         # Copy the texture data into the current texture ID
         GL.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, ix, iy,
                         0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, image)
@@ -288,8 +290,6 @@ class Object3D:
         if flip:
             GL.glScale(1, -1, 1)
 
-        # y=scale_value * ((x-1) ** 1 + x | 0)
-        # Blijkbaar werkt dit niet samen :(
         GL.glScale(*scale_value)
         GL.glCallList(np.array(self.gl_list))
         GL.glPopMatrix()
