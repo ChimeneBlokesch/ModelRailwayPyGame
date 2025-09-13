@@ -244,7 +244,9 @@ while 1:
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_1:
-            current_character.is_player = False
+            if current_character:
+                current_character.is_player = False
+
             current_character = None
             camera.camera_to_free()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_2:
@@ -269,7 +271,7 @@ while 1:
     rx, ry, rz = camera.pos.get_rotate()
 
     # Choose backgroundcolor
-    # GL.glClearColor(0.8, 0.8, 0.8, 1)
+    GL.glClearColor(0.4, 0.8, 0.8, 1)
 
     # Remove everything from screen (i.e. displays all white)
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
