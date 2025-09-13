@@ -13,22 +13,22 @@ from position import Position
 from character_model import CharacterModel, Hair, Head, Shirt, Arms, Legs
 from rails import Straight, Curve
 
-FULL_SCREEN = False
+FULL_SCREEN = len(sys.argv) > 1 and sys.argv[1] == "--full_screen"
 
 MOVE_STEP = 0.05
 ROTATE_STEP = 1
 pygame.init()
-viewport = (800, 600)
+
+viewport = (1920, 1080) if FULL_SCREEN else (800, 600)
 hx = viewport[0]/2
 hy = viewport[1]/2
 
-if FULL_SCREEN:
-    srf = pygame.display.set_mode(
-        viewport, pygame.OPENGL | pygame.DOUBLEBUF | pygame.FULLSCREEN)
-else:
-    srf = pygame.display.set_mode(
-        viewport, pygame.OPENGL | pygame.DOUBLEBUF)
+flags = pygame.OPENGL | pygame.DOUBLEBUF
 
+if FULL_SCREEN:
+    flags |= pygame.FULLSCREEN
+
+srf = pygame.display.set_mode(viewport,  flags)
 
 GL.glEnable(GL.GL_COLOR_MATERIAL)
 GL.glEnable(GL.GL_DEPTH_TEST)
